@@ -9,6 +9,7 @@ import { JwtAuthGuard } from '../jwt/jwt-auth.guard';  // Add this import
 import { UserModule } from 'src/user/user.module';
 import { ConfigModule } from '@nestjs/config';  
 import { UserService } from 'src/user/user.service';
+import { TokenizeService } from 'src/tokenize/tokenize.service';
 
 
 @Module({
@@ -20,12 +21,12 @@ import { UserService } from 'src/user/user.service';
       imports: [ConfigModule],  
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get('JWT_USER_SECRET'),
-        signOptions: { expiresIn: '7d' },  
+        // secret: configService.get('JWT_USER_SECRET'),
+        // signOptions: { expiresIn: '7d' },  
       }),
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService,UserService,JwtAuthGuard,JwtStrategy],
+  providers: [AuthService,UserService,JwtAuthGuard,JwtStrategy , TokenizeService],
 })
 export class AuthModule {}

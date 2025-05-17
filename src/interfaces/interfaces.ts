@@ -9,3 +9,18 @@ export interface ApiResponse<T> {
 export interface User {
     
 }
+
+
+
+export interface userToken{
+    
+}
+
+
+
+export interface CacheManagerOptions {
+    store?: string ;
+    ttl?: number;
+    max?: number;
+    isCacheableValue?: (value: any) => boolean;
+}
