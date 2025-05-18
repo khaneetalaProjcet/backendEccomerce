@@ -52,7 +52,10 @@ export class User2 {
   @Prop({type:mongoose.Schema.Types.String})
   nationalCode:string
   @Prop({type:mongoose.Schema.Types.Array})
-  adresses:[string]
+  adresses:[{
+    adress:string,
+    postCode:string
+  }]
 
   @Prop({type:mongoose.Schema.Types.Number})
   authStatus:number   //? 0 just init - 1 compelteProfile - 2 exist in old service
