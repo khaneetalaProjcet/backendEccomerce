@@ -11,6 +11,8 @@ import { ConfigModule } from '@nestjs/config';
 import { UserService } from 'src/user/user.service';
 import { TokenizeService } from 'src/tokenize/tokenize.service';
 import { RedisServiceService } from 'src/redis-service/redis-service.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { User, UserSchema } from 'src/user/entities/user.entity';
 
 
 @Module({
@@ -26,6 +28,7 @@ import { RedisServiceService } from 'src/redis-service/redis-service.service';
         // signOptions: { expiresIn: '7d' },  
       }),
     }),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])
   ],
   controllers: [AuthController],
   providers: [AuthService,UserService,JwtAuthGuard,JwtStrategy , TokenizeService , RedisServiceService],

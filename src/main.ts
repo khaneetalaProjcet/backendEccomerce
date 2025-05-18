@@ -31,12 +31,11 @@ async function bootstrap() {
     transform: true // Transform is recomended configuration for avoind issues with arrays of files transformations
   }));
   const options = new DocumentBuilder()
-    .setTitle('ngo project')
+    .setTitle('Khanetala shop APIs')
     .setDescription('this is api documentation of ngo project')
     .setVersion('1.0')
     .addServer('http://localhost:9010/', 'Local environment')
-    .addServer('https://ngo.oceanjourney.ir/', 'Staging')
-    .addServer('https://ngo.ir/', 'Production')
+    .addServer("https://shop.khaneetala.ir,'Stage")
     .build();
   process.nextTick(()=>{
     console.log('next tick done')

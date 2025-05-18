@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { sendOtpDto } from './dto/sendOtpDto.dto';
+import { validateOtpDto } from './dto/validateOtpDto.dto';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('auth')
@@ -52,6 +53,52 @@ export class AuthController {
   sendOtp(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: sendOtpDto) {
     return this.authService.sendOtp(req , res , body)
   }
+
+  @Post('/login')
+  @ApiOperation({ summary: 'validate otp code' })
+    @ApiResponse({
+      status: 200, description: 'the otp code validate and user login successfully',
+      schema: {
+        example: {
+          success: true,
+          message: 'با موفقیت وارد شدید',
+          error: null,
+          data: null
+        }
+      },
+    })
+    
+    @ApiResponse({
+      status: 409, description: 'duplicate data',
+      schema: {
+        example: {
+          success: false,
+          message: 'this code already sendt',
+          error: 'duplicate sent code',
+          data: null
+        }
+      },
+    })
+    @ApiResponse({
+      status: 500, description: 'internal service error',
+      schema: {
+        example: {
+          success: false,
+          message: 'internal error',
+          error: 'internal service error',
+          data: null
+        }
+      },
+    })
+    @ApiBody({
+      type: validateOtpDto,
+      description: 'Json structure for project object',
+    })
+  login(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: validateOtpDto) {
+    return this.authService.validateOtp(body.phoneNumber,body.otp)
+  }
+
+
 
   @Get()
   findAll() {

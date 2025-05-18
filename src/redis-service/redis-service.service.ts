@@ -10,6 +10,8 @@ export class RedisServiceService {
 
     async get(key : string) : Promise<any>{
         const data = await this.cache.get(key)
+        console.log(data);
+        
         return data
     }
 

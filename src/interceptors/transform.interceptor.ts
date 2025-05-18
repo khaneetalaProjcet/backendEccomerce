@@ -26,6 +26,6 @@ export class ResponseInterceptor implements NestInterceptor {
       data : (res.data) ? res.data : null ,
       timestamp: format(new Date().toISOString(), 'yyyy-MM-dd HH:mm:ss')}
     delete newResponse.statusCode
-    return response.status(res.statusCode).json(newResponse)
+    return response.status(+res.statusCode).json(newResponse)
   }
 }

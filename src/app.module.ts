@@ -20,7 +20,6 @@ import { JwtService } from '@nestjs/jwt';
   imports: [
     ConfigModule.forRoot({isGlobal : true}),
     CacheModule.registerAsync(RedisOptions),
-    CacheModule.register(),
     MongooseModule.forRoot(process.env.MONGO_URI!),
     MongooseModule.forFeature([{name : 'user' , schema : UserSchema}]),
     UserModule,
