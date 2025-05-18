@@ -92,16 +92,16 @@ export class AuthService {
       // }
 
 
-      //     // const user=await this.userServiceL.checkOrCreate(phoneNumber)
+          const user=await this.userServiceL.checkOrCreate(body.phoneNumber)
 
      
-      //     const token = await this.tokenize.tokenize({_id:user?._id,phoneNumber:user?.phoneNumber},"10m",0)
-      //     const refreshToken=await this.tokenize.tokenize({_id:user?._id,phoneNumber:user?.phoneNumber},"1h",1)
-      //      return {
-      //       message: 'ارسال کد تایید موفق',
-      //       statusCode: 200,
-      //       data: {refreshToken,token,user}
-      //     }
+          const token = await this.tokenize.tokenize({_id:user?._id,phoneNumber:user?.phoneNumber},"10m",0)
+          const refreshToken=await this.tokenize.tokenize({_id:user?._id,phoneNumber:user?.phoneNumber},"1h",1)
+           return {
+            message: 'ارسال کد تایید موفق',
+            statusCode: 200,
+            data: {refreshToken,token,user}
+          }
     }
     catch(error){
       console.log('error is sending otp', error)
