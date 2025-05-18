@@ -9,7 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { RedisOptions } from 'configs/redis.config';
 import { RabbitMqService } from './rabbitmq/rabbitmq.service';
-import { UserSchema } from './user/entities/user.entity';
+import { UserSchema2 } from './user/entities/user.entity';
 import { RedisServiceService } from './redis-service/redis-service.service';
 import { TokenizeService } from './tokenize/tokenize.service';
 import { JwtService } from '@nestjs/jwt';
@@ -21,8 +21,8 @@ import { JwtService } from '@nestjs/jwt';
     ConfigModule.forRoot({isGlobal : true}),
     CacheModule.registerAsync(RedisOptions),
     MongooseModule.forRoot(process.env.MONGO_URI!),
-    MongooseModule.forFeature([{name : 'user' , schema : UserSchema}]),
-    UserModule,
+    MongooseModule.forFeature([{name : 'userM' , schema : UserSchema2}]),
+    // UserModule,
     AuthModule,
   ],
   controllers: [AppController],

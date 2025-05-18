@@ -4,13 +4,27 @@ import * as mongoose from 'mongoose';
 
 
 
-export type UserDocument = User & Document;
+// export type UserDocument = User & Document;
 
+
+
+export interface UserDocument extends Document {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  password: string;
+  pictureProfile: string;
+  nationalCode: string
+  authStatus: number   //? 0 just init - 1 compelteProfile - 2 exist in old service
+  isActive: boolean;
+}
 
 
 
 @Schema({timestamps:true})
-export class User {
+export class User2 {
   @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
   _id: string;
 
@@ -20,7 +34,7 @@ export class User {
   @Prop({type:mongoose.Schema.Types.String})
   lastName: string;
 
-  @Prop({type:mongoose.Schema.Types.String, required: true, unique: true })
+  @Prop({type:mongoose.Schema.Types.String, required: true })
   phoneNumber: string;
 
   @Prop({type:mongoose.Schema.Types.String})
@@ -43,4 +57,4 @@ export class User {
 
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserSchema2 = SchemaFactory.createForClass(User2);

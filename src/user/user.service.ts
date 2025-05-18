@@ -2,23 +2,22 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from './entities/user.entity';
+import { UserDocument } from './entities/user.entity';
 import { Model } from 'mongoose';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) 
-   private userModel: Model<UserDocument>,
+  constructor(@InjectModel('userM') private userModel: Model<UserDocument>,
   ) {}
 
   
-  
-  
+
   async checkOrCreate(phoneNumber:string){
     try{
-      const user=await this.userModel.findOne({phoneNumber})
+      const user=await this.userModel.findOne({phoneNumber : phoneNumber})
+      console.log('user after getting' , user)
       if(!user){
-        let newUser=await this.userModel.create({phoneNumber,authStatus:0})
+        let newUser=await this.userModel.create({phoneNumber : phoneNumber , authStatus:0})
         console.log('gggg' , newUser)
         // const newUser=new this.userModel({phoneNumber,authStatus:0})
         return newUser

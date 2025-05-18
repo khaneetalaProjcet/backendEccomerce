@@ -7,11 +7,16 @@ import { UserService } from 'src/user/user.service';
 import { TokenizeService } from 'src/tokenize/tokenize.service';
 import { json } from 'stream/consumers';
 import { validateOtpDto } from './dto/validateOtpDto.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { UserDocument } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
 
-  constructor(private redisService: RedisServiceService , private userServiceL:UserService,private tokenize:TokenizeService) {}
+  constructor(private redisService: RedisServiceService , private userServiceL:UserService,private tokenize:TokenizeService,
+    @InjectModel('userM') private userModel : Model<UserDocument>
+  ) {}
 
   private async otpGenerator() {
     return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
@@ -44,15 +49,12 @@ export class AuthService {
         error: 'خطای داخلی سیستم'
       }
     }
-
   }
 
 
 
   async validateOtp(body : validateOtpDto){
     try{
-
-
 
       const test= await this.redisService.get(`otp-${body.phoneNumber}`)
       console.log('tttt34543454' , test)
@@ -95,6 +97,16 @@ export class AuthService {
       //     error: 'کد ورود اشتباه است'
       //   }
       // }
+
+      let users = await this.userModel.find()
+
+
+
+
+      // for (let i of users){
+      //   await this.userModel.findByIdAndDelete(i._id)
+      // }
+
       const user = await this.userServiceL.checkOrCreate(body.phoneNumber)
       console.log('userrrrr', user)
       const token = await this.tokenize.tokenize({ _id: user?._id, phoneNumber: user?.phoneNumber }, "10m", 0)

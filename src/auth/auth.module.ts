@@ -12,7 +12,9 @@ import { UserService } from 'src/user/user.service';
 import { TokenizeService } from 'src/tokenize/tokenize.service';
 import { RedisServiceService } from 'src/redis-service/redis-service.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from 'src/user/entities/user.entity';
+import { UserSchema2 } from 'src/user/entities/user.entity';
+import { RedisOptions } from 'configs/redis.config';
+import { CacheModule } from '@nestjs/cache-manager';
 
 
 @Module({
@@ -20,6 +22,7 @@ import { User, UserSchema } from 'src/user/entities/user.entity';
     UserModule,
     PassportModule,
     ConfigModule,  
+    CacheModule.registerAsync(RedisOptions),
     JwtModule.registerAsync({
       imports: [ConfigModule],  
       inject: [ConfigService],
@@ -28,7 +31,7 @@ import { User, UserSchema } from 'src/user/entities/user.entity';
         // signOptions: { expiresIn: '7d' },  
       }),
     }),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])
+    MongooseModule.forFeature([{ name: 'userM', schema: UserSchema2 }])
   ],
   controllers: [AuthController],
   providers: [AuthService,UserService,JwtAuthGuard,JwtStrategy , TokenizeService , RedisServiceService],
