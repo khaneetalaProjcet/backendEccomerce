@@ -18,8 +18,10 @@ export class UserService {
     try{
       const user=await this.userModel.findOne({phoneNumber})
       if(!user){
-        const newUser=new this.userModel({phoneNumber,authStatus:0})
-        return await newUser.save()
+        let newUser=await this.userModel.create({phoneNumber,authStatus:0})
+        console.log('gggg' , newUser)
+        // const newUser=new this.userModel({phoneNumber,authStatus:0})
+        return newUser
       }
       return user
       
