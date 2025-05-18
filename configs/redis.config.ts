@@ -12,7 +12,7 @@ export const RedisOptions: CacheModuleAsyncOptions = {
         store: redisStore,
         host: 'localhost',
         port: 6379,
-        ttl: configService.get('CACHE_TTL'),
-        max: configService.get('MAX_ITEM_IN_CACHE')
+        // ttl: configService.get('CACHE_TTL'),
+        // max: configService.get('MAX_ITEM_IN_CACHE')
     })
 }
