@@ -36,6 +36,8 @@ async function bootstrap() {
     .setVersion('1.0')
     .addServer('http://localhost:9010/', 'Local environment')
     .addServer("https://shop.khaneetala.ir,'Stage")
+    .addTag('auth')
+    .addBearerAuth()
     .build();
   process.nextTick(()=>{
     console.log('next tick done')

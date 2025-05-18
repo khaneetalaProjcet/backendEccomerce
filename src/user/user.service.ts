@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserDocument } from './entities/user.entity';
+import {compelteRegisterDto} from "./dto/completeRegister.dto"
 import { Model } from 'mongoose';
 
 @Injectable()
@@ -29,6 +30,46 @@ export class UserService {
     }
   }
 
+
+  async completeRegister(userId:string,data:compelteRegisterDto){
+    try{
+      console.log(userId);
+      const testUser=await this.userModel.findOne({_id:userId})
+      console.log("textUser",testUser);
+      
+      const user=await this.userModel.findByIdAndUpdate(userId,{
+        firstName:data.firstName,
+        lastName:data.lastName,
+        fatherName:data.fatherName,
+        adresses:data.adresses,
+        authStatus:1
+      })
+      console.log(user);
+      
+      if(!user){
+        return {
+          message: 'کاربر پیدا نشد',
+          statusCode: 400,
+          error: 'کاربر پیدا نشد'
+        }
+      }
+
+      return {
+        message: 'ثبت نام شما کامل شد',
+        statusCode: 200,
+        data: user
+      }
+
+    }
+    catch(error){
+      console.log("error",error);
+      return {
+        message: 'مشکلی از سمت سرور به وجود آمده',
+        statusCode: 500,
+        error: 'خطای داخلی سیستم'
+      }
+    }
+  }
 
 
 

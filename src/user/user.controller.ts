@@ -1,37 +1,43 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, ValidationPipe, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { compelteRegisterDto } from './dto/completeRegister.dto';
+import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
+
+
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  @ApiOperation({ summary: '' })
+  @Post("/complete")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth() 
+  @ApiOperation({ summary: 'complete user info' })
   @ApiResponse({
-    status: 200, description: 'the ngos created project successfully',
+    status: 200, description: 'the user complete info successfully',
     schema: {
       example: {
         success: true,
-        message: 'the ngo updated project successfully',
+        message: 'the user complete info successfully',
         error: null,
         data: {}
       }
     },
   })
-  // @ApiResponse({
-  //   status: 403, description: 'Forbidden.',
-  //   schema: {
-  //     example: {
-  //       success: false,
-  //       message: 'the ngo creation failed',
-  //       error: 'forbidden user',
-  //       data: null
-  //     }
-  //   },
-  // })
+  @ApiResponse({
+    status: 403, description: 'Forbidden.',
+    schema: {
+      example: {
+        success: false,
+        message: 'the ngo creation failed',
+        error: 'forbidden user',
+        data: null
+      }
+    },
+  })
   @ApiResponse({
     status: 409, description: 'duplicate data',
     schema: {
@@ -55,11 +61,13 @@ export class UserController {
     },
   })
   @ApiBody({
-    // type: ,
-    description: 'Json structure for project object',
+    type:compelteRegisterDto ,
+    description: 'data must like this dto',
   })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  complete(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: compelteRegisterDto) {
+    console.log("reqUser",req.user);
+    const userId=req.user.userId
+    return this.userService.completeRegister(userId,body);
   }
 
 
