@@ -11,6 +11,9 @@ export class UserService {
    private userModel: Model<UserDocument>,
   ) {}
 
+  
+  
+  
   async checkOrCreate(phoneNumber:string){
     try{
       const user=await this.userModel.findOne({phoneNumber})
@@ -19,11 +22,14 @@ export class UserService {
         return await newUser.save()
       }
       return user
-
+      
     }catch(error){
       console.log(error);
     }
   }
+
+
+
 
   create(createUserDto: CreateUserDto) {
     return 'This action adds a new user';
