@@ -35,11 +35,10 @@ export class AuthService {
       let data = { otp: otp, date: new Date().getTime() }
       
 
-      await this.redisService.set(`otp-${phoneNumber}`,JSON.stringify(data))
-      await this.redisService.set(`test-${phoneNumber}`,otp)
+      await this.redisService.setOtp(`otp-${phoneNumber}`,JSON.stringify(data))
+      
 
-     const test= await this.redisService.get(`otp-${phoneNumber}`)
-     console.log("testaccccccc",test);
+     
      
       return {
         message: 'ارسال کد تایید موفق',
@@ -61,58 +60,44 @@ export class AuthService {
   async validateOtp(body : validateOtpDto){
     try{
 
-      const test= await this.redisService.get(`otp-${body.phoneNumber}`)
-      console.log('tttt34543454' , test)
-      // return {
-      //   message : 'login successfull',
-      //   statuaCode : 200,
-      //   data : {
-      //     userStatus : 0
-      //   }
-      // }
 
+      const otp=body.otp
+      const phoneNumber=body.phoneNumber
 
-      // console.log(body);
+     
 
-      // let findedOtp=await this.redisService.get(`otp-${body.phoneNumber}`)
-      // const testCatch=await this.redisService.get(`test-${body.phoneNumber}`)
+      let findedOtp=await this.redisService.get(`otp-${body.phoneNumber}`)
       
       
-      // findedOtp=JSON.parse(findedOtp)
-      // console.log(findedOtp);
-      // const date=new Date().getTime()
-      // if(!findedOtp){
-      //   return {
-      //     message: 'شماره تلفن پیدا نشد',
-      //     statusCode: 400,
-      //     error: 'شماره تلفن پیدا نشد'
-      //   }
-      // }
-      // if((date-findedOtp.date)<120000){
-      //   return {
-      //     message: 'کد ورود منقضی شده است',
-      //     statusCode: 400,
-      //     error: 'کد ورود منقضی شده است'
-      //   }
-      // }
-      // if(otp!=findedOtp.otp){
-      //   return {
-      //     message: 'کد ورود اشتباه است',
-      //     statusCode: 400,
-      //     error: 'کد ورود اشتباه است'
-      //   }
-      // }
+      
+      findedOtp=JSON.parse(findedOtp)
+      console.log(findedOtp);
+      const date=new Date().getTime()
+      if(!findedOtp){
+        return {
+          message: 'شماره تلفن پیدا نشد',
+          statusCode: 400,
+          error: 'شماره تلفن پیدا نشد'
+        }
+      }
+      console.log("date",date-findedOtp.date);
+      
+      if((date-findedOtp.date)>120000){
+        return {
+          message: 'کد ورود منقضی شده است',
+          statusCode: 400,
+          error: 'کد ورود منقضی شده است'
+        }
+      }
+      if(otp!=findedOtp.otp){
+        return {
+          message: 'کد ورود اشتباه است',
+          statusCode: 400,
+          error: 'کد ورود اشتباه است'
+        }
+      }
 
-      let users = await this.userModel.find()
-
-
-
-
-      // for (let i of users){
-      //   await this.userModel.findByIdAndDelete(i._id)
-      // }
-
-      const user = await this.userServiceL.checkOrCreate(body.phoneNumber)
+      const user = await this.userServiceL.checkOrCreate(phoneNumber)
       console.log('userrrrr', user)
       const token = await this.tokenize.tokenize({ _id: user?._id, phoneNumber: user?.phoneNumber }, "10m", 0)
       const refreshToken = await this.tokenize.tokenize({ _id: user?._id, phoneNumber: user?.phoneNumber }, "1h", 1)

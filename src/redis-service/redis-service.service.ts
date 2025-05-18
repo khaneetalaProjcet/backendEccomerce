@@ -21,6 +21,10 @@ export class RedisServiceService {
     async reset(key : string){
         await this.cache.del(key)
     }
+
+    async setOtp(key : string , value : any) : Promise<any>{
+        await this.cache.set(key , value , 120000)
+    }
     
     // async del(){}
 }
