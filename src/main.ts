@@ -34,7 +34,7 @@ async function bootstrap() {
     .setTitle('Khanetala shop APIs')
     .setDescription('this is api documentation of ngo project')
     .setVersion('1.0')
-    .addServer('http://localhost:9010/', 'Local environment')
+    .addServer('http://localhost:9011/', 'Local environment')
     .addServer("https://shop.khaneetala.ir,'Stage")
     .build();
   process.nextTick(()=>{
