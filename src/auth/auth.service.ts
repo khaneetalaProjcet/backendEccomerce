@@ -12,6 +12,7 @@ import { Model } from 'mongoose';
 import { UserDocument } from 'src/user/entities/user.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager'
+import { refreshTokenDto } from './dto/refreshTokenDto.dto';
 
 
 @Injectable()
@@ -61,8 +62,12 @@ export class AuthService {
     try{
 
 
+     
+
+
       const otp=body.otp
       const phoneNumber=body.phoneNumber
+
 
      
 
@@ -117,6 +122,41 @@ export class AuthService {
     }
   }
 
+
+  async refreshToken(refreshToken:refreshTokenDto){
+    try{
+      const decoded=await this.tokenize.checkRefreshToken(refreshToken.refreshToken)
+      if(!decoded){
+       return {
+        message: ' توکن منقضی شده است',
+        statusCode: 401,
+        error: ' توکن منقضی شده است'
+       }
+      }
+
+     
+      
+
+      const token = await this.tokenize.tokenize({ _id: decoded?._id, phoneNumber: decoded?.phoneNumber }, "10m", 0)
+
+      return {
+        message: 'ارسال کد تایید موفق',
+        statusCode: 200,
+        data: { token  }
+      }
+
+       
+    }
+    catch(error){
+      console.log('error is sending otp', error)
+      return {
+        message: 'مشکلی از سمت سرور به وجود آمده',
+        statusCode: 500,
+        error: 'خطای داخلی سیستم'
+      }
+    }
+    
+  }
 
 
 

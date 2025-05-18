@@ -5,6 +5,7 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import { sendOtpDto } from './dto/sendOtpDto.dto';
 import { validateOtpDto } from './dto/validateOtpDto.dto';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { refreshTokenDto } from './dto/refreshTokenDto.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -96,6 +97,51 @@ export class AuthController {
     })
   login(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: validateOtpDto) {
     return this.authService.validateOtp( body)
+  }
+
+
+  @Post('/refresh')
+  @ApiOperation({ summary: 'get token ' })
+    @ApiResponse({
+      status: 200, description: 'token generated',
+      schema: {
+        example: {
+          success: true,
+          message: 'با موفقیت وارد شدید',
+          error: null,
+          data: null
+        }
+      },
+    })
+    
+    @ApiResponse({
+      status: 409, description: 'duplicate data',
+      schema: {
+        example: {
+          success: false,
+          message: 'this code already sendt',
+          error: 'duplicate sent code',
+          data: null
+        }
+      },
+    })
+    @ApiResponse({
+      status: 500, description: 'internal service error',
+      schema: {
+        example: {
+          success: false,
+          message: 'internal error',
+          error: 'internal service error',
+          data: null
+        }
+      },
+    })
+    @ApiBody({
+      type: refreshTokenDto,
+      description: 'Json structure for project object',
+    })
+  refreshToken(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: refreshTokenDto) {
+    return this.authService.refreshToken(body)
   }
 
 

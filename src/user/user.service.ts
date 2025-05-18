@@ -18,7 +18,7 @@ export class UserService {
       const user=await this.userModel.findOne({phoneNumber : phoneNumber})
       console.log('user after getting' , user)
       if(!user){
-        let newUser=await this.userModel.create({phoneNumber : phoneNumber , authStatus:0})
+        let newUser=await this.userModel.create({phoneNumber : phoneNumber , authStatus:1})
         console.log('gggg' , newUser)
         // const newUser=new this.userModel({phoneNumber,authStatus:0})
         return newUser
@@ -42,7 +42,8 @@ export class UserService {
         lastName:data.lastName,
         fatherName:data.fatherName,
         adresses:data.adresses,
-        authStatus:1
+        email:data.email,
+        authStatus:2
       })
       console.log(user);
       
