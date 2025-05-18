@@ -9,7 +9,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  @ApiOperation({ summary: 'وقتی سمن ها میخان پروژه رو به اتمام برسونن' })
+  @ApiOperation({ summary: '' })
   @ApiResponse({
     status: 200, description: 'the ngos created project successfully',
     schema: {

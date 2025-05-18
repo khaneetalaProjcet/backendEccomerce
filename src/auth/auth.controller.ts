@@ -1,15 +1,56 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, ValidationPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { sendOtpDto } from './dto/sendOtpDto.dto';
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Post('/otp')
+  @ApiOperation({ summary: 'sending otp code' })
+    @ApiResponse({
+      status: 200, description: 'the otp code sent successfully',
+      schema: {
+        example: {
+          success: true,
+          message: 'کد تایید موفق',
+          error: null,
+          data: null
+        }
+      },
+    })
+    
+    @ApiResponse({
+      status: 409, description: 'duplicate data',
+      schema: {
+        example: {
+          success: false,
+          message: 'this code already sendt',
+          error: 'duplicate sent code',
+          data: null
+        }
+      },
+    })
+    @ApiResponse({
+      status: 500, description: 'internal service error',
+      schema: {
+        example: {
+          success: false,
+          message: 'internal error',
+          error: 'internal service error',
+          data: null
+        }
+      },
+    })
+    @ApiBody({
+      type: sendOtpDto,
+      description: 'Json structure for project object',
+    })
+  sendOtp(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: sendOtpDto) {
+    return this.authService.sendOtp(req , res , body)
   }
 
   @Get()

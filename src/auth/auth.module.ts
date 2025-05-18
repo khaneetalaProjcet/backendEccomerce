@@ -10,6 +10,7 @@ import { UserModule } from 'src/user/user.module';
 import { ConfigModule } from '@nestjs/config';  
 import { UserService } from 'src/user/user.service';
 import { TokenizeService } from 'src/tokenize/tokenize.service';
+import { RedisServiceService } from 'src/redis-service/redis-service.service';
 
 
 @Module({
@@ -27,6 +28,6 @@ import { TokenizeService } from 'src/tokenize/tokenize.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService,UserService,JwtAuthGuard,JwtStrategy , TokenizeService],
+  providers: [AuthService,UserService,JwtAuthGuard,JwtStrategy , TokenizeService , RedisServiceService],
 })
 export class AuthModule {}

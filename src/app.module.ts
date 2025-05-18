@@ -12,6 +12,7 @@ import { RabbitMqService } from './rabbitmq/rabbitmq.service';
 import { UserSchema } from './user/entities/user.entity';
 import { RedisServiceService } from './redis-service/redis-service.service';
 import { TokenizeService } from './tokenize/tokenize.service';
+import { JwtService } from '@nestjs/jwt';
 
 
 
@@ -26,6 +27,8 @@ import { TokenizeService } from './tokenize/tokenize.service';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService , RabbitMqService, RedisServiceService, TokenizeService],
+  providers: [AppService , RabbitMqService, RedisServiceService, TokenizeService , JwtService],
 })
+
+
 export class AppModule {}
