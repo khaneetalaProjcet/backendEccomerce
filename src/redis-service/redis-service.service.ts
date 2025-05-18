@@ -15,7 +15,7 @@ export class RedisServiceService {
     }
 
     async set(key : string , value : any) : Promise<any>{
-        await this.cache.set(key , value , 1000)
+        await this.cache.set(key , value)
     }
 
     async reset(key : string){

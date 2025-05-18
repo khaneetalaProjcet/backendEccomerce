@@ -1,4 +1,4 @@
-import { Injectable, Req, Res } from '@nestjs/common';
+import { Inject, Injectable, Req, Res } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { sendOtpDto } from './dto/sendOtpDto.dto';
@@ -10,12 +10,16 @@ import { validateOtpDto } from './dto/validateOtpDto.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserDocument } from 'src/user/entities/user.entity';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager'
+
 
 @Injectable()
 export class AuthService {
 
   constructor(private redisService: RedisServiceService , private userServiceL:UserService,private tokenize:TokenizeService,
-    @InjectModel('userM') private userModel : Model<UserDocument>
+    @InjectModel('userM') private userModel : Model<UserDocument>,
+    @Inject(CACHE_MANAGER) private readonly cache : Cache
   ) {}
 
   private async otpGenerator() {
@@ -30,6 +34,7 @@ export class AuthService {
       let otp = await this.otpGenerator()
       let data = { otp: otp, date: new Date().getTime() }
       
+
       await this.redisService.set(`otp-${phoneNumber}`,JSON.stringify(data))
       await this.redisService.set(`test-${phoneNumber}`,otp)
 
