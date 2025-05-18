@@ -95,7 +95,7 @@ export class AuthController {
       description: 'Json structure for project object',
     })
   login(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: validateOtpDto) {
-    return this.authService.validateOtp(body.phoneNumber,body.otp)
+    return this.authService.validateOtp( body)
   }
 
 
