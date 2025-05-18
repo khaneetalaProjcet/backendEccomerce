@@ -47,10 +47,15 @@ export class AuthService {
 
   }
 
+
+
   async validateOtp(body : validateOtpDto){
     try{
 
 
+
+      const test= await this.redisService.get(`otp-${body.phoneNumber}`)
+      console.log('tttt34543454' , test)
       // return {
       //   message : 'login successfull',
       //   statuaCode : 200,
@@ -97,11 +102,11 @@ export class AuthService {
      
           const token = await this.tokenize.tokenize({_id:user?._id,phoneNumber:user?.phoneNumber},"10m",0)
           const refreshToken=await this.tokenize.tokenize({_id:user?._id,phoneNumber:user?.phoneNumber},"1h",1)
-           return {
-            message: 'ارسال کد تایید موفق',
-            statusCode: 200,
-            data: {refreshToken,token,user}
-          }
+      return {
+        message: 'ارسال کد تایید موفق',
+        statusCode: 200,
+        data: { refreshToken: refreshToken, token: token, ...user?.toObject() }
+      }
     }
     catch(error){
       console.log('error is sending otp', error)
