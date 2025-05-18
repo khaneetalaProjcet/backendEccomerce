@@ -34,7 +34,7 @@ async function bootstrap() {
     .setTitle('ngo project')
     .setDescription('this is api documentation of ngo project')
     .setVersion('1.0')
-    .addServer('http://localhost:3000/', 'Local environment')
+    .addServer('http://localhost:9010/', 'Local environment')
     .addServer('https://ngo.oceanjourney.ir/', 'Staging')
     .addServer('https://ngo.ir/', 'Production')
     .build();
@@ -48,6 +48,6 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
   
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 9010);
 }
 bootstrap();
