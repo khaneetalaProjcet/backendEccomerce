@@ -70,6 +70,60 @@ export class UserController {
     return this.userService.completeRegister(userId,body);
   }
 
+  @Get("/info")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth() 
+  @ApiOperation({ summary: 'get user info' })
+  @ApiResponse({
+    status: 200, description: 'the user complete info successfully',
+    schema: {
+      example: {
+        success: true,
+        message: 'the user complete info successfully',
+        error: null,
+        data: {}
+      }
+    },
+  })
+  @ApiResponse({
+    status: 403, description: 'Forbidden.',
+    schema: {
+      example: {
+        success: false,
+        message: 'the ngo creation failed',
+        error: 'forbidden user',
+        data: null
+      }
+    },
+  })
+  @ApiResponse({
+    status: 409, description: 'duplicate data',
+    schema: {
+      example: {
+        success: false,
+        message: 'this project already cpmpleted',
+        error: 'duplicate project',
+        data: null
+      }
+    },
+  })
+  @ApiResponse({
+    status: 500, description: 'internal service error',
+    schema: {
+      example: {
+        success: false,
+        message: 'internal error',
+        error: 'internal service error',
+        data: null
+      }
+    },
+  })
+  getUser(@Req() req : any , @Res() res : any ) {
+    console.log("reqUser",req.user);
+    const userId=req.user.userId
+    return this.userService.findById(userId);
+  }
+
 
 
 
