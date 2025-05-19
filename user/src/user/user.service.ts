@@ -4,11 +4,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserDocument } from './entities/user.entity';
 import {compelteRegisterDto} from "./dto/completeRegister.dto"
+import {InterserviceService} from "../interservice/interservice.service"
 import { Model } from 'mongoose';
+import { refreshTokenDto } from 'src/auth/dto/refreshTokenDto.dto';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel('userM') private userModel: Model<UserDocument>,
+  constructor(@InjectModel('userM') private userModel: Model<UserDocument>,private readonly internalService:InterserviceService,
   ) {}
 
   
@@ -18,10 +20,32 @@ export class UserService {
       const user=await this.userModel.findOne({phoneNumber : phoneNumber})
       console.log('user after getting' , user)
       if(!user){
-        let newUser=await this.userModel.create({phoneNumber : phoneNumber , authStatus:1})
-        console.log('gggg' , newUser)
-        // const newUser=new this.userModel({phoneNumber,authStatus:0})
-        return newUser
+        // const oldUser=await this.internalService.checkExistOldUser(phoneNumber)
+        // if(oldUser){
+        //    console.log("oldUser",oldUser);
+ 
+        //    const oldNewUser=await this.userModel.create({
+        //     phoneNumber,
+        //     firstName:oldUser.firstName,
+        //     lastName:oldUser.lastName,
+        //     fatherName:oldUser.fatherName,
+        //     authStatus:2
+        //    })
+
+
+
+        //    return oldNewUser
+           
+        // }else{
+        //   let newUser=await this.userModel.create({phoneNumber : phoneNumber , authStatus:1})
+        //   console.log('gggg' , newUser)
+        //   // const newUser=new this.userModel({phoneNumber,authStatus:0})
+        //   return newUser
+        // }
+          let newUser=await this.userModel.create({phoneNumber : phoneNumber , authStatus:1})
+          console.log('gggg' , newUser)
+          // const newUser=new this.userModel({phoneNumber,authStatus:0})
+          return newUser
       }
       return user
       
@@ -70,6 +94,33 @@ export class UserService {
         error: 'خطای داخلی سیستم'
       }
     }
+  }
+
+
+  async findById(userId:string){
+    try{
+      const user=await this.userModel.findById(userId)
+      if(!user){
+        return {
+          message: 'کاربر پیدا نشد',
+          statusCode: 400,
+          error: 'کاربر پیدا نشد'
+        }
+      }
+      return {
+        message: 'ثبت نام شما کامل شد',
+        statusCode: 200,
+        data: user
+      }
+    }catch(error){
+      console.log("error",error);
+      return {
+        message: 'مشکلی از سمت سرور به وجود آمده',
+        statusCode: 500,
+        error: 'خطای داخلی سیستم'
+      }
+    }
+  
   }
 
 

@@ -13,6 +13,7 @@ import { UserSchema2 } from './user/entities/user.entity';
 import { RedisServiceService } from './redis-service/redis-service.service';
 import { TokenizeService } from './tokenize/tokenize.service';
 import { JwtService } from '@nestjs/jwt';
+import { InterserviceService } from './interservice/interservice.service';
 
 
 
@@ -26,7 +27,7 @@ import { JwtService } from '@nestjs/jwt';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService , RabbitMqService, RedisServiceService, TokenizeService , JwtService],
+  providers: [AppService , RabbitMqService, RedisServiceService, TokenizeService , JwtService, InterserviceService],
 })
 
 

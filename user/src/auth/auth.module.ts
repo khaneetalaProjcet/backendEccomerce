@@ -15,6 +15,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema2 } from 'src/user/entities/user.entity';
 import { RedisOptions } from 'configs/redis.config';
 import { CacheModule } from '@nestjs/cache-manager';
+import { InterserviceService } from 'src/interservice/interservice.service';
 
 
 @Module({
@@ -34,6 +35,6 @@ import { CacheModule } from '@nestjs/cache-manager';
     MongooseModule.forFeature([{ name: 'userM', schema: UserSchema2 }])
   ],
   controllers: [AuthController],
-  providers: [AuthService,UserService,JwtAuthGuard,JwtStrategy , TokenizeService , RedisServiceService],
+  providers: [AuthService,UserService,JwtAuthGuard,JwtStrategy , TokenizeService , RedisServiceService,InterserviceService],
 })
 export class AuthModule {}
