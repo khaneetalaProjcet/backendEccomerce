@@ -109,6 +109,13 @@ export class AuthService {
 
       const user = await this.userServiceL.checkOrCreate(phoneNumber)
       console.log('userrrrr', user)
+      if(!user){
+        return {
+          message: 'لطفا دوباره امتحان کنید',
+          statusCode: 500,
+          error: 'لطفا دوباره امتحان کنید',
+        }
+      }
       const token = await this.tokenize.tokenize({ _id: user?._id, phoneNumber: user?.phoneNumber }, "10m", 0)
       const refreshToken = await this.tokenize.tokenize({ _id: user?._id, phoneNumber: user?.phoneNumber }, "1h", 1)
       return {
