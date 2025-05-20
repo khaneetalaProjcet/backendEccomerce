@@ -20,32 +20,30 @@ export class UserService {
       const user=await this.userModel.findOne({phoneNumber : phoneNumber})
       console.log('user after getting' , user)
       if(!user){
-        // const oldUser=await this.internalService.checkExistOldUser(phoneNumber)
-        // if(oldUser){
-        //    console.log("oldUser",oldUser);
+        const oldUser=await this.internalService.checkExistOldUser(phoneNumber)
+        if(oldUser.data.statusCode==2){
+          return ;
+        }
+        if(oldUser&&oldUser.statusCode==1){
+           console.log("oldUser",oldUser);
  
-        //    const oldNewUser=await this.userModel.create({
-        //     phoneNumber,
-        //     firstName:oldUser.firstName,
-        //     lastName:oldUser.lastName,
-        //     fatherName:oldUser.fatherName,
-        //     authStatus:2
-        //    })
+           const oldNewUser=await this.userModel.create({
+            phoneNumber,
+            firstName:oldUser.data.firstName,
+            lastName:oldUser.data.lastName,
+            fatherName:oldUser.data.fatherName,
+            authStatus:3
+           })
 
 
 
-        //    return oldNewUser
+           return oldNewUser
            
-        // }else{
-        //   let newUser=await this.userModel.create({phoneNumber : phoneNumber , authStatus:1})
-        //   console.log('gggg' , newUser)
-        //   // const newUser=new this.userModel({phoneNumber,authStatus:0})
-        //   return newUser
-        // }
+        }else{
           let newUser=await this.userModel.create({phoneNumber : phoneNumber , authStatus:1})
-          console.log('gggg' , newUser)
-          // const newUser=new this.userModel({phoneNumber,authStatus:0})
           return newUser
+        }
+          
       }
       return user
       
