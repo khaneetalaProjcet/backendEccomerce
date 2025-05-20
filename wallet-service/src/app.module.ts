@@ -18,8 +18,11 @@ import { RabbitMqService } from './rabbit-mq/rabbit-mq.service';
     CacheModule.registerAsync(RedisOptions),
     MongooseModule.forRoot(process.env.MONGO_URI!),
     // MongooseModule.forFeature([{name : 'wallet' , schema : }]),
-    ,WalletModule],
+    ],
+    
   controllers: [AppController],
   providers: [AppService, AuthService, JwtService, RedisServiceService, RabbitMqService],
 })
+
+
 export class AppModule {}
