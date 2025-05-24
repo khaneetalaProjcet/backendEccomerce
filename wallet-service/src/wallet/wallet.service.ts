@@ -12,13 +12,13 @@ export class WalletService {
   async create(createWalletDto: CreateWalletDto) {
 
 
-  const array= await this.walletModel.find()
-  for (let index = 0; index < array.length; index++) {
-    const element = array[index];
+  // const array= await this.walletModel.find()
+  // for (let index = 0; index < array.length; index++) {
+  //   const element = array[index];
 
-    await this.walletModel.findByIdAndDelete(element._id)
+  //   await this.walletModel.findByIdAndDelete(element._id)
     
-  }
+  // }
    
     const time= new Date().toLocaleString('fa-IR').split(',')[1]
     const date= new Date().toLocaleString('fa-IR').split(',')[0]
