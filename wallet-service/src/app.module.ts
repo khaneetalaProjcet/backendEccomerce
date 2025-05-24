@@ -17,6 +17,7 @@ import { RabbitMqService } from './rabbit-mq/rabbit-mq.service';
     ConfigModule.forRoot({isGlobal : true}),
     CacheModule.registerAsync(RedisOptions),
     MongooseModule.forRoot(process.env.MONGO_URI!),
+    WalletModule
     // MongooseModule.forFeature([{name : 'wallet' , schema : }]),
     ],
     

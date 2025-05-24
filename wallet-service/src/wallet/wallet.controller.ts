@@ -46,8 +46,12 @@ export class WalletController {
       description: 'Json structure for project object',
     })
   @Post()
-  create(@Body() createWalletDto: CreateWalletDto) {
+   create(@Body() createWalletDto: CreateWalletDto) {
+    console.log("salam",createWalletDto);
+    
     return this.walletService.create(createWalletDto);
+
+  
   }
 
   @Get()
@@ -57,7 +61,7 @@ export class WalletController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.walletService.findOne(+id);
+    return this.walletService.findOne(id);
   }
 
   @Patch(':id')

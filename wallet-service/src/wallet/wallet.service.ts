@@ -4,11 +4,21 @@ import { UpdateWalletDto } from './dto/update-wallet.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import {walletDocument} from "./entities/wallet.entity"
 import { Model } from 'mongoose';
+import e from 'express';
 
 @Injectable()
 export class WalletService {
   constructor(@InjectModel('wallet') private walletModel: Model<walletDocument>){}
   async create(createWalletDto: CreateWalletDto) {
+
+
+  const array= await this.walletModel.find()
+  for (let index = 0; index < array.length; index++) {
+    const element = array[index];
+
+    await this.walletModel.findByIdAndDelete(element._id)
+    
+  }
    
     const time= new Date().toLocaleString('fa-IR').split(',')[1]
     const date= new Date().toLocaleString('fa-IR').split(',')[0]
@@ -20,15 +30,25 @@ export class WalletService {
       time
     })
     
-    return wallet;
+      return {
+        message: '',
+        statusCode: 200,
+        data: wallet
+      }
   }
 
   findAll() {
     return `This action returns all wallet`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} wallet`;
+  async findOne(owner: string) {
+   const wallet= await this.walletModel.findOne({owner})
+   return {
+        message: '',
+        statusCode: 200,
+        data: wallet
+      }
+  
   }
 
   update(id: number, updateWalletDto: UpdateWalletDto) {

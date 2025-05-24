@@ -37,7 +37,13 @@ export class UserService {
             authStatus:3
            })
 
+           const wallet={
+            owner:oldNewUser._id,
+            balance:0,
+            goldWeight:oldUser.data.goldWeight
+           }
 
+           await this.internalService.createWallet(wallet)
 
            return oldNewUser
            
@@ -70,6 +76,8 @@ export class UserService {
         authStatus:2
       })
       console.log(user);
+
+      
       
       if(!user){
         return {
@@ -78,6 +86,14 @@ export class UserService {
           error: 'کاربر پیدا نشد'
         }
       }
+
+       const wallet={
+            owner:user._id,
+            balance:0,
+            goldWeight:"0"
+         }
+
+       await this.internalService.createWallet(wallet)
 
       return {
         message: 'ثبت نام شما کامل شد',
