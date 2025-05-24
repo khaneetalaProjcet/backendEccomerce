@@ -1,10 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CreateWalletDto } from './dto/create-wallet.dto';
 import { UpdateWalletDto } from './dto/update-wallet.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import {walletDocument} from "./entities/wallet.entity"
+import { Model } from 'mongoose';
 
 @Injectable()
 export class WalletService {
-  create(createWalletDto: CreateWalletDto) {
+  constructor(@InjectModel('wallet') private walletModel: Model<walletDocument>){}
+  async create(createWalletDto: CreateWalletDto) {
+   
+    
+    
     return 'This action adds a new wallet';
   }
 

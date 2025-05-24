@@ -21,7 +21,9 @@ export class UserService {
       console.log('user after getting' , user)
       if(!user){
         const oldUser=await this.internalService.checkExistOldUser(phoneNumber)
-        if(oldUser.data.statusCode==2){
+        console.log(oldUser);
+        
+        if(oldUser.statusCode==2){
           return ;
         }
         if(oldUser&&oldUser.statusCode==1){
