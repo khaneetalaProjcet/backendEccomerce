@@ -32,11 +32,11 @@ async function bootstrap() {
   }));
   const options = new DocumentBuilder()
     .setTitle('Khanetala shop APIs')
-    .setDescription('this is api documentation of ngo project')
+    .setDescription('this is api documentation of shop project')
     .setVersion('1.0')
-    .addServer('http://localhost:9010/', 'Local environment')
+    .addServer('http://localhost:9011/', 'Local environment')
     .addServer("https://shop.khaneetala.ir,'Stage")
-    .addTag('auth')
+    .addTag('wallet')
     .addBearerAuth()
     .build();
   process.nextTick(()=>{

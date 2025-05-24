@@ -10,9 +10,17 @@ export class WalletService {
   constructor(@InjectModel('wallet') private walletModel: Model<walletDocument>){}
   async create(createWalletDto: CreateWalletDto) {
    
+    const time= new Date().toLocaleString('fa-IR').split(',')[1]
+    const date= new Date().toLocaleString('fa-IR').split(',')[0]
+    const wallet=await this.walletModel.create({
+      owner:createWalletDto.owner,
+      balance:createWalletDto.balance,
+      goldWeight:createWalletDto.goldWeight,
+      date,
+      time
+    })
     
-    
-    return 'This action adds a new wallet';
+    return wallet;
   }
 
   findAll() {
