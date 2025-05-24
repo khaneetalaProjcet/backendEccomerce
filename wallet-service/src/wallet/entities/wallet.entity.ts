@@ -20,6 +20,9 @@ export class wallet {
     @Prop({ type: Number })
     balance: number
 
+    @Prop({type:String})
+    goldWeight:string
+
     @Prop({ type: String })
     date : string
     

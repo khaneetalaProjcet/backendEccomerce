@@ -11,6 +11,9 @@ export class RabbitMqService {
     constructor() {
         const connection = amqp.connect(['amqp://localhost']);     // connect to rabbitmq when the module inject
         
+
+        console.log("chanek");
+        
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////!
         //*its for assert the queues
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////!
@@ -21,6 +24,9 @@ export class RabbitMqService {
                 channel.assertQueue('order', { durable: true });          // assert the queue
             },
         });
+
+       
+        
 
         /**
          * here is for listening to chanels from user service in comstructor
@@ -38,6 +44,9 @@ export class RabbitMqService {
         this.channelWrapper.addSetup(async (channel: ConfirmChannel) => {          // add setup for channel
             await channel.consume('wallet', async (message) => {
                 const data = JSON.parse(message.content.toString())
+                
+                console.log("ok",data);
+                
                 await message.ack
             })
         })
