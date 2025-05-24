@@ -45,7 +45,7 @@ export class UserService {
 
            await this.internalService.createWallet(wallet)
 
-           return oldNewUser
+           return {...oldNewUser,wallet:wallet}
            
         }else{
           let newUser=await this.userModel.create({phoneNumber : phoneNumber , authStatus:1})
@@ -98,7 +98,7 @@ export class UserService {
       return {
         message: 'ثبت نام شما کامل شد',
         statusCode: 200,
-        data: user
+        data: {...user,wallet:wallet}
       }
 
     }
