@@ -5,8 +5,17 @@ import { Document } from 'mongoose';
 
 
 
-export interface UserDocument extends Document {
+export interface walletDocument extends Document {
+   
+  
+    owner: string
 
+    
+    balance: number
+
+    date : string
+    
+    time : string
 }
 
 
