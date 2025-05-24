@@ -32,7 +32,7 @@ async function bootstrap() {
   }));
   const options = new DocumentBuilder()
     .setTitle('Khanetala shop APIs')
-    .setDescription('this is api documentation of ngo project')
+    .setDescription('this is api documentation of Ecommerce project')
     .setVersion('1.0')
     .addServer('http://localhost:9010/', 'Local environment')
     .addServer("https://shop.khaneetala.ir,'Stage")
@@ -47,8 +47,8 @@ async function bootstrap() {
 
 
   app.useGlobalInterceptors(new ResponseInterceptor());
-  app.useGlobalFilters(new HttpExceptionFilter());
+  // app.useGlobalFilters(new HttpExceptionFilter());
   
-  await app.listen(process.env.PORT ?? 9010);
+  await app.listen(process.env.PORT ?? 9011);
 }
 bootstrap();

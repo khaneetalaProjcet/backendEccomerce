@@ -10,8 +10,9 @@ export interface walletDocument extends Document {
   
     owner: string
 
-    
     balance: number
+
+    goldWeight:string
 
     date : string
     
