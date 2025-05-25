@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 export class AppService {
   getHello() {
     return {
-      message: 'کد ورود منقضی شده است',
+      message: 'کد ورود من',
       statusCode: 200,
       data: 'کد ورود منقضی شده است'
     }

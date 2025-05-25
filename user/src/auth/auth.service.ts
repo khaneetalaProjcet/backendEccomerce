@@ -170,14 +170,26 @@ export class AuthService {
     
   }
 
-  async sendSetPasswordOtp(phoneNumber:string){
-       try {
+  async sendSetPasswordOtp(userId:string){
+     try {
+
+     const user=await this.userModel.findById(userId)
+      
+     if(!user){
+    
+         return {
+          message: 'کاربر پیدا نشد',
+          statusCode: 400,
+          error: 'کاربر  پیدا نشد',
+        }
+      
+     }
 
       let otp = await this.otpGenerator()
       let data = { otp: otp, date: new Date().getTime() }
       
 
-      await this.redisService.setOtp(`otp-pass-${phoneNumber}`,JSON.stringify(data))
+      await this.redisService.setOtp(`otp-pass-${user.phoneNumber}`,JSON.stringify(data))
       
 
      
@@ -197,14 +209,107 @@ export class AuthService {
     }
   }
 
-  async setpassword(){}
+  async setpassword(userId:string,otp:number,password:string){
+   try{
+    const user=await this.userModel.findById(userId)
+      
+     if(!user){
+    
+         return {
+          message: 'کاربر پیدا نشد',
+          statusCode: 400,
+          error: 'کاربر  پیدا نشد',
+        }
+      
+     }
+
+     let findedOtp=await this.redisService.get(`otp-pass-${user.phoneNumber}`)
+      
+      
+      
+      findedOtp=JSON.parse(findedOtp)
+      console.log(findedOtp);
+      const date=new Date().getTime()
+      if(!findedOtp){
+        return {
+          message: 'شماره تلفن پیدا نشد',
+          statusCode: 400,
+          error: 'شماره تلفن پیدا نشد'
+        }
+      }
+      console.log("date",date-findedOtp.date);
+      
+      if((date-findedOtp.date)>120000){
+        return {
+          message: 'کد ورود منقضی شده است',
+          statusCode: 400,
+          error: 'کد ورود منقضی شده است'
+        }
+      }
+      if(otp!=findedOtp.otp){
+        return {
+          message: 'کد ورود اشتباه است',
+          statusCode: 400,
+          error: 'کد ورود اشتباه است'
+        }
+      }
+
+      const hashedPassword=await this.hashPassword(password)
+      user.password=hashedPassword
+      await user.save()
+
+      return{
+        message: 'رمز عبور با موفقیت تغییر پیدا کرد',
+        statusCode: 200,
+        data: user
+      }
+
+
+   }catch(error){
+    console.log("error",error);
+    
+    return {
+       message: 'ارسال کد تایید ناموفق',
+        statusCode: 500,
+        error: 'خطای داخلی سیستم'
+    }
+   }
+  }
+
+  async loginWithPassword(phoneNumber:string,password:string){
+    try{
+      const user=await this.userModel.findOne({phoneNumber:phoneNumber})
+      if(!user){
+          return {
+          message: 'کاربر پیدا نشد',
+          statusCode: 400,
+          error: 'کاربر  پیدا نشد',
+        }
+      }
+
+      const isMatch=this.comparePasswords(password,user.password)
+
+      // if(){
+
+      // }
+    }
+    catch(error){
+       console.log("error",error);
+    
+    return {
+       message: 'ارسال کد تایید ناموفق',
+        statusCode: 500,
+        error: 'خطای داخلی سیستم'
+    }
+    }
+  }
 
   async  comparePasswords(
   plainTextPassword: string,
   hashedPassword: string,
 ): Promise<boolean> {
   return bcrypt.compare(plainTextPassword, hashedPassword);
-}
+  }
 
   private async  hashPassword(password: string): Promise<string> {
   const saltRounds = 10;

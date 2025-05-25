@@ -123,7 +123,7 @@ export class UserController {
     type:upgradeProfileDto ,
     description: 'data must like this dto',
   })
-  upgrade(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: compelteRegisterDto) {
+  upgrade(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: upgradeProfileDto) {
     console.log("reqUser",req.user);
     const userId=req.user.userId
     return this.userService.upgradeProfile(userId,body);
