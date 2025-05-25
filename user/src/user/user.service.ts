@@ -7,6 +7,9 @@ import {compelteRegisterDto} from "./dto/completeRegister.dto"
 import {InterserviceService} from "../interservice/interservice.service"
 import { Model , ClientSession} from 'mongoose';
 import { refreshTokenDto } from 'src/auth/dto/refreshTokenDto.dto';
+import { upgradeProfileDto } from './dto/upgradeProfile.dto';
+import {AddressDto} from "./dto/addAdress.dto"
+import {UpdateAddressDto} from "./dto/updateAdress.sto"
 
 @Injectable()
 export class UserService {
@@ -80,8 +83,7 @@ export class UserService {
     session.startTransaction();
     try{
       console.log(userId);
-      const testUser=await this.userModel.findOne({_id:userId}).session(session)
-      console.log("textUser",testUser);
+     
       
       const user=await this.userModel.findByIdAndUpdate(userId,{
         firstName:data.firstName,
@@ -133,6 +135,134 @@ export class UserService {
   }
 
 
+  async upgradeProfile(userId:string,data:upgradeProfileDto){
+    const session: ClientSession = await this.userModel.db.startSession();
+    session.startTransaction();    
+    try{
+
+      console.log(userId);
+     
+      
+      const user=await this.userModel.findByIdAndUpdate(userId,{
+        firstName:data.firstName,
+        lastName:data.lastName,
+        fatherName:data.fatherName,
+        email:data.email,
+      }).session(session)
+
+      console.log(user);
+
+      if(!user){
+        return {
+          message: 'کاربر پیدا نشد',
+          statusCode: 400,
+          error: 'کاربر پیدا نشد'
+        }
+      }
+      await session.commitTransaction();
+      return {
+        message: 'ثبت نام شما کامل شد',
+        statusCode: 200,
+        data: user
+      }
+    }catch(error){
+      console.log("error",error);
+      await session.abortTransaction();
+      return {
+        message: 'مشکلی از سمت سرور به وجود آمده',
+        statusCode: 500,
+        error: 'خطای داخلی سیستم'
+      }
+    }finally{
+       session.endSession();
+    }
+  }
+
+  async addAddress(userId: string, data:AddressDto) {
+    const user = await this.userModel.findByIdAndUpdate(
+      userId,
+      { $push: { adresses: data } },
+      { new: true },
+    );
+    if (!user){
+      return {
+          message: 'کاربر پیدا نشد',
+          statusCode: 400,
+          error: 'کاربر پیدا نشد'
+        }
+    };
+    return {
+        message: '',
+        statusCode: 200,
+        data: user.adresses
+      }
+  }
+
+  async getAddresses(userId: string) {
+    const user = await this.userModel.findById(userId).select('addresses');
+    if (!user){
+       return {
+          message: 'کاربر پیدا نشد',
+          statusCode: 400,
+          error: 'کاربر پیدا نشد'
+        }
+    }
+      return {
+        message: '',
+        statusCode: 200,
+        data: user.adresses
+      }
+  }
+
+  async updateAddress(userId: string,data:UpdateAddressDto) {
+     const user = await this.userModel.findOneAndUpdate(
+      { _id: userId, 'addresses._id': data.adressId },
+      {
+        $set: {
+          'addresses.$.adress': data.adress,
+          'addresses.$.postCode': data.postCode,
+        },
+      },
+      { new: true},
+    );
+    if (!user){
+       return {
+          message: 'کاربر پیدا نشد',
+          statusCode: 400,
+          error: 'کاربر پیدا نشد'
+        }
+    };
+
+  
+     return {
+        message: '',
+        statusCode: 200,
+        data: user.adresses
+      }
+  }
+
+  async deleteAddress(userId: string, adressId: string) {
+    const user = await this.userModel.findByIdAndUpdate(
+      userId,
+      { $pull: { addresses: { _id: adressId } } },
+      { new: true },
+    );
+    if (!user ){
+       return {
+          message: 'کاربر پیدا نشد',
+          statusCode: 400,
+          error: 'کاربر پیدا نشد'
+        }
+    };
+
+    await user.save();
+    return {
+        message: '',
+        statusCode: 200,
+        data: user.adresses
+      }
+  }
+
   async findById(userId:string){
     const session: ClientSession = await this.userModel.db.startSession();
     session.startTransaction();
@@ -165,7 +295,7 @@ export class UserService {
   
   }
 
-
+  
 
   create(createUserDto: CreateUserDto) {
     return 'This action adds a new user';
