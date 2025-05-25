@@ -116,7 +116,7 @@ export class AuthService {
           error: 'لطفا دوباره امتحان کنید',
         }
       }
-      const token = await this.tokenize.tokenize({ _id: user?._id, phoneNumber: user?.phoneNumber }, "10m", 0)
+      const token = await this.tokenize.tokenize({ _id: user?._id, phoneNumber: user?.phoneNumber }, "12h", 0)
       const refreshToken = await this.tokenize.tokenize({ _id: user?._id, phoneNumber: user?.phoneNumber }, "1h", 1)
       return {
         message: 'ارسال کد تایید موفق',
