@@ -289,9 +289,22 @@ export class AuthService {
 
       const isMatch=this.comparePasswords(password,user.password)
 
-      // if(){
+      if(!isMatch){
+           return {
+          message: 'رمز با شماره تلفن همخوانی ندارد',
+          statusCode: 400,
+          error: 'رمز با شماره تلفن همخوانی ندارد',
+      }
 
-      // }
+    }
+      const token = await this.tokenize.tokenize({ _id: user?._id, phoneNumber: user?.phoneNumber }, "12h", 0)
+      const refreshToken = await this.tokenize.tokenize({ _id: user?._id, phoneNumber: user?.phoneNumber }, "1h", 1)
+      return {
+        message: 'ارسال کد تایید موفق',
+        statusCode: 200,
+        data: { refreshToken: refreshToken, token: token, ...user?.toObject() }
+      }
+
     }
     catch(error){
        console.log("error",error);
