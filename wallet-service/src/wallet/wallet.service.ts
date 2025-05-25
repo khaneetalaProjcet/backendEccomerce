@@ -3,8 +3,7 @@ import { CreateWalletDto } from './dto/create-wallet.dto';
 import { UpdateWalletDto } from './dto/update-wallet.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import {walletDocument} from "./entities/wallet.entity"
-import { Model } from 'mongoose';
-import e from 'express';
+import { Model, ClientSession} from 'mongoose';
 
 @Injectable()
 export class WalletService {
@@ -19,22 +18,37 @@ export class WalletService {
   //   await this.walletModel.findByIdAndDelete(element._id)
     
   // }
-   
-    const time= new Date().toLocaleString('fa-IR').split(',')[1]
-    const date= new Date().toLocaleString('fa-IR').split(',')[0]
-    const wallet=await this.walletModel.create({
+   const session: ClientSession = await this.walletModel.db.startSession();
+    session.startTransaction();
+
+  try{
+     const time= new Date().toLocaleString('fa-IR').split(',')[1]
+     const date= new Date().toLocaleString('fa-IR').split(',')[0]
+     const wallet=await this.walletModel.create([{
       owner:createWalletDto.owner,
       balance:createWalletDto.balance,
       goldWeight:createWalletDto.goldWeight,
       date,
       time
-    })
+    }],{session})
     
       return {
         message: '',
         statusCode: 200,
-        data: wallet
+        data: wallet[0]
       }
+  }catch(err){
+    await session.abortTransaction();
+      return {
+        message: 'مشکلی از سمت سرور به وجود آمده',
+        statusCode: 500,
+        error: 'خطای داخلی سیستم'
+      }
+  }finally{
+    session.endSession();
+  }
+   
+   
   }
 
   findAll() {
