@@ -62,12 +62,12 @@ export class AuthService {
     try{
 
 
-    //  const array=await this.userModel.find()
+     const array=await this.userModel.find()
 
-    //  for (let index = 0; index < array.length; index++) {
-    //   const element = array[index];
-    //   await this.userModel.findByIdAndDelete(element._id)
-    //  }
+     for (let index = 0; index < array.length; index++) {
+      const element = array[index];
+      await this.userModel.findByIdAndDelete(element._id)
+     }
 
 
       const otp=body.otp

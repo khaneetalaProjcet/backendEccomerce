@@ -47,7 +47,7 @@ export class WalletController {
     })
   @Post()
    create(@Body() createWalletDto: CreateWalletDto) {
-    console.log("salam",createWalletDto);
+    console.log("from user service",createWalletDto);
     
     return this.walletService.create(createWalletDto);
 
