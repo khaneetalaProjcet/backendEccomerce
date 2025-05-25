@@ -199,7 +199,7 @@ export class UserService {
   }
 
   async getAddresses(userId: string) {
-    const user = await this.userModel.findById(userId).select('addresses');
+    const user = await this.userModel.findById(userId)
     if (!user){
        return {
           message: 'کاربر پیدا نشد',
