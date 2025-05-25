@@ -19,6 +19,11 @@ export interface UserDocument extends Document {
   nationalCode: string
   authStatus: number   //? 0 just init - 1 compelteProfile - 2 exist in old service
   isActive: boolean;
+   adresses:[{
+    _id:string
+    adress:string,
+    postCode:string
+  }]
 }
 
 
@@ -49,7 +54,7 @@ export class User2 {
   @Prop({type:mongoose.Schema.Types.String})
   pictureProfile: string;
 
-  @Prop({type:mongoose.Schema.Types.String})
+  @Prop({type:mongoose.Schema.Types.String})  
   nationalCode:string
   @Prop({type:mongoose.Schema.Types.Array})
   adresses:[{

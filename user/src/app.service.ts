@@ -5,8 +5,8 @@ export class AppService {
   getHello() {
     return {
       message: 'کد ورود منقضی شده است',
-      statusCode: 400,
-      error: 'کد ورود منقضی شده است'
+      statusCode: 200,
+      data: 'کد ورود منقضی شده است'
     }
   }
 }
