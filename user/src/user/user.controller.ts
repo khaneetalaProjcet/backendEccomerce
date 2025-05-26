@@ -404,7 +404,7 @@ export class UserController {
     },
   })
   getUserSpecificAdress(@Req() req: any, @Res() res: any , @Param('userId') userId : string ,@Param('addressId') addressId : string) {
-    return this.userService.getSpecificAddress(userId , addressId);
+    return this.userService.getSpecificAddress(req , res , addressId);
   }
 
 

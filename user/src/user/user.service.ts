@@ -214,9 +214,12 @@ export class UserService {
   }
 
 
-  async getSpecificAddress(userId: string, adressId: string) {
+  async getSpecificAddress(req: any, res: any, adressId: string) {
+    let userId = req.user.userId
     let address = await this.userModel.findById({ userId }).where('addresses._id').equals(adressId)
 
+    console.log('address is >>>' , address)
+    
     if (!address) {
       return {
         message: 'آدرس مورد نظر یافت نشد',
@@ -317,7 +320,6 @@ export class UserService {
     } finally {
       session.endSession();
     }
-
   }
 
 
