@@ -226,7 +226,7 @@ export class UserService {
         error: "آدرس مورد نظر یافت نشد"
       }
     }
-    
+
     console.log('address is >>>' , address?.adresses)
     
     return {
@@ -285,10 +285,15 @@ export class UserService {
         error: 'کاربر پیدا نشد'
       }
     };
+    
+    console.log('addressesss >>>> ' , user.adresses)
+
+
     await user.updateOne({
       $pull : {'addresses._id' : adressId}
     })
     let updated = await this.userModel.findById(userId)
+    console.log('addressesss >>>> ' , updated?.adresses)
     // await user.save();
     return {
       message: '',
