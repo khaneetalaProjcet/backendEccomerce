@@ -290,7 +290,7 @@ export class UserService {
 
 
     await user.updateOne({
-      $pull : {'addresses' : {_id  : adressId}}
+      $pull : {'addresses' : {_id  : new mongoose.Types.ObjectId(adressId)}}
     })
     let updated = await this.userModel.findById(userId)
 
