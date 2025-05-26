@@ -288,9 +288,20 @@ export class UserService {
     
     console.log('addressesss >>>> ' , user.adresses)
 
-    await user.updateOne({
-      $pull : {'addresses' : { 'addresses_id'  : new mongoose.Types.ObjectId(adressId) }}
-    })
+    // await user.updateOne({
+    //   $pull : {'addresses' : { 'addresses_id'  : new mongoose.Types.ObjectId(adressId) }}
+    // })
+
+    // let id = new mongoose.Types.ObjectId(adressId)
+    let list :any = []
+    for (let i of user.adresses){
+      if (i._id != adressId){
+        
+      }
+      list.push(i)
+    }
+
+    await user.updateOne({adresses: list})
 
     let updated = await this.userModel.findById(userId)
 
