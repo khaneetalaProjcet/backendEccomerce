@@ -288,10 +288,10 @@ export class UserService {
     
     console.log('addressesss >>>> ' , user.adresses)
 
-
     await user.updateOne({
-      $pull : {'addresses' : {_id  : new mongoose.Types.ObjectId(adressId)}}
+      $pull : {'addresses' : { 'addresses_id'  : new mongoose.Types.ObjectId(adressId) }}
     })
+
     let updated = await this.userModel.findById(userId)
 
     console.log('addressesss >>>> ' , updated?.adresses)
