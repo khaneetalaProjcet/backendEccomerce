@@ -267,12 +267,14 @@ export class UserService {
     }
   }
 
+
+
   async deleteAddress(userId: string, adressId: string) {
     console.log('its here for delete address >>>> ', adressId, userId)
-    const user = await this.userModel.findByIdAndUpdate(
+    const user = await this.userModel.findById(
       userId,
-      { $pull: { addresses: { _id: adressId } } },
-      { new: true },
+      // { $pull: { addresses: { _id: adressId } } },
+      // { new: true },
     );
 
     if (!user) {
@@ -283,13 +285,21 @@ export class UserService {
       }
     };
 
-    await user.save();
+
+    await user.updateOne({
+      $pull : {'addresses._id' : adressId}
+    })
+    let updated = await this.userModel.findById(userId)
+    // await user.save();
     return {
       message: '',
       statusCode: 200,
-      data: user.adresses
+      data: updated?.adresses
     }
   }
+
+
+
 
   async findById(userId: string) {
     const session: ClientSession = await this.userModel.db.startSession();
