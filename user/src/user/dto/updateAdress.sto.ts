@@ -1,10 +1,14 @@
 import { IsNotEmpty, IsString } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsNumber } from "class-validator";
 
 export class UpdateAddressDto {
     @IsString()
     @ApiProperty({ example: 'casjhckjsbfvc' })
     adressId: string
+
+
+
 
     @IsString()
     @ApiProperty({ example: '123 Main St' })
@@ -15,13 +19,18 @@ export class UpdateAddressDto {
     postCode: string;
 
 
-
-    @IsString()
+    @IsNumber()
     @ApiProperty({ example: 122 })
     plate : number
 
 
     @IsString()
+    @ApiProperty({ example: 122 })
+    name: string
+
+
+
+    @IsNumber()
     @ApiProperty({ example: 1 })
     unit : number
 

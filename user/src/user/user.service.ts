@@ -218,7 +218,6 @@ export class UserService {
     let userId = req.user.userId
     let address = await this.userModel.findById(userId)
 
-    
     if (!address) {
       return {
         message: 'آدرس مورد نظر یافت نشد',
@@ -227,28 +226,24 @@ export class UserService {
       }
     }
 
-
     let list;
     for (let i of address.adresses){
       if (i._id == adressId){
           list = i
       }
     }
-
-
     console.log('address is >>>' , address?.adresses)
-    
     return {
       message: 'موفق',
       statusCode: 200,
       data: list
     }
-
   }
 
 
 
   async updateAddress(userId: string, data: UpdateAddressDto) {
+    
     const user = await this.userModel.findOneAndUpdate(
       { _id: userId, 'addresses._id': data.adressId },
       {
