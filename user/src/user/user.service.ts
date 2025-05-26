@@ -296,9 +296,8 @@ export class UserService {
     let list :any = []
     for (let i of user.adresses){
       if (i._id != adressId){
-        
+        list.push(i)
       }
-      list.push(i)
     }
 
     await user.updateOne({adresses: list})
