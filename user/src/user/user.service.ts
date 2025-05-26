@@ -290,9 +290,10 @@ export class UserService {
 
 
     await user.updateOne({
-      $pull : {'addresses._id' : adressId}
+      $pull : {'addresses' : {_id  : adressId}}
     })
     let updated = await this.userModel.findById(userId)
+
     console.log('addressesss >>>> ' , updated?.adresses)
     // await user.save();
     return {
