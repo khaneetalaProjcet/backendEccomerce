@@ -216,9 +216,8 @@ export class UserService {
 
   async getSpecificAddress(req: any, res: any, adressId: string) {
     let userId = req.user.userId
-    let address = await this.userModel.findById(userId).where('addresses._id').equals(adressId)
+    let address = await this.userModel.findById(userId)
 
-    console.log('address is >>>' , address)
     
     if (!address) {
       return {
@@ -227,7 +226,9 @@ export class UserService {
         error: "آدرس مورد نظر یافت نشد"
       }
     }
-
+    
+    console.log('address is >>>' , address?.adresses)
+    
     return {
       message: 'موفق',
       statusCode: 200,
