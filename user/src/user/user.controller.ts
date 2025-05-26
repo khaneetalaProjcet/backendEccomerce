@@ -4,9 +4,10 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { upgradeProfileDto } from "./dto/upgradeProfile.dto"
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { AddressDto, compelteRegisterDto } from './dto/completeRegister.dto';
+import {  compelteRegisterDto } from './dto/completeRegister.dto';
 import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
 import { UpdateAddressDto } from './dto/updateAdress.sto';
+import { AddressDto } from './dto/addAdress.dto';
 
 
 

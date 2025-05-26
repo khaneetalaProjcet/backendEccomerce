@@ -24,52 +24,56 @@ export interface UserDocument extends Document {
     adress: string,
     postCode: string,
     name: string,
+    plate: number,
+    unit: number
   }[]
 }
 
 
 
-@Schema({timestamps:true})
+@Schema({ timestamps: true })
 export class User2 {
   @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
   _id: string;
 
-  @Prop({type:mongoose.Schema.Types.String})
+  @Prop({ type: mongoose.Schema.Types.String })
   firstName: string;
 
-  @Prop({type:mongoose.Schema.Types.String})
+  @Prop({ type: mongoose.Schema.Types.String })
   lastName: string;
 
-  @Prop({type:mongoose.Schema.Types.String, required: true })
+  @Prop({ type: mongoose.Schema.Types.String, required: true })
   phoneNumber: string;
 
-  @Prop({type:mongoose.Schema.Types.String})
+  @Prop({ type: mongoose.Schema.Types.String })
   email: string;
 
-  @Prop({type:mongoose.Schema.Types.String})
-  fatherName:string
-  
-  @Prop({type:mongoose.Schema.Types.String})
+  @Prop({ type: mongoose.Schema.Types.String })
+  fatherName: string
+
+  @Prop({ type: mongoose.Schema.Types.String })
   password: string;
- 
-  @Prop({type:mongoose.Schema.Types.String})
+
+  @Prop({ type: mongoose.Schema.Types.String })
   pictureProfile: string;
 
-  @Prop({type:mongoose.Schema.Types.String})  
-  nationalCode:string
+  @Prop({ type: mongoose.Schema.Types.String })
+  nationalCode: string
 
 
-  @Prop({type:[{adress : {type : String} , postCode: {type : String} , name : {type : String} }]})
+  @Prop({ type: [{ adress: { type: String }, postCode: { type: String }, name: { type: String }, plate: { type: Number }, unit: { type: Number } }] })
   adresses: {
-    adress:string,
-    postCode:string,
-    name : string,
+    adress: string,
+    postCode: string,
+    name: string,
+    plate: number,
+    unit: number
   }[]
 
-  @Prop({type:mongoose.Schema.Types.Number})
-  authStatus:number   //? 0 just init - 1 compelteProfile - 2 exist in old service
+  @Prop({ type: mongoose.Schema.Types.Number })
+  authStatus: number   //? 0 just init - 1 compelteProfile - 2 exist in old service
 
-  @Prop({default:true})
+  @Prop({ default: true })
   isActive: boolean;
 
 }
