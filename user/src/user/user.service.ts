@@ -139,10 +139,8 @@ export class UserService {
     const session: ClientSession = await this.userModel.db.startSession();
     session.startTransaction();    
     try{
-
       console.log(userId);
-     
-      
+    
       const user=await this.userModel.findByIdAndUpdate(userId,{
         firstName:data.firstName,
         lastName:data.lastName,

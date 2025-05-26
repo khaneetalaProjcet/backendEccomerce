@@ -2,6 +2,8 @@ import { IsNotEmpty, IsString } from "@nestjs/class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsArray, ValidateNested } from "class-validator";
+
+
 export class AddressDto {
     @IsString()
     @ApiProperty({ example: '123 Main St' })
@@ -11,6 +13,8 @@ export class AddressDto {
     @ApiProperty({ example: '10001' })
     postCode: string;
   }
+
+
 
 export class compelteRegisterDto{
 
@@ -40,7 +44,6 @@ export class compelteRegisterDto{
 
 
     @IsString()
-    @IsNotEmpty()
     @ApiProperty({
         example : 'ali@moahamadi@gmail.com',
         required : true
@@ -65,9 +68,6 @@ export class compelteRegisterDto{
   @ValidateNested({ each: true })
   @Type(() => AddressDto)
   adresses: AddressDto[];
-
-
-
 
 
 }

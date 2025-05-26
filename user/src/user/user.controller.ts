@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, Validation
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import {upgradeProfileDto} from "./dto/upgradeProfile.dto"
+import { upgradeProfileDto } from "./dto/upgradeProfile.dto"
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AddressDto, compelteRegisterDto } from './dto/completeRegister.dto';
 import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
@@ -12,11 +12,11 @@ import { UpdateAddressDto } from './dto/updateAdress.sto';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post("/complete")
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth() 
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'complete user info' })
   @ApiResponse({
     status: 200, description: 'the user complete info successfully',
@@ -63,17 +63,21 @@ export class UserController {
     },
   })
   @ApiBody({
-    type:compelteRegisterDto ,
+    type: compelteRegisterDto,
     description: 'data must like this dto',
   })
-  complete(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: compelteRegisterDto) {
-    console.log("reqUser",req.user);
-    const userId=req.user.userId
-    return this.userService.completeRegister(userId,body);
+  complete(@Req() req: any, @Res() res: any, @Body(new ValidationPipe()) body: compelteRegisterDto) {
+    console.log("reqUser", req.user);
+    const userId = req.user.userId
+    return this.userService.completeRegister(userId, body);
   }
+
+
+
+
   @Post("/update")
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth() 
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'update user info' })
   @ApiResponse({
     status: 200, description: 'the user complete info successfully',
@@ -120,18 +124,18 @@ export class UserController {
     },
   })
   @ApiBody({
-    type:upgradeProfileDto ,
+    type: upgradeProfileDto,
     description: 'data must like this dto',
   })
-  upgrade(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: upgradeProfileDto) {
-    console.log("reqUser",req.user);
-    const userId=req.user.userId
-    return this.userService.upgradeProfile(userId,body);
+  upgrade(@Req() req: any, @Res() res: any, @Body(new ValidationPipe()) body: upgradeProfileDto) {
+    console.log("reqUser", req.user);
+    const userId = req.user.userId
+    return this.userService.upgradeProfile(userId, body);
   }
 
   @Get("/info")
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth() 
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'get user info' })
   @ApiResponse({
     status: 200, description: 'the user complete info successfully',
@@ -177,16 +181,16 @@ export class UserController {
       }
     },
   })
-  getUser(@Req() req : any , @Res() res : any ) {
-    console.log("reqUser",req.user);
-    const userId=req.user.userId
+  getUser(@Req() req: any, @Res() res: any) {
+    console.log("reqUser", req.user);
+    const userId = req.user.userId
     return this.userService.findById(userId);
   }
 
 
   @Post("/address/add")
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth() 
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'add address to user ' })
   @ApiResponse({
     status: 200, description: 'the user complete info successfully',
@@ -233,19 +237,19 @@ export class UserController {
     },
   })
   @ApiBody({
-    type:AddressDto ,
+    type: AddressDto,
     description: 'data must like this dto',
   })
-  addAdress(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: AddressDto) {
-    console.log("reqUser",req.user);
-    const userId=req.user.userId
-    return this.userService.addAddress(userId,body);
+  addAdress(@Req() req: any, @Res() res: any, @Body(new ValidationPipe()) body: AddressDto) {
+    console.log("reqUser", req.user);
+    const userId = req.user.userId
+    return this.userService.addAddress(userId, body);
   }
 
 
   @Post("/address/update")
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth() 
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'update address for user' })
   @ApiResponse({
     status: 200, description: 'the user complete info successfully',
@@ -292,22 +296,21 @@ export class UserController {
     },
   })
   @ApiBody({
-    type:UpdateAddressDto ,
+    type: UpdateAddressDto,
     description: 'data must like this dto',
   })
-  updateAdress(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: UpdateAddressDto) {
-    console.log("reqUser",req.user);
-    const userId=req.user.userId
-    return this.userService.updateAddress(userId,body);
+  updateAdress(@Req() req: any, @Res() res: any, @Body(new ValidationPipe()) body: UpdateAddressDto) {
+    console.log("reqUser", req.user);
+    const userId = req.user.userId
+    return this.userService.updateAddress(userId, body);
   }
-
 
 
 
 
   @Get("/address/remove/:id")
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth() 
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'remove user address' })
   @ApiResponse({
     status: 200, description: 'get all ngo succeed',
@@ -331,9 +334,9 @@ export class UserController {
       }
     },
   })
-  removeAddress(@Req() req : any , @Res() res : any ,@Param('id') id: string) {
-    const userId=req.user.userId
-    return this.userService.deleteAddress(userId,id);
+  removeAddress(@Req() req: any, @Res() res: any, @Param('id') id: string) {
+    const userId = req.user.userId
+    return this.userService.deleteAddress(userId, id);
   }
 
 
@@ -341,7 +344,7 @@ export class UserController {
 
   @Get("/address")
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth() 
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'get all user address' })
   @ApiResponse({
     status: 200, description: 'get all ngo succeed',
@@ -365,13 +368,9 @@ export class UserController {
       }
     },
   })
-  getUserAdress(@Req() req : any , @Res() res : any ) {
-    const userId=req.user.userId
+  getUserAdress(@Req() req: any, @Res() res: any) {
+    const userId = req.user.userId
     return this.userService.getAddresses(userId);
   }
-
-
-
-
 
 }

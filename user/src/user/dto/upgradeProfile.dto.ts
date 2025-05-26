@@ -29,19 +29,11 @@ export class upgradeProfileDto{
 
 
     @IsString()
-    @IsNotEmpty()
     @ApiProperty({
         example : 'ali@moahamadi@gmail.com',
         required : true
     })
     email : string
-
-
-   
-
-
-
-
 
 }
 
