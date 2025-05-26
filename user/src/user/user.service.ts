@@ -227,12 +227,21 @@ export class UserService {
       }
     }
 
+
+    let list;
+    for (let i of address.adresses){
+      if (i._id == adressId){
+          list = i
+      }
+    }
+
+
     console.log('address is >>>' , address?.adresses)
     
     return {
       message: 'موفق',
       statusCode: 200,
-      data: address
+      data: list
     }
 
   }
@@ -288,11 +297,6 @@ export class UserService {
     
     console.log('addressesss >>>> ' , user.adresses)
 
-    // await user.updateOne({
-    //   $pull : {'addresses' : { 'addresses_id'  : new mongoose.Types.ObjectId(adressId) }}
-    // })
-
-    // let id = new mongoose.Types.ObjectId(adressId)
     let list :any = []
     for (let i of user.adresses){
       if (i._id != adressId){
