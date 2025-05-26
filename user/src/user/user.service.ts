@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UserDocument } from './entities/user.entity';
 import { compelteRegisterDto } from "./dto/completeRegister.dto"
 import { InterserviceService } from "../interservice/interservice.service"
-import { Model, ClientSession } from 'mongoose';
+import mongoose, { Model, ClientSession } from 'mongoose';
 import { refreshTokenDto } from 'src/auth/dto/refreshTokenDto.dto';
 import { upgradeProfileDto } from './dto/upgradeProfile.dto';
 import { AddressDto } from "./dto/addAdress.dto"
@@ -216,7 +216,7 @@ export class UserService {
 
   async getSpecificAddress(req: any, res: any, adressId: string) {
     let userId = req.user.userId
-    let address = await this.userModel.findById({ userId }).where('addresses._id').equals(adressId)
+    let address = await this.userModel.findById({ userId }).where('addresses._id').equals(new mongoose.Types.ObjectId(adressId))
 
     console.log('address is >>>' , address)
     
