@@ -374,4 +374,38 @@ export class UserController {
     return this.userService.getAddresses(userId);
   }
 
+
+
+
+  @Get("/address/:userId/:addressId")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'get user address' })
+  @ApiResponse({
+    status: 200, description: 'get ngo succeed',
+    schema: {
+      example: {
+        success: true,
+        message: 'get address succeed',
+        error: null,
+        data: { ngoTabel: [], mapNgo: [] }
+      }
+    },
+  })
+  @ApiResponse({
+    status: 500, description: 'internal service error',
+    schema: {
+      example: {
+        success: false,
+        message: 'internal error',
+        error: 'internal service error',
+        data: null
+      }
+    },
+  })
+  getUserSpecificAdress(@Req() req: any, @Res() res: any , @Param('userId') userId : string ,@Param('addressId') addressId : string) {
+    return this.userService.getSpecificAddress(userId , addressId);
+  }
+
+
 }

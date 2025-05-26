@@ -7,7 +7,6 @@ import * as mongoose from 'mongoose';
 // export type UserDocument = User & Document;
 
 
-
 export interface UserDocument extends Document {
   _id: string;
   firstName: string;
