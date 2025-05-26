@@ -377,7 +377,7 @@ export class UserController {
 
 
 
-  @Get("/address/:userId/:addressId")
+  @Get("/address/:addressId")
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'get user address' })
@@ -403,7 +403,7 @@ export class UserController {
       }
     },
   })
-  getUserSpecificAdress(@Req() req: any, @Res() res: any , @Param('userId') userId : string ,@Param('addressId') addressId : string) {
+  getUserSpecificAdress(@Req() req: any, @Res() res: any ,@Param('addressId') addressId : string) {
     return this.userService.getSpecificAddress(req , res , addressId);
   }
 

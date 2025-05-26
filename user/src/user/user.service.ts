@@ -284,8 +284,6 @@ export class UserService {
         error: 'کاربر پیدا نشد'
       }
     };
-
-
     await user.updateOne({
       $pull : {'addresses._id' : adressId}
     })
