@@ -161,6 +161,8 @@ export class UserService {
    }
    
     }catch(error){
+      console.log("error",error);
+      
        await session.abortTransaction();
         return {
         message: 'مشکلی از سمت سرور به وجود آمده',
