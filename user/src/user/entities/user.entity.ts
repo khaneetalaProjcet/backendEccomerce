@@ -59,6 +59,9 @@ export class User2 {
   @Prop({ type: mongoose.Schema.Types.String })
   nationalCode: string
 
+  @Prop({ type: mongoose.Schema.Types.String })
+  birthDate:string
+
 
   @Prop({ type: [{ adress: { type: String }, postCode: { type: String }, name: { type: String }, plate: { type: Number }, unit: { type: Number } }] })
   adresses: {
@@ -70,7 +73,10 @@ export class User2 {
   }[]
 
   @Prop({ type: mongoose.Schema.Types.Number })
-  authStatus: number   //? 0 just init - 1 compelteProfile - 2 exist in old service
+  authStatus: number   //? 0 just init - 1 compelteProfile - 2 exist in old service 
+
+  @Prop({type:mongoose.Schema.Types.Boolean}) //? 0 false   1->true  2-->pending
+  identityStatus:number
 
   @Prop({ default: true })
   isActive: boolean;

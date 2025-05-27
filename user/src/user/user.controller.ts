@@ -8,6 +8,7 @@ import {  compelteRegisterDto } from './dto/completeRegister.dto';
 import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
 import { UpdateAddressDto } from './dto/updateAdress.sto';
 import { AddressDto } from './dto/addAdress.dto';
+import { IdentityDto } from './dto/Identity.dto';
 
 
 
@@ -71,6 +72,64 @@ export class UserController {
     console.log("reqUser", req.user);
     const userId = req.user.userId
     return this.userService.completeRegister(userId, body);
+  }
+
+  @Post("/identity")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'identity user info' })
+  @ApiResponse({
+    status: 200, description: 'the user identity info successfully',
+    schema: {
+      example: {
+        success: true,
+        message: 'the user identity info successfully',
+        error: null,
+        data: {}
+      }
+    },
+  })
+  @ApiResponse({
+    status: 403, description: 'Forbidden.',
+    schema: {
+      example: {
+        success: false,
+        message: 'the ngo creation failed',
+        error: 'forbidden user',
+        data: null
+      }
+    },
+  })
+  @ApiResponse({
+    status: 409, description: 'duplicate data',
+    schema: {
+      example: {
+        success: false,
+        message: 'this project already cpmpleted',
+        error: 'duplicate project',
+        data: null
+      }
+    },
+  })
+  @ApiResponse({
+    status: 500, description: 'internal service error',
+    schema: {
+      example: {
+        success: false,
+        message: 'internal error',
+        error: 'internal service error',
+        data: null
+      }
+    },
+  })
+  @ApiBody({
+    type: IdentityDto,
+    description: 'data must like this dto',
+  })
+   identity(@Req() req: any, @Res() res: any, @Body(new ValidationPipe()) body:IdentityDto ) {
+    console.log("reqUser", req.user);
+    const userId = req.user.userId
+    return this.userService.identity(userId, body);
   }
 
 

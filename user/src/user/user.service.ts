@@ -10,6 +10,7 @@ import { refreshTokenDto } from 'src/auth/dto/refreshTokenDto.dto';
 import { upgradeProfileDto } from './dto/upgradeProfile.dto';
 import { AddressDto } from "./dto/addAdress.dto"
 import { UpdateAddressDto } from "./dto/updateAdress.sto"
+import {  IdentityDto } from 'src/user/dto/Identity.dto';
 
 @Injectable()
 export class UserService {
@@ -55,7 +56,7 @@ export class UserService {
           return oldNewUser[0]
 
         } else {
-          let newUser = await this.userModel.create([{ phoneNumber: phoneNumber, authStatus: 1 }], { session })
+          let newUser = await this.userModel.create([{ phoneNumber: phoneNumber, authStatus: 1, identityStatus:0 }], { session })
           await session.commitTransaction();
           return newUser[0]
         }
@@ -133,6 +134,43 @@ export class UserService {
     finally {
       session.endSession();
     }
+  }
+
+  async identity(userId: string ,data:IdentityDto ){
+    const session: ClientSession = await this.userModel.db.startSession();
+    session.startTransaction();
+    try{
+    const user=await this.userModel.findByIdAndUpdate(userId,{
+      birthDate:data.birthDate,
+      nationalCode:data.nationalCode,
+      authStatus:2,
+      identityStatus:2
+    }).session(session)
+    if(!user){
+      return {
+          message: 'کاربر پیدا نشد',
+          statusCode: 400,
+          error: 'کاربر پیدا نشد'
+      }
+    }
+   
+   return {
+      message: '',
+      statusCode: 200,
+      data:user
+   }
+   
+    }catch(error){
+       await session.abortTransaction();
+        return {
+        message: 'مشکلی از سمت سرور به وجود آمده',
+        statusCode: 500,
+        error: 'خطای داخلی سیستم'
+      }
+    }finally{
+      session.endSession();
+    }
+
   }
 
 
