@@ -274,6 +274,9 @@ export class UserService {
       }
     }
 
+    console.log("findedAdress",user.adresses[index]);
+    
+
     user.adresses[index].adress=data.adress
     user.adresses[index].name=data.name
     user.adresses[index].plate=data.plate
