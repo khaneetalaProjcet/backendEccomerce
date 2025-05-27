@@ -3,7 +3,13 @@ import { ApiProperty } from "@nestjs/swagger";
 
 
 export class IdentityDto{
-
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({
+        example : '09902223344',
+        required : true
+    })
+    phoneNumber : string
     @IsString()
     @IsNotEmpty()
     @ApiProperty({
