@@ -129,6 +129,8 @@ export class UserController {
    identity(@Req() req: any, @Res() res: any, @Body(new ValidationPipe()) body:IdentityDto ) {
     console.log("reqUser", req.user);
     const userId = req.user.userId
+    console.log("body",body);
+    
     return this.userService.identity(userId, body);
   }
 
