@@ -143,7 +143,7 @@ export class UserService {
     const user=await this.userModel.findByIdAndUpdate(userId,{
       birthDate:data.birthDate,
       nationalCode:data.nationalCode,
-      phoneNumber:data.phoneNumber,
+      // phoneNumber:data.phoneNumber,
       authStatus:2,
       identityStatus:2
     }).session(session)
