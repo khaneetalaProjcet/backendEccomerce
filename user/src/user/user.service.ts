@@ -143,6 +143,7 @@ export class UserService {
     const user=await this.userModel.findByIdAndUpdate(userId,{
       birthDate:data.birthDate,
       nationalCode:data.nationalCode,
+      phoneNumber:data.phoneNumber,
       authStatus:2,
       identityStatus:2
     }).session(session)
@@ -176,6 +177,8 @@ export class UserService {
     }
 
   }
+
+  
 
 
   async upgradeProfile(userId: string, data: upgradeProfileDto) {
