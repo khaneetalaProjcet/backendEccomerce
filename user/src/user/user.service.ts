@@ -178,6 +178,9 @@ export class UserService {
 
   }
 
+
+  
+
   
 
 
@@ -188,10 +191,9 @@ export class UserService {
       console.log(userId);
 
       const user = await this.userModel.findByIdAndUpdate(userId, {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        fatherName: data.fatherName,
-        email: data.email,
+       phoneNumber:data.phoneNumber,
+       birthDate:data.birthDate,
+       nationalCode:data.nationalCode
       }).session(session)
 
       console.log(user);

@@ -6,34 +6,24 @@ export class upgradeProfileDto{
     @IsString()
     @IsNotEmpty()
     @ApiProperty({
-        example : 'Ali',
+        example : '09902223344',
         required : true
     })
-    firstName : string
-
+    phoneNumber : string
     @IsString()
     @IsNotEmpty()
     @ApiProperty({
-        example : 'mohammadi',
+        example : '4980323707',
         required : true
     })
-    lastName : string
-
-    @IsString()
+    nationalCode : string
+     @IsString()
     @IsNotEmpty()
     @ApiProperty({
-        example : 'ebrahim',
+        example : '13790803',
         required : true
     })
-    fatherName : string
-
-
-    @IsString()
-    @ApiProperty({
-        example : 'ali@moahamadi@gmail.com',
-        required : true
-    })
-    email : string
+    birthDate : string
 
 }
 
