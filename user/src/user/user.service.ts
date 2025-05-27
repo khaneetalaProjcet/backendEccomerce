@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UserDocument } from './entities/user.entity';
 import { compelteRegisterDto } from "./dto/completeRegister.dto"
 import { InterserviceService } from "../interservice/interservice.service"
-import mongoose, { Model, ClientSession } from 'mongoose';
+import mongoose, { Model, ClientSession, Types, SchemaTypes } from 'mongoose';
 import { refreshTokenDto } from 'src/auth/dto/refreshTokenDto.dto';
 import { upgradeProfileDto } from './dto/upgradeProfile.dto';
 import { AddressDto } from "./dto/addAdress.dto"
@@ -244,25 +244,44 @@ export class UserService {
 
   async updateAddress(userId: string, data: UpdateAddressDto) {
     
-    const user = await this.userModel.findOneAndUpdate(
-      { _id: userId, 'addresses._id': data.adressId },
-      {
-        $set: {
-          'addresses.$.adress': data.adress,
-          'addresses.$.postCode': data.postCode,
-          'addresses.$.plate': data.plate,
-          'addresses.$.unit': data.unit,
-        },
-      },
-      { new: true },
-    );
-    if (!user) {
+    // const user = await this.userModel.findOneAndUpdate(
+    //   { _id: userId, 'addresses._id': data.adressId },
+    //   {
+    //     $set: {
+    //       'addresses.$.adress': data.adress,
+    //       'addresses.$.postCode': data.postCode,
+    //       'addresses.$.plate': data.plate,
+    //       'addresses.$.unit': data.unit,
+    //     },
+    //   },
+    //   { new: true },
+    // );
+    const user=await this.userModel.findById(userId)
+     if (!user) {
       return {
         message: 'کاربر پیدا نشد',
         statusCode: 400,
         error: 'کاربر پیدا نشد'
       }
     };
+    const index=user.adresses.findIndex(i=>i._id==data.adressId)
+   
+    if(index==-1){
+       return {
+        message: 'کاربر پیدا نشد',
+        statusCode: 400,
+        error: 'کاربر پیدا نشد'
+      }
+    }
+
+    user.adresses[index].adress=data.adress
+    user.adresses[index].name=data.name
+    user.adresses[index].plate=data.plate
+    user.adresses[index].postCode=data.postCode
+    user.adresses[index].unit=data.unit
+
+
+    await user.save()
 
 
     return {
