@@ -154,6 +154,8 @@ export class UserService {
       }
     }
    
+  await session.commitTransaction();
+
    return {
       message: '',
       statusCode: 200,
