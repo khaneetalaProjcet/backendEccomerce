@@ -8,7 +8,7 @@ export class AppController {
 
   @Get()
   async getHello() {
-    await this.kafkaService.sendMessage('order_created', { orderId: '123', status: 'new' });
+    await this.kafkaService.sendMessage('order_created', { orderId: '123', status: 'new',value:"salllll" });
     return this.appService.getHello();
   }
 }
