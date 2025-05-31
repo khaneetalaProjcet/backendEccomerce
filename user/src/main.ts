@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { ResponseInterceptor } from './interceptors/transform.interceptor';
 import { ValidationPipe } from '@nestjs/common';
+import { kafkaConsumerConfig } from './kafka/kafka.config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 
@@ -48,6 +49,8 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new ResponseInterceptor());
   // app.useGlobalFilters(new HttpExceptionFilter());
+   app.connectMicroservice(kafkaConsumerConfig);
+   await app.startAllMicroservices();
   
   await app.listen(process.env.PORT ?? 9010);
 }
