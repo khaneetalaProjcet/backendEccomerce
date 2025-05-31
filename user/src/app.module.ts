@@ -14,6 +14,7 @@ import { RedisServiceService } from './redis-service/redis-service.service';
 import { TokenizeService } from './tokenize/tokenize.service';
 import { JwtService } from '@nestjs/jwt';
 import { InterserviceService } from './interservice/interservice.service';
+import { KafkaModule } from './kafka/kafka.module';
 
 
 
@@ -25,6 +26,7 @@ import { InterserviceService } from './interservice/interservice.service';
     MongooseModule.forFeature([{name : 'userM' , schema : UserSchema2}]),
     // UserModule,
     AuthModule,
+    KafkaModule
   ],
   controllers: [AppController],
   providers: [AppService , RabbitMqService, RedisServiceService, TokenizeService , JwtService, InterserviceService],

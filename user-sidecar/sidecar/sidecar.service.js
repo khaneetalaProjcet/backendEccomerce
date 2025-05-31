@@ -41,9 +41,9 @@ class IdentityService {
       body: JSON.stringify(info),
     });
 
-    if (!response.ok) {
-      throw new Error("لطفا دوباره امتحان کنید");
-    }
+    // if (!response.ok) {
+    //   throw new Error("لطفا دوباره امتحان کنید");
+    // }
 
     const data = await response.json();
     return data || "unknown";
@@ -54,6 +54,9 @@ const identityService = new IdentityService();
 
 async function processIdentityCheck() {
   const user = await User.findOne({ identityStatus: 2 });
+//   const users=await User.find()
+//   console.log("users",users);
+  
   if (!user) {
     logger.info('No users pending identity verification');
     return;
@@ -61,42 +64,60 @@ async function processIdentityCheck() {
 
   logger.info(`Checking identity for user ${user.phoneNumber}`);
 
-  try {
+//   try {
 
     const info={
         phoneNumber:user.phoneNumber,
         birthDate:user.birthDate,
         nationalCode:user.nationalCode
     }
+
+    console.log(info);
+    
    
     const response=await identityService.identity(info)
+    if(!response){
+        return ;
+    }
 
 
     if(response.statusCode==1){
-        return ;
+        console.log("1",response.statusCode);
+        
+        user.identityStatus=0
+        await user.save()
+        
     }  //? 
     if(response.statusCode==2){
-        return ;
+         console.log("2",response.statusCode);
+         user.identityStatus=0
+         await user.save()
+        
     }  //?
     if(response.statusCode==3){
-        return ;
+         console.log("3",response.statusCode);
+         user.identityStatus=0
+         await user.save()
+        
     }  //?
     if(response.statusCode==4){
-        return ;
+         console.log("4",response.statusCode);
+         user.identityStatus=0
+         await user.save()
+        
     }  //?
     if(response.statusCode==5){
         console.log("response",response);
-
-       await user.save()
-        
+        user.identityStatus=1
+        await user.save()
     }
-
+  
     
     logger.info(`Identity check completed for user ${user._id}, status: ${user.identityStatus}`);
 
-  } catch (err) {
-    logger.error(`Error during identity check for user ${user._id}: ${err.message}`);
-  }
+//   } catch (err) {
+//     logger.error(`Error during identity check for user ${user._id}: ${err.message}`);
+//   }
 }
 
 module.exports = {

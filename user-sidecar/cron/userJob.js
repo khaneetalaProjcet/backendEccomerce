@@ -25,7 +25,7 @@ const job = cron.schedule('* * * * *', async () => {
 
     await processIdentityCheck();
 
-    await lock.release();
+    await lock.unlock();
     logger.info('Cron job finished');
   } catch (err) {
     if (err.name === 'LockError') {
