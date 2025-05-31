@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InterserviceService } from './interservice/interservice.service';
 import { CategoryModule } from './category/category.module';
 import { Category,CategorySchema } from './category/entities/category.entity';
+import {KafkaProducerService} from "../src/kafka/kafka.producer"
 
 @Module({
   imports:  [
@@ -16,6 +17,6 @@ import { Category,CategorySchema } from './category/entities/category.entity';
     CategoryModule,
   ],
   controllers: [AppController],
-  providers: [AppService,JwtService,InterserviceService],
+  providers: [AppService,JwtService,InterserviceService,KafkaProducerService],
 })
 export class AppModule {}
