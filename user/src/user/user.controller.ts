@@ -468,5 +468,65 @@ export class UserController {
     return this.userService.getSpecificAddress(req , res , addressId);
   }
 
+  @Post("/chs")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'identity user info' })
+  @ApiResponse({
+    status: 200, description: 'the user identity info successfully',
+    schema: {
+      example: {
+        success: true,
+        message: 'the user identity info successfully',
+        error: null,
+        data: {}
+      }
+    },
+  })
+  @ApiResponse({
+    status: 403, description: 'Forbidden.',
+    schema: {
+      example: {
+        success: false,
+        message: 'the ngo creation failed',
+        error: 'forbidden user',
+        data: null
+      }
+    },
+  })
+  @ApiResponse({
+    status: 409, description: 'duplicate data',
+    schema: {
+      example: {
+        success: false,
+        message: 'this project already cpmpleted',
+        error: 'duplicate project',
+        data: null
+      }
+    },
+  })
+  @ApiResponse({
+    status: 500, description: 'internal service error',
+    schema: {
+      example: {
+        success: false,
+        message: 'internal error',
+        error: 'internal service error',
+        data: null
+      }
+    },
+  })
+  @ApiBody({
+    
+    description: 'data must like this dto',
+  })
+   changeStatus(@Req() req: any, @Res() res: any, @Body(new ValidationPipe()) body:any ) {
+    console.log("reqUser", req.user);
+    const userId = req.user.userId
+    console.log("body",body.identityStatus);
+    
+    return this.userService.changeStatus(userId, body.identityStatus);
+  }
+
 
 }
