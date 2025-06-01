@@ -133,20 +133,14 @@ import { connectRedis, redisCache } from "./service/redis.service";
 // app.use('/' , routing.proxy(`http://localhost:3000`))     // proxing to product service
 app.use(
   "/v1/main",
-  ratelimit,
-  blackListMiddleWare,
   routing.proxy(`http://localhost:9010`)
 ); // proxing to django for report service
 app.use(
   "/v1/mainw",
-  ratelimit,
-  blackListMiddleWare,
   routing.proxy(`http://localhost:9012`)
 ); // roxy to query service
 app.use(
   "/v1/trade",
-  ratelimit,
-  blackListMiddleWare,
   routing.proxy(`http://localhost:9013`)
 ); // proxing to django for report service
 
