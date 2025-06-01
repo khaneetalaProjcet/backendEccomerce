@@ -6,6 +6,7 @@ import { RedisServiceService } from './redis-service/redis-service.service';
 import { WalletModule } from './wallet/wallet.module';
 import { ConfigModule } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
+import { JwtService } from '@nestjs/jwt';
 import { MongooseModule, Schema } from '@nestjs/mongoose';
 import { RedisOptions } from 'configs/redis.config';
 import { RabbitMqService } from './rabbit-mq/rabbit-mq.service';
@@ -22,7 +23,7 @@ import { KafkaService } from './kafka/kafka.service';
     ],
     
   controllers: [AppController],
-  providers: [AppService, AuthService, RedisServiceService, RabbitMqService, KafkaService],
+  providers: [AppService, AuthService, RedisServiceService, RabbitMqService, KafkaService,JwtService],
 })
 
 
