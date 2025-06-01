@@ -14,7 +14,7 @@ import { WalletService } from './wallet.service';
 import { CreateWalletDto } from './dto/create-wallet.dto';
 import { UpdateWalletDto } from './dto/update-wallet.dto';
 import { ApiBody, ApiHeader, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/jwt/jwt.guard.spec';
+import { JwtAuthGuard } from '../jwt/jwt-auth.guard';
 
 @Controller('wallet')
 export class WalletController {
