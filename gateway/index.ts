@@ -137,7 +137,7 @@ app.use(
 ); // proxing to django for report service
 app.use(
   "/v1/mainw",
-  routing.proxy(`http://localhost:9012`)
+  routing.proxy(`http://localhost:9011`)
 ); // roxy to query service
 app.use(
   "/v1/trade",
