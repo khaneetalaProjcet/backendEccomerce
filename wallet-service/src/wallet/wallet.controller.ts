@@ -8,13 +8,14 @@ import {
   Delete,
   Req,
   Res,
+  UseGuards,
   // UseGuards,
 } from '@nestjs/common';
 import { WalletService } from './wallet.service';
 import { CreateWalletDto } from './dto/create-wallet.dto';
 import { UpdateWalletDto } from './dto/update-wallet.dto';
 import { ApiBody, ApiHeader, ApiOperation, ApiResponse } from '@nestjs/swagger';
-// import { JwtAuthGuard } from '../jwt/jwt-auth.guard';
+import { JwtAuthGuard } from '../jwt/jwt-auth.guard';
 
 @Controller('wallet')
 export class WalletController {
@@ -61,14 +62,14 @@ export class WalletController {
     description: 'Json structure for project object',
   })
   @Post()
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   create(@Body() createWalletDto: CreateWalletDto) {
     console.log('from user service', createWalletDto);
     return this.walletService.create(createWalletDto);
   }
 
   @Get('/find')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'get wallet for user' })
   @ApiResponse({
     status: 200,
