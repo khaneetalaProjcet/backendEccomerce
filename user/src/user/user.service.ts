@@ -381,7 +381,26 @@ export class UserService {
     }
   }
 
+  async changeStatus(userId:string, identityStatus:number){
+   const user= await this.userModel.findByIdAndUpdate(userId,{
+      identityStatus
+    })
 
+    if(!user){
+            return {
+                 message: 'کاربر پیدا نشد',
+                statusCode: 400,
+                  error: 'کاربر پیدا نشد'
+            }
+    }
+     return {
+      message: '',
+      statusCode: 200,
+      data: user
+    }
+  }
+
+  
 
 
   async findById(userId: string) {
