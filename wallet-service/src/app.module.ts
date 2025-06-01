@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
-import { JwtService } from './jwt/jwt.service';
 import { RedisServiceService } from './redis-service/redis-service.service';
 import { WalletModule } from './wallet/wallet.module';
 import { ConfigModule } from '@nestjs/config';
@@ -23,7 +22,7 @@ import { KafkaService } from './kafka/kafka.service';
     ],
     
   controllers: [AppController],
-  providers: [AppService, AuthService, JwtService, RedisServiceService, RabbitMqService, KafkaService],
+  providers: [AppService, AuthService, RedisServiceService, RabbitMqService, KafkaService],
 })
 
 
