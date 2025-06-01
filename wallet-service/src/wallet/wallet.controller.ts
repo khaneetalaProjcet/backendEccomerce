@@ -68,6 +68,7 @@ export class WalletController {
   }
 
   @Get('/find')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'get wallet for user' })
   @ApiResponse({
     status: 200,
@@ -105,7 +106,7 @@ export class WalletController {
       },
     },
   })
-  @UseGuards(JwtAuthGuard)
+  
   findSpecificWallet(@Req() req: any, @Res() res: any) {
     return this.walletService.findSpecificUserWallet(req, res);
   }
