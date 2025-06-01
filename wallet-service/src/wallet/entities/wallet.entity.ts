@@ -6,8 +6,6 @@ import { Document } from 'mongoose';
 
 
 export interface walletDocument extends Document {
-   
-  
     owner: string
 
     balance: number

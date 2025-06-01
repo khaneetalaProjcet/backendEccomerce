@@ -10,6 +10,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { MongooseModule, Schema } from '@nestjs/mongoose';
 import { RedisOptions } from 'configs/redis.config';
 import { RabbitMqService } from './rabbit-mq/rabbit-mq.service';
+import { KafkaService } from './kafka/kafka.service';
 
 
 @Module({
@@ -22,7 +23,7 @@ import { RabbitMqService } from './rabbit-mq/rabbit-mq.service';
     ],
     
   controllers: [AppController],
-  providers: [AppService, AuthService, JwtService, RedisServiceService, RabbitMqService],
+  providers: [AppService, AuthService, JwtService, RedisServiceService, RabbitMqService, KafkaService],
 })
 
 
