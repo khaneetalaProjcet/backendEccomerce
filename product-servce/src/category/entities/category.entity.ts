@@ -5,7 +5,8 @@ export interface CategoryDocumnet extends Document {
   _id: string;
   name: string;
   parent: string;
-  children:[string]
+  description:string
+  children:[]
 }
 
 
