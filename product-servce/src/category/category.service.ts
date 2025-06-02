@@ -20,7 +20,7 @@ export class CategoryService {
 
 
 
-  async createCategory(name: string,description:string, parentId?: string) {
+ async createCategory(name: string,description:string, parentId?: string) {
   const newCategory = new this.categoryModel({ name, description});
 
   if (parentId) {
@@ -47,7 +47,7 @@ export class CategoryService {
         statusCode: 200,
         data:  newCategory
       }
-  }
+ }
 
  async getCategoryTree() {
   
@@ -61,7 +61,6 @@ export class CategoryService {
     }
   })
   
- 
      return {
         message: '',  
         statusCode: 200,
@@ -82,8 +81,9 @@ export class CategoryService {
 
  }
 
- async updateCategory(id: string, updateDto: { name?: string }) {
-  const category = await this.categoryModel.findById(id);
+ async updateCategory(id: string, updateDto: { name?: string , description?:string  }) {
+  try{
+    const category = await this.categoryModel.findById(id);
   if (!category) {
      return {
           message: 'دسته بندی پیدا نشد',
@@ -92,14 +92,31 @@ export class CategoryService {
         }
   };
 
-  const { name } = updateDto;
+  const { name , description } = updateDto;
 
   if (name) {
     category.name = name;
     await category.save();
   }
+  if(description){
+    category.description=description
+    await category.save()
+  }
 
-  return category;
+  return {
+        message: 'دسته بندی اپدیت شد',
+        statusCode: 200,
+        data:  category
+      }
+  }catch(err){
+    console.log(err);
+    return {
+          message: 'مشکل داخلی سیسنم',
+          statusCode: 500,
+          error: 'مشکل داخلی سیسنم'
+        }
+  }
+  
 }
 
  // category.service.ts

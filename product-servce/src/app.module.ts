@@ -9,6 +9,7 @@ import { CategoryModule } from './category/category.module';
 import { Category,CategorySchema } from './category/entities/category.entity';
 import {KafkaProducerService} from "../src/kafka/kafka.producer"
 import { KafkaModule } from './kafka/kafka.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports:  [
@@ -16,7 +17,8 @@ import { KafkaModule } from './kafka/kafka.module';
     MongooseModule.forRoot(process.env.MONGO_URI!),
     MongooseModule.forFeature([{ name: Category.name, schema: CategorySchema }]),
     CategoryModule,
-    KafkaModule
+    KafkaModule,
+    ProductModule
   ],
   controllers: [AppController],
   providers: [AppService,JwtService,InterserviceService],

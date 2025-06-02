@@ -6,4 +6,8 @@ export class UpdateCategoryDto {
   @IsOptional()
   @IsString()
   name?: string;
+  @ApiPropertyOptional({ example: 'Updated Category Description', description: 'New description of the category' })
+  @IsOptional()
+  @IsString()
+  description?: string;
 }
