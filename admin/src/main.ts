@@ -6,8 +6,6 @@ import { ValidationPipe } from '@nestjs/common';
 import { kafkaConsumerConfig } from './kafka/kafka.config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
-
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 

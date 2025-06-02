@@ -7,8 +7,11 @@ export class LoginAdminDto {
   @IsNotEmpty()
   phoneNumber: string;
 
-  @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  @ApiProperty({
+    example : '',
+    required : true
+  })
   password: string;
 }
