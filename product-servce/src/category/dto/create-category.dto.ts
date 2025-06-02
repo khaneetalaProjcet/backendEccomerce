@@ -6,6 +6,10 @@ export class CreateCategoryDto {
   @IsString()
   name: string;
 
+  @ApiProperty({ example: '', description: 'Description of the category' })
+  @IsString()
+  description: string;
+
   @ApiPropertyOptional({ example: '60f7b2dfc25e4e30f8b51e3a', description: 'Optional parent category ID (for tree structure)' })
   @IsOptional()
   @IsMongoId()
