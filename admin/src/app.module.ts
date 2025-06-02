@@ -23,7 +23,7 @@ import { Admin, AdminSchema } from './admin/entities/admin.entity';
   imports: [
     ConfigModule.forRoot({isGlobal : true}),
     CacheModule.registerAsync(RedisOptions),
-    MongooseModule.forRoot(process.env.MONGO_URI!),
+    MongooseModule.forRoot(`mongodb+srv://eccomerce:eccomerce25255225@cluster0.f6g5gvx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`),
     MongooseModule.forFeature([{name :Admin.name , schema :AdminSchema }]),
     // UserModule,
     // AuthModule,
