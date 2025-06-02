@@ -4,24 +4,27 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
 import {JwtAuthGuard} from "../jwt/jwt-auth.guard"
+import { JwtAdminAuthGuard } from '..//jwt/admin-jwt-auth.guard';
 
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
  @Post()
-//  @UseGuards(JwtAuthGuard)
-//  @ApiBearerAuth()
+ @UseGuards(JwtAdminAuthGuard)
+ @ApiBearerAuth()
  @ApiOperation({ summary: 'Create a new category' })
  @ApiBody({ type: CreateCategoryDto })
   create(@Req() req : any , @Res() res : any,@Body() dto: CreateCategoryDto) {
+    console.log("admin",req.user);
+    
     return this.categoryService.createCategory(dto.name,dto.description,dto.parent);
   }
 
 
 @Post('update/:id')
-// @UseGuards(JwtAuthGuard)
-// @ApiBearerAuth()
+@UseGuards(JwtAdminAuthGuard)
+@ApiBearerAuth()
 @ApiOperation({ summary: 'Update a category name by ID' })
 @ApiBody({ type: UpdateCategoryDto })
 update(@Req() req : any , @Res() res : any,@Param('id') id: string, @Body() dto: UpdateCategoryDto) {
@@ -29,8 +32,8 @@ update(@Req() req : any , @Res() res : any,@Param('id') id: string, @Body() dto:
 }
 
 @Get('remove/:id')
-// @UseGuards(JwtAuthGuard)
-// @ApiBearerAuth()
+@UseGuards(JwtAdminAuthGuard)
+@ApiBearerAuth()
 @ApiOperation({ summary: 'Remove a category  by ID' })
 remove(@Req() req : any , @Res() res : any,@Param('id') id: string, @Body() dto: UpdateCategoryDto) {
   return this.categoryService.deleteCategory(id);
