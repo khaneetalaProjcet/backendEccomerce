@@ -4,6 +4,14 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category,CategoryDocumnet } from './entities/category.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import path from 'path';
+interface CategoryTreeNode {
+  _id: string;
+  name: string;
+  description: string;
+  parent: string | null;
+  children: CategoryTreeNode[];
+}
 
 
 @Injectable()
@@ -41,28 +49,37 @@ export class CategoryService {
       }
   }
 
- async getCategoryTree(parentId: string | null = null) {
-  const categories = await this.categoryModel
-    .find({ parent: parentId })
-    .lean(); // lean() for plain JS objects
-
-  const tree = await Promise.all(
-    categories.map(async (category) => {
-      const children = await this.getCategoryTree(category._id.toString());
-      return {
-        ...category,
-        children,
-      };
-    }),
-  );
-
-  // return tree;
-
-   return {
+ async getCategoryTree() {
+  
+  const tree=await this.categoryModel.find({parent:null}).populate({
+     path: 'children',
+     populate: {
+      path: 'children',
+      populate:{
+        path:"children"
+      }
+    }
+  })
+  
+ 
+     return {
         message: '',  
         statusCode: 200,
         data:  tree
       }
+ 
+
+ }
+
+ async findOne(id:string){
+  const category=await this.categoryModel.findById(id)
+
+     return {
+        message: '',  
+        statusCode: 200,
+        data: category 
+      }
+
  }
 
  async updateCategory(id: string, updateDto: { name?: string }) {

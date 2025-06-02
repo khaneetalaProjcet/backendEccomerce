@@ -31,18 +31,27 @@ update(@Req() req : any , @Res() res : any,@Param('id') id: string, @Body() dto:
   return this.categoryService.updateCategory(id, dto);
 }
 
+@Get('one/:id')
+@UseGuards(JwtAdminAuthGuard)
+@ApiBearerAuth()
+@ApiOperation({ summary: 'Get a category  by ID' })
+findOne(@Req() req : any , @Res() res : any,@Param('id') id: string) {
+  return this.categoryService.findOne(id);
+}
+
 @Get('remove/:id')
 @UseGuards(JwtAdminAuthGuard)
 @ApiBearerAuth()
 @ApiOperation({ summary: 'Remove a category  by ID' })
-remove(@Req() req : any , @Res() res : any,@Param('id') id: string, @Body() dto: UpdateCategoryDto) {
+remove(@Req() req : any , @Res() res : any,@Param('id') id: string) {
   return this.categoryService.deleteCategory(id);
 }
 
 @Get('tree')
 @ApiOperation({ summary: 'Get all  category in tree form' })
-getTree(@Req() req : any , @Res() res : any,@Param('id') id: string) {
-  return this.categoryService.getCategoryTree();
+async getTree(@Req() req : any , @Res() res : any) {
+    return this.categoryService.getCategoryTree();
+    
 }
 
 
