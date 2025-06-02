@@ -12,8 +12,8 @@ export class CategoryService {
 
 
 
-  async createCategory(name: string, parentId?: string) {
-  const newCategory = new this.categoryModel({ name });
+  async createCategory(name: string,description:string, parentId?: string) {
+  const newCategory = new this.categoryModel({ name, description});
 
   if (parentId) {
     const parent = await this.categoryModel.findById(parentId);
@@ -59,7 +59,7 @@ export class CategoryService {
   // return tree;
 
    return {
-        message: '',
+        message: '',  
         statusCode: 200,
         data:  tree
       }

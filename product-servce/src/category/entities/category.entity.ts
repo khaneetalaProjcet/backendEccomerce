@@ -18,6 +18,10 @@ export class Category  {
   @Prop({ type: Types.ObjectId, ref: 'Category', default: null })
   parent: Types.ObjectId;
 
+
+  @Prop({default:""})
+  description:string
+
   @Prop({ type: [Types.ObjectId], ref: 'Category', default: [] })
   children: Types.ObjectId[];
 }
