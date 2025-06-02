@@ -148,6 +148,11 @@ app.use(
   routing.proxy(`http://localhost:9013`)
 ); // proxing to django for report service
 
+app.use(
+  "/v1/maina",
+  routing.proxy(`http://localhost:9015`)
+); // proxing to django for report service
+
 
 app.get("/monitor/all", async (req: any, res: any, next: any) => {
   let data = await monitor.getter();
