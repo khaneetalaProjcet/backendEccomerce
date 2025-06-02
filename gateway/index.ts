@@ -144,7 +144,7 @@ app.use(
   routing.proxy(`http://localhost:9015`)
 ); 
 app.use(
-  "/v1/trade",
+  "/v1/mainp",
   routing.proxy(`http://localhost:9014`)
 ); // proxing to django for report service
 
