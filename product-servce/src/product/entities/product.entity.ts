@@ -30,7 +30,15 @@ export class Product {
   wages: number;
 
   @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
-  category: Types.ObjectId;
+  firstCategory: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
+  midCategory: Types.ObjectId;
+  
+  @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
+  lastCategory: Types.ObjectId;
+
+
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

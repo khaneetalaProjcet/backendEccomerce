@@ -29,5 +29,11 @@ export class CreateProductDto {
 
   @ApiProperty({ example: '60f7a1b3b5d4b32f884d8a5e', description: 'ID of the product category' })
   @IsMongoId()
-  category: string;
+  firstCategory: string;
+  @ApiProperty({ example: '60f7a1b3b5d4b32f884d8a5e', description: 'ID of the product category' })
+  @IsMongoId()
+  midCategory?: string;
+  @ApiProperty({ example: '60f7a1b3b5d4b32f884d8a5e', description: 'ID of the product category' })
+  @IsMongoId()
+  lastCategory?: string;
 }

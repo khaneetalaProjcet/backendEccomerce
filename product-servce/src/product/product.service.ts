@@ -122,4 +122,31 @@ export class ProductService {
     }
    
   }
+
+
+
+  /**
+   * prodcut Items services
+   * 
+   * 
+   */
+
+
+  async createProductItems(){}
+
+  async updateProductItems(){}
+
+  async removeProductItems(){}
+
+  
+
+  
+
+
+
+
+
+
+
+
 }
