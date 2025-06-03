@@ -5,6 +5,9 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Product } from './entities/product.entity';
 import { JwtAdminAuthGuard } from 'src/jwt/admin-jwt-auth.guard';
+import { ProductItems } from './entities/productItems.entity';
+import { CreateProductItemDto } from './dto/create-productItem.dto';
+import { UpdateProductItemDto } from './dto/update-productItem.dto';
  
 
 
@@ -58,4 +61,35 @@ export class ProductController {
   remove(@Param('id') id: string) {
     return this.productService.remove(id);
   }
+
+
+  @Post("item/create")
+  @UseGuards(JwtAdminAuthGuard)
+  @ApiOperation({ summary: 'Create a new product' })
+  @ApiBody({ type: CreateProductItemDto })
+  @ApiResponse({ status: 201, description: 'The product has been successfully created.', type: ProductItems })
+  createItem(@Body() createProductDto: CreateProductItemDto) {
+    return this.productService.createProductItems(createProductDto);
+  }
+  @Post("item/update/:id")
+  @UseGuards(JwtAdminAuthGuard)
+  @ApiOperation({ summary: 'Create a new product' })
+  @ApiBody({ type: UpdateProductItemDto })
+  @ApiResponse({ status: 201, description: 'The product has been successfully created.', type:ProductItems  })
+  updateItem(@Param('id') id: string,@Body() updateProductDtoItemDto: UpdateProductItemDto) {
+    return this.productService.updateProductItems(id,updateProductDtoItemDto);
+  }
+
+  @Get("item/remove/:id")
+  @UseGuards(JwtAdminAuthGuard)
+  @ApiOperation({ summary: 'Create a new product' })
+  @ApiBody({ type: UpdateProductItemDto })
+  @ApiResponse({ status: 201, description: 'The product has been successfully created.', type:ProductItems  })
+  removeItem(@Param('id') id: string) {
+    return this.productService.removeProductItems(id);
+  }
+
+
+
+
 }

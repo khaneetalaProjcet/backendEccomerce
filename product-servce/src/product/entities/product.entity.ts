@@ -5,7 +5,7 @@ import { ProductItems } from './productItems.entity';
 export interface ProductDocumnet extends Document {
   _id: string;
   name: string;
-  items:[ProductItems],
+  items:[any],
   images:[string],
   description:string,
   wages:number
@@ -34,7 +34,7 @@ export class Product {
 
   @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
   midCategory: Types.ObjectId;
-  
+
   @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
   lastCategory: Types.ObjectId;
 
