@@ -33,7 +33,8 @@ export class ProductService {
 
   async findAll() {
     try{
-       const all= this.productModel.find().populate('items').exec();
+       const all= await this.productModel.find().populate('items').exec();
+       
        return {
        message: '',
         statusCode: 200,
