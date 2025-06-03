@@ -1,14 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-
-
-interface ProductItems {
-    _id:string,
-    size:string,
-    weight:string,
-    count:Number,
-
-}
+import { ProductItems } from './productItems.entity';
 
 export interface ProductDocumnet extends Document {
   _id: string;
@@ -20,29 +12,13 @@ export interface ProductDocumnet extends Document {
   category: Types.ObjectId
 }
 
-@Schema()
-export class ProductItemSchemaClass {
-  @Prop({ required: true })
-  size: string;
-
-  @Prop({ required: true })
-  weight: string;
-
-  @Prop({ required: true })
-  count: number;
-}
-
-const ProductItemSchema = SchemaFactory.createForClass(ProductItemSchemaClass);
-
-
-
 @Schema({ timestamps: true })
 export class Product {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ type: [ProductItemSchema], default: [], })
-  items: ProductItems[];
+  @Prop({ type: [Types.ObjectId], ref: 'ProductItems', default: [] })
+  items: Types.ObjectId[];
 
   @Prop({ type: [String], default: [] })
   images: string[];
