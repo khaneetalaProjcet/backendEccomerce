@@ -24,6 +24,9 @@ export class Product {
   images: string[];
 
   @Prop({ default: '' })
+  mainImage: string;
+
+  @Prop({ default: '' })
   description: string;
 
   @Prop({ required: true })

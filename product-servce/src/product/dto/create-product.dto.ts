@@ -23,6 +23,11 @@ export class CreateProductDto {
   @IsOptional()
   description?: string;
 
+  @ApiProperty({ example: 'High-quality gold product', description: 'Description of the product' })
+  @IsString()
+  @IsOptional()
+  mainImage?: string;
+
   @ApiProperty({ example: 150, description: 'Wages associated with the product' })
   @IsNumber()
   wages: number;
