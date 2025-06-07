@@ -10,10 +10,14 @@ import { Category,CategorySchema } from './category/entities/category.entity';
 import {KafkaProducerService} from "../src/kafka/kafka.producer"
 import { KafkaModule } from './kafka/kafka.module';
 import { ProductModule } from './product/product.module';
+import {RedisServiceService} from "./redis-service/redis-service.service"
+import { CacheModule } from '@nestjs/cache-manager';
+import { RedisOptions } from 'configs/redis.config';
 
 @Module({
   imports:  [
     ConfigModule.forRoot({isGlobal : true}),
+    CacheModule.registerAsync(RedisOptions),
     MongooseModule.forRoot(process.env.MONGO_URI!),
     MongooseModule.forFeature([{ name: Category.name, schema: CategorySchema }]),
     CategoryModule,
@@ -21,6 +25,6 @@ import { ProductModule } from './product/product.module';
     ProductModule
   ],
   controllers: [AppController],
-  providers: [AppService,JwtService,InterserviceService],
+  providers: [AppService,JwtService,InterserviceService,RedisServiceService],
 })
 export class AppModule {}
