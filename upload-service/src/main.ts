@@ -33,7 +33,7 @@ async function bootstrap() {
     .setDescription('this is api documentation of Ecommerce project')
     .setVersion('1.0')
     .addServer('http://localhost:9018/', 'Local environment')
-    .addServer("https://shop.khaneetala.ir,'Stage")
+    .addServer("https://shop.khaneetala.ir/v1/mainu",'Stage')
     .addTag('UPLOAD SERVICE')
     .addBearerAuth()
     .build();
