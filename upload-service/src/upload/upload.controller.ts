@@ -89,7 +89,9 @@ export class UploadController {
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
     return this.uploadService.handleFileUpload(file);
   }
-   @Post('multiple')
+  @Post('multiple')
+  @UseGuards(JwtAdminAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Upload multiple files securely' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
