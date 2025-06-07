@@ -21,6 +21,13 @@ export class UploadService {
         data:`/uploads/${file.filename}`
       }
   }
+    async handleMultipleFilesUpload(files: Express.Multer.File[]): Promise<any> {
+     return {
+        message: '',  
+        statusCode: 200,
+        data: files.map(file => `/uploads/${file.filename}`)
+      }
+  }
 
   async deleteFile(filePath: string): Promise<void> {
     const fullPath = join(process.cwd(), filePath);

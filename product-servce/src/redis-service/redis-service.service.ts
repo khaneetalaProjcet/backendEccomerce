@@ -8,14 +8,13 @@ export class RedisServiceService {
 
     constructor(@Inject(CACHE_MANAGER) private readonly cache : Cache){}
 
-    async get(key : string) : Promise<any>{
+    async getter(key : string) : Promise<any>{
         const data = await this.cache.get(key)
-        
         return data
     }
 
-    async set(key : string , value : any) : Promise<any>{
-        await this.cache.set(key , value)
+    async setter(key : string , value : any , ttl:number ) : Promise<any>{
+        await this.cache.set(key , value ,ttl)
     }
 
     async reset(key : string){

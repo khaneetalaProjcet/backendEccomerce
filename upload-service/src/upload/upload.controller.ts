@@ -5,10 +5,11 @@ import {
   UploadedFile,
   UseInterceptors,
   BadRequestException,
-  UseGuards
+  UseGuards,
+  UploadedFiles
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import {JwtAdminAuthGuard} from "../jwt/admin-jwt-auth.guard"
@@ -87,5 +88,71 @@ export class UploadController {
   )
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
     return this.uploadService.handleFileUpload(file);
+  }
+   @Post('multiple')
+  @ApiOperation({ summary: 'Upload multiple files securely' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        files: {
+          type: 'array',
+          items: {
+            type: 'string',
+            format: 'binary',
+          },
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Files uploaded successfully',
+  })
+  @UseInterceptors(
+    FilesInterceptor('files', 10, {
+      storage: diskStorage({
+        destination: (req, file, cb) => {
+          const uploadDir = process.env.UPLOAD_DIR || 'uploads';
+          cb(null, uploadDir);
+        },
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const fileExt = extname(file.originalname);
+          const safeName = `${file.fieldname}-${uniqueSuffix}${fileExt}`;
+          cb(null, safeName);
+        },
+      }),
+      limits: {
+        fileSize: parseInt(process.env.MAX_FILE_SIZE || '2097152', 10),
+      },
+      fileFilter: (req, file, cb) => {
+        const allowedTypes = (process.env.ALLOWED_TYPES || '')
+          .split(',')
+          .map((t) => t.trim());
+
+        const forbiddenExts = (process.env.FORBIDDEN_EXTENSIONS || '')
+          .split(',')
+          .map((ext) => ext.trim());
+
+        const ext = extname(file.originalname).toLowerCase();
+        const mime = file.mimetype;
+
+        if (forbiddenExts.includes(ext)) {
+          return cb(new BadRequestException('Forbidden file extension'), false);
+        }
+
+        if (!allowedTypes.includes(mime)) {
+          return cb(new BadRequestException('Unsupported file type'), false);
+        }
+
+        cb(null, true);
+      },
+    }),
+  )
+  async uploadMultipleFiles(@UploadedFiles() files: Express.Multer.File[]) {
+    return this.uploadService.handleMultipleFilesUpload(files);
   }
 }
