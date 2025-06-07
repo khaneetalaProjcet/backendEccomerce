@@ -32,16 +32,38 @@ export class ProductService {
   }
 
   async findAll() {
+  //  const array= await this.productItemModel.find()
+  // for (let index = 0; index < array.length; index++) {
+  //   const element = array[index];
+  //   await this.productItemModel.findByIdAndDelete(element._id)
+    
+  // }
     try{
-       const all= await this.productModel.find().populate('items').exec();
-       
+   const products = await this.productModel
+  .find()
+  .populate('items')
+  .populate('firstCategory')
+  .populate('midCategory')
+  .populate('lastCategory')
+  .exec();
+
+
+  // const array= products
+  // for (let index = 0; index < array.length; index++) {
+  //   const element = array[index];
+  //   await this.productModel.findByIdAndDelete(element._id)
+    
+  // }
+
        return {
-       message: '',
+        message: '',
         statusCode: 200,
-        data:all
+        data:products
       }
     }
     catch(error){
+      console.log(error);
+      
       return {
           message: 'مشکل داخلی سیسنم',
           statusCode: 500,
@@ -147,7 +169,7 @@ export class ProductService {
       color:dto.color
     })
     
-    const product=await this.productItemModel.findByIdAndUpdate(dto.productId,{
+    const product=await this.productModel.findByIdAndUpdate(dto.productId,{
       $push: { items: prodcutItem._id } ,
       new: true ,
     })
