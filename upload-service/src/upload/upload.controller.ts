@@ -128,7 +128,7 @@ export class UploadController {
         },
       }),
       limits: {
-        fileSize: parseInt(process.env.MAX_FILE_SIZE || '2097152', 10),
+        fileSize: parseInt(process.env.MAX_FILE_SIZE || '20971520', 10),
       },
       fileFilter: (req, file, cb) => {
         const allowedTypes = (process.env.ALLOWED_TYPES || '')

@@ -17,7 +17,7 @@ export class RedisServiceService {
         await this.cache.set(key , value ,ttl)
     }
 
-    async reset(key : string){
+    async deleter(key : string){
         await this.cache.del(key)
     }
 
