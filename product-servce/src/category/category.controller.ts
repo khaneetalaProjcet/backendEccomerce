@@ -18,7 +18,7 @@ export class CategoryController {
   create(@Req() req : any , @Res() res : any,@Body() dto: CreateCategoryDto) {
     console.log("admin",req.user);
     
-    return this.categoryService.createCategory(dto.name,dto.description,dto.parent);
+    return this.categoryService.createCategory(dto.name,dto.description,req.user.adminId,dto.parent)
   }
 
 
