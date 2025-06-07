@@ -5,6 +5,7 @@ import { Category,CategoryDocumnet } from './entities/category.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import path from 'path';
+import { LockerService } from 'src/locker/locker.service';
 interface CategoryTreeNode {
   _id: string;
   name: string;
@@ -16,10 +17,8 @@ interface CategoryTreeNode {
 
 @Injectable()
 export class CategoryService {
-  constructor(@InjectModel(Category.name) private categoryModel: Model<CategoryDocumnet>){}
-
-
-
+  constructor(@InjectModel(Category.name) private categoryModel: Model<CategoryDocumnet>,
+  private lockerService:LockerService){}
  async createCategory(name: string,description:string, parentId?: string) {
   const newCategory = new this.categoryModel({ name, description});
 
