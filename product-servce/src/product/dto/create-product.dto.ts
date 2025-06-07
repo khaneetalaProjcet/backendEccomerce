@@ -7,10 +7,9 @@ export class CreateProductDto {
   @IsNotEmpty()
   name: string;
 
-//   @ApiProperty({ example: ['60f7a2c2b5d4b32f884d8a5f'], description: 'Array of ProductItem IDs', type: [String] })
-//   @IsArray()
-//   @IsMongoId({ each: true })
-//   items: string[];
+  @ApiProperty()
+  @IsArray()
+  items: any[];
 
   @ApiProperty({ example: ['image1.jpg', 'image2.jpg'], description: 'List of image URLs or paths', type: [String] })
   @IsArray()
@@ -41,4 +40,6 @@ export class CreateProductDto {
   @ApiProperty({ example: '60f7a1b3b5d4b32f884d8a5e', description: 'ID of the product category' })
   @IsMongoId()
   lastCategory?: string;
+
+
 }

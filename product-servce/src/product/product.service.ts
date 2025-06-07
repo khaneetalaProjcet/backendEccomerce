@@ -7,6 +7,7 @@ import { Product, ProductDocumnet } from './entities/product.entity';
 import { Model } from 'mongoose';
 import { ProductItems, ProductItemsDocment } from './entities/productItems.entity';
 import { UpdateProductItemDto } from './dto/update-productItem.dto';
+import e from 'express';
 
 @Injectable()
 export class ProductService {
@@ -14,8 +15,29 @@ export class ProductService {
    @InjectModel(ProductItems.name) private productItemModel: Model<ProductItemsDocment>){}
   async create(createProductDto: CreateProductDto) {
     try{
+    const items=createProductDto.items
+    console.log("beforeLoop",items);
+    
+    const productItems : string[] =[]
+
+    for (let index = 0; index < items.length; index++) {
+      const element = items[index];
+      
+      const i=await this.productItemModel.create({
+        size:element.size,
+        color:element.color,
+        weight:element.weight,
+        count:element.count
+      })
+      productItems.push(i._id)
+    }
+
+    createProductDto.items=productItems
+
+    console.log("after loop",createProductDto.items);
+    
     const product=await this.productModel.create(createProductDto);
-     return {
+    return {
         message: '',
         statusCode: 200,
         data:product
