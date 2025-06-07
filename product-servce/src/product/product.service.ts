@@ -161,6 +161,7 @@ export class ProductService {
 
   async createProductItems(dto:CreateProductItemDto){
     try{
+     console.log("dtotototot",dto);
       
     const prodcutItem=await this.productItemModel.create({
       weight:dto.weight,
