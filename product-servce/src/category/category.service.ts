@@ -19,7 +19,10 @@ interface CategoryTreeNode {
 export class CategoryService {
   constructor(@InjectModel(Category.name) private categoryModel: Model<CategoryDocumnet>,
   private lockerService:LockerService){}
- async createCategory(name: string,description:string, parentId?: string) {
+ async createCategory(name: string,description:string,adminId:string, parentId?: string) {
+ 
+  const isLocked=await this.lockerService.check(adminId)
+
   const newCategory = new this.categoryModel({ name, description});
 
   if (parentId) {
