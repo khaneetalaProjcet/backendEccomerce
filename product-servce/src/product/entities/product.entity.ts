@@ -8,7 +8,8 @@ export interface ProductDocumnet extends Document {
   items:[any],
   images:[string],
   description:string,
-  wages:number
+  wages:number,
+  count:number,
   category: Types.ObjectId
 }
 
@@ -32,6 +33,9 @@ export class Product {
   @Prop({ required: true })
   wages: number;
 
+  @Prop({ required: true })
+  count: number;
+
   @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
   firstCategory: Types.ObjectId;
 
@@ -40,6 +44,8 @@ export class Product {
 
   @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
   lastCategory: Types.ObjectId;
+
+  
 
 
 }
