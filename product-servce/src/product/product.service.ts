@@ -232,7 +232,7 @@ export class ProductService {
 
   async updateProductItems(id:string,dto:UpdateProductItemDto){
     try{
-    const prodcutItem=await this.productItemModel.findByIdAndUpdate(id,{count:dto.color,color:dto.color,size:dto.size,weight:dto.weight})
+    const prodcutItem=await this.productItemModel.findByIdAndUpdate(id,{count:dto.count,color:dto.color,size:dto.size,weight:dto.weight})
     if(!prodcutItem){
         return {
           message: 'محصول پیدا نشد',
