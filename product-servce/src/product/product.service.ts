@@ -279,14 +279,21 @@ export class ProductService {
       console.log("prodcutId",productId);
       console.log("item",id);
       const prodcut=await this.productModel.findById(productId)
+
+      console.log(prodcut?.items);
+      
       const prodcutItem=await this.productItemModel.findById(id)
+
+      console.log(prodcutItem);
+      
       if(!prodcut){
        return {
-          message: 'محصول پیدا نشد',
+          message: 'محصول پیدا نشد',  
           statusCode: 400,
           error: 'محصول پیدا نشد'
         }
       }
+      
     if(!prodcutItem){
        return {
           message: 'واریانت محصول پیدا نشد',
@@ -298,11 +305,6 @@ export class ProductService {
    const newItems=prodcut.items.filter(i=>i!=id)
 
    
-   
-   
-
-   
-
     prodcut.count=prodcut.count-prodcutItem.count
     prodcut.items=newItems
     await prodcut.save()
