@@ -126,7 +126,7 @@ export class ProductService {
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     try{
-       const product = await this.productModel.findByIdAndUpdate(id, updateProductDto, { new: true }).exec();
+    const product = await this.productModel.findByIdAndUpdate(id, updateProductDto).exec();
     if (!product) {
        return {
           message: 'محصول پیدا نشد',
