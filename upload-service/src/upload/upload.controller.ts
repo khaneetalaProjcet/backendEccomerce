@@ -154,7 +154,9 @@ export class UploadController {
       },
     }),
   )
-  async uploadMultipleFiles(@UploadedFiles() files: Express.Multer.File[]) {
+  async uploadMultipleFiles(@UploadedFiles() files: any) {
+    console.log("in here");
+    console.log("files",files);
     return this.uploadService.handleMultipleFilesUpload(files);
   }
 }

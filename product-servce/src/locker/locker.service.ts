@@ -3,17 +3,17 @@ import {RedisServiceService} from "../redis-service/redis-service.service"
 
 export class LockerService {
  constructor(private redisService:RedisServiceService){}
-     async check(id) {
+     async check(id , ttl:number) {
         let a = await this.redisService.getter(`lock-${id}`)
         if (!a) {
-            await this.redisService.setter(`lock-${id}` , "1" , 5000)
+            await this.redisService.setter(`lock-${id}` , "1" , ttl)
             console.log(`document ${id} locked`)
             return false;
         }
         if (+a == 1) {
             return true
         } else {
-            await this.redisService.setter(`lock-${id}` , "1" , 5000)
+            await this.redisService.setter(`lock-${id}` , "1" , ttl)
             console.log(`document ${id} locked`)
             return false
         }

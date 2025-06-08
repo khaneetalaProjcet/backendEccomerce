@@ -19,7 +19,7 @@ export class ProductService {
     console.log("beforeLoop",items);
     
     const productItems : string[] =[]
-
+    let count =0
     for (let index = 0; index < items.length; index++) {
       const element = items[index];
       
@@ -28,13 +28,17 @@ export class ProductService {
         color:element.color,
         weight:element.weight,
         count:element.count
+
       })
       productItems.push(i._id)
+      count=+element.count
     }
 
     createProductDto.items=productItems
+    createProductDto.count=count
 
-    console.log("after loop",createProductDto.items);
+
+  
     
     const product=await this.productModel.create(createProductDto);
     return {
