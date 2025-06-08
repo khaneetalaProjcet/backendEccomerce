@@ -7,7 +7,7 @@ export interface ProductItemsDocment  extends Document{
     size:string,
     weight:string,
     color:string,
-    count:Number,
+    count:number,
 }
 
 @Schema()

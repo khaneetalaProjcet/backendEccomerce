@@ -5,7 +5,7 @@ import { ProductItems } from './productItems.entity';
 export interface ProductDocumnet extends Document {
   _id: string;
   name: string;
-  items:[any],
+  items:any[],
   images:[string],
   description:string,
   wages:number,

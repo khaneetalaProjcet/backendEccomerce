@@ -254,6 +254,7 @@ export class ProductService {
       count+=element.count
       
     }
+    
     product.count=count
     await product.save()
     
@@ -275,30 +276,37 @@ export class ProductService {
 
   async removeProductItems(id:string,productId:string){
     try{
-      const prodcutItem=await this.productItemModel.findByIdAndDelete(id)
-    if(!prodcutItem){
+      console.log("prodcutId",productId);
+      console.log("item",id);
+      const prodcut=await this.productModel.findById(productId)
+      const prodcutItem=await this.productItemModel.findById(id)
+      if(!prodcut){
        return {
           message: 'محصول پیدا نشد',
           statusCode: 400,
           error: 'محصول پیدا نشد'
         }
-    }
-
-    const prodcut=await this.productModel.findByIdAndUpdate(productId,
-      { $pull: { items: id } }
-    )
-
-    if(!prodcut){
-      return {
-          message: 'محصول پیدا نشد',
+      }
+    if(!prodcutItem){
+       return {
+          message: 'واریانت محصول پیدا نشد',
           statusCode: 400,
-          error: 'محصول پیدا نشد'
+          error: 'واریانت محصول پیدا نشد',
         }
     }
 
-    prodcut.count-=+prodcutItem.count
+   const newItems=prodcut.items.filter(i=>i!=id)
 
+   
+   
+   
+
+   
+
+    prodcut.count=prodcut.count-prodcutItem.count
+    prodcut.items=newItems
     await prodcut.save()
+    await this.productItemModel.findByIdAndDelete(id)
 
     return {
         message: '',
