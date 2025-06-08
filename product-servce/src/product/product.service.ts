@@ -261,7 +261,7 @@ export class ProductService {
     return {
         message: '',
         statusCode: 200,
-        data:prodcutItem
+        data:product.items
     }
     }catch(error){
       console.log(error);
