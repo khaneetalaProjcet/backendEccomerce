@@ -4,34 +4,9 @@ import { ResponseInterceptor } from './interceptors/transform.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { kafkaConsumerConfig } from './kafka/kafka.config';
-import { WinstonModule } from 'nest-winston';
-import { transports, format } from 'winston';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule,{
-    logger: WinstonModule.createLogger({
-      transports: [
-        new transports.Console({
-          format: format.combine(
-            format.timestamp(),
-            format.colorize(),
-            format.printf(({ timestamp, level, message, context }) => {
-              return `[${timestamp}] ${level} [${context || 'App'}]: ${message}`;
-            })
-          )
-        }),
-        new transports.File({
-          filename: 'logs/error.log',
-          level: 'error',
-          format: format.combine(format.timestamp(), format.json()),
-        }),
-        new transports.File({
-          filename: 'logs/combined.log',
-          format: format.combine(format.timestamp(), format.json()),
-        }),
-      ],
-    }),
-  });
+  const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: '*', // specify the allowed origin
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // specify the allowed HTTP methods

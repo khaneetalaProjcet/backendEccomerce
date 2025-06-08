@@ -80,13 +80,13 @@ export class ProductController {
     return this.productService.updateProductItems(id,updateProductDtoItemDto);
   }
 
-  @Get("item/remove/:id")
+  @Get("item/remove/:id/:pid")
   @UseGuards(JwtAdminAuthGuard)
   @ApiOperation({ summary: 'Create a new product' })
   @ApiBody({ type: UpdateProductItemDto })
   @ApiResponse({ status: 201, description: 'The product has been successfully created.', type:ProductItems  })
-  removeItem(@Param('id') id: string) {
-    return this.productService.removeProductItems(id);
+  removeItem(@Param('id') id: string,@Param('pid') productId: string) {
+    return this.productService.removeProductItems(id,productId);
   }
 
 
