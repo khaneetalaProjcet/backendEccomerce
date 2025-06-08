@@ -120,6 +120,8 @@ export class UploadController {
           cb(null, uploadDir);
         },
         filename: (req, file, cb) => {
+          console.log("sssssssssssssss",file);
+          
           const uniqueSuffix =
             Date.now() + '-' + Math.round(Math.random() * 1e9);
           const fileExt = extname(file.originalname);
