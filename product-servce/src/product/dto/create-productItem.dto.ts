@@ -24,6 +24,6 @@ export class CreateProductItemDto {
 
   @ApiProperty({ example: 100, description: 'Count of this items' })
   @IsNumber()
-  @IsOptional()
-  count?: number;
+  @IsNotEmpty()
+  count: number;
 }

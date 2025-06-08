@@ -198,6 +198,7 @@ export class ProductService {
     const product=await this.productModel.findByIdAndUpdate(dto.productId,{
       $push: { items: prodcutItem._id } ,
       new: true ,
+
     })
     if(!product){
         return {
@@ -206,6 +207,10 @@ export class ProductService {
           error: 'محصول پیدا نشد'
         }
     }
+   
+    product.count+=dto.count
+    await product.save()
+    
     return {
        message: '',
         statusCode: 200,
@@ -227,7 +232,7 @@ export class ProductService {
 
   async updateProductItems(id:string,dto:UpdateProductItemDto){
     try{
-    const prodcutItem=await this.productItemModel.findByIdAndUpdate(id,dto)
+    const prodcutItem=await this.productItemModel.findByIdAndUpdate(id,{count:dto.color,color:dto.color,size:dto.size,weight:dto.weight})
     if(!prodcutItem){
         return {
           message: 'محصول پیدا نشد',
@@ -235,6 +240,23 @@ export class ProductService {
           error: 'محصول پیدا نشد'
         }
     }
+    const product=await this.productModel.findById(dto.productId).populate("items").exec()
+    if(!product){
+      return {
+          message: 'محصول پیدا نشد',
+          statusCode: 400,
+          error: 'محصول پیدا نشد'
+      }
+    }
+    let count=0
+    for (let index = 0; index < product.items.length; index++) {
+      const element = product.items[index];
+      count+=element.count
+      
+    }
+    product.count=count
+    await product.save()
+    
     return {
         message: '',
         statusCode: 200,
@@ -251,7 +273,7 @@ export class ProductService {
     
   }
 
-  async removeProductItems(id:string){
+  async removeProductItems(id:string,productId:string){
     try{
       const prodcutItem=await this.productItemModel.findByIdAndDelete(id)
     if(!prodcutItem){
@@ -262,7 +284,7 @@ export class ProductService {
         }
     }
 
-    const prodcut=await this.productModel.findByIdAndUpdate(id,
+    const prodcut=await this.productModel.findByIdAndUpdate(productId,
       { $pull: { items: id } }
     )
 
@@ -273,6 +295,10 @@ export class ProductService {
           error: 'محصول پیدا نشد'
         }
     }
+
+    prodcut.count-=+prodcutItem.count
+
+    await prodcut.save()
 
     return {
         message: '',
@@ -293,6 +319,7 @@ export class ProductService {
 
   
 
+  
   
 
   
