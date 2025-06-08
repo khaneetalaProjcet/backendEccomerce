@@ -120,8 +120,6 @@ export class UploadController {
           cb(null, uploadDir);
         },
         filename: (req, file, cb) => {
-          console.log("sssssssssssssss",file);
-          
           const uniqueSuffix =
             Date.now() + '-' + Math.round(Math.random() * 1e9);
           const fileExt = extname(file.originalname);
@@ -157,8 +155,6 @@ export class UploadController {
     }),
   )
   async uploadMultipleFiles(@UploadedFiles() files: any) {
-    console.log("in here");
-    console.log("files",files);
     return this.uploadService.handleMultipleFilesUpload(files);
   }
 }
