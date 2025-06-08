@@ -16,7 +16,7 @@ export class ProductService {
   async create(createProductDto: CreateProductDto) {
     try{
     const items=createProductDto.items
-    console.log("beforeLoop",items);
+    
     
     const productItems : string[] =[]
     let count =0
@@ -31,15 +31,14 @@ export class ProductService {
 
       })
       productItems.push(i._id)
-      count=+element.count
+      count+=element.count
     }
 
     createProductDto.items=productItems
+
     createProductDto.count=count
 
 
-  
-    
     const product=await this.productModel.create(createProductDto);
     return {
         message: '',

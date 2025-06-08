@@ -33,7 +33,7 @@ export class Product {
   @Prop({ required: true })
   wages: number;
 
-  @Prop({ required: true })
+  @Prop({ default:0 })
   count: number;
 
   @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
