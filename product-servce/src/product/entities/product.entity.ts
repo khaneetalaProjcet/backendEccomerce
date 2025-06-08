@@ -18,7 +18,7 @@ export class Product {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ type: [Types.ObjectId], ref: 'ProductItems', default: [] })
+  @Prop({ type: [Types.ObjectId], ref: 'ProductItems',required:true})
   items: Types.ObjectId[];
 
   @Prop({ type: [String], default: [] })
