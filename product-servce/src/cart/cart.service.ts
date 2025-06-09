@@ -20,6 +20,7 @@ export class CartService {
   async addToCart(userid: string, body: CreateCartDto) {
     try {
       let item = await this.productItemsModel.findById(body.item)
+      console.log( 'ffff', item)
       let product = await this.productModel.findOne({
         $or: [
           { firstCategory: body.item },
@@ -27,6 +28,7 @@ export class CartService {
           { lastCategory: body.item }
         ]
       })
+      console.log( '22222', product)
       if (!item || !product) {
         return {
           message: 'محصول مورد نظر یافت نشد',

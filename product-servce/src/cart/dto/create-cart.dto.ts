@@ -11,7 +11,6 @@ export class CreateCartDto {
     })
     item : string
 
-
     @IsNotEmpty()
     @IsNumber()
     count : number
