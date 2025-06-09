@@ -91,7 +91,7 @@ export class ProductController {
 
 
   @Get('category/:categoryId')
-  @UseGuards(JwtAdminAuthGuard)
+  // @UseGuards(JwtAdminAuthGuard)
   @ApiOperation({ summary: 'get product based on category' })
   async getProductBasedOnCategory(@Req() req : any , @Res() res : any , @Param('categoryId') categoryId : string){
     return this.productService.getProductBasedOnCategory(categoryId)
