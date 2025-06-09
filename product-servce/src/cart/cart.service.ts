@@ -21,15 +21,22 @@ export class CartService {
     try {
       let item = await this.productItemsModel.findById(body.item)
       console.log( 'ffff', item)
+      if (!item) {
+        return {
+          message: 'محصول مورد نظر یافت نشد',
+          statusCode: 400,
+          error: 'محصول مورد نظر یافت نشد'
+        }
+      }
       let product = await this.productModel.findOne({
         $or: [
-          { firstCategory: body.item },
-          { midCategory: body.item },
-          { lastCategory: body.item }
+          { firstCategory: item._id },
+          { midCategory: item._id },
+          { lastCategory: item._id }
         ]
       })
       console.log( '22222', product)
-      if (!item || !product) {
+      if (!product) {
         return {
           message: 'محصول مورد نظر یافت نشد',
           statusCode: 400,
