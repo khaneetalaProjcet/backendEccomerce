@@ -19,7 +19,7 @@ export class CartService {
 
   async addToCart(userid: string, body: CreateCartDto) {
     try {
-      await this.cartModel.deleteMany()
+      
       let item = await this.productItemsModel.findById(body.item)
       console.log( 'ffff', item)
       if (!item) {
