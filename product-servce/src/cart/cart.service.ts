@@ -40,7 +40,7 @@ export class CartService {
         }
       }
 
-      if (+body.count < +product.count) {
+      if (+body.count > +item.count) {
         return {
           message: 'تعداد درخواست شما بیشتر از موجودی محصول می باشد',
           statusCode: 400,
