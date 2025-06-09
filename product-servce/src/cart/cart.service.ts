@@ -64,6 +64,16 @@ export class CartService {
         count : body.count
       })
       
+
+      let allCount = 0
+      if (addCart?.products){
+        for (let i of addCart?.products){
+            allCount += +i.count
+        }
+        addCart.count = allCount
+      }
+      
+
       await addCart?.save()
 
       console.log('after creation >>> ', addCart)
