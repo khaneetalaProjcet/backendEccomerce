@@ -29,14 +29,9 @@ export class CartService {
         }
       }
       let product = await this.productModel.findOne({
-        $or: [
-          { firstCategory: item._id },
-          { midCategory: item._id },
-          { lastCategory: item._id }
-        ]
+      $in : {items : item._id}
       })
-      let pp = await this.productModel.find()
-      console.log( '22222', pp)
+      console.log( '22222', product)
       if (!product) {
         return {
           message: 'محصول مورد نظر یافت نشد',
