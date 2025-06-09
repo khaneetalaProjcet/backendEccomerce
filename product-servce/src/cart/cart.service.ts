@@ -71,7 +71,7 @@ export class CartService {
       return {
         message: 'موفق',
         statusCode: 200,
-        data: 
+        data: addCart
       }
     } catch (error) {
       console.log('error occured >>> ', error)
