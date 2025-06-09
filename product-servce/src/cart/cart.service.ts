@@ -1,0 +1,96 @@
+import { Injectable } from '@nestjs/common';
+import { CreateCartDto } from './dto/create-cart.dto';
+import { UpdateCartDto } from './dto/update-cart.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Cart, CartInterface } from './entities/cart.entity';
+import mongoose, { Model } from 'mongoose';
+import { ProductItems, ProductItemsDocment } from 'src/product/entities/productItems.entity';
+import { Product, ProductDocumnet } from 'src/product/entities/product.entity';
+
+@Injectable()
+export class CartService {
+
+  constructor(
+    @InjectModel(Cart.name) private cartModel: Model<CartInterface>,
+    @InjectModel(ProductItems.name) private productItemsModel: Model<ProductItemsDocment>,
+    @InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
+  ) { }
+
+
+  async addToCart(userid: string, body: CreateCartDto) {
+    try {
+      let item = await this.productItemsModel.findById(body.item)
+      let product = await this.productModel.findOne({
+        $or: [
+          { firstCategory: body.item },
+          { midCategory: body.item },
+          { lastCategory: body.item }
+        ]
+      })
+      if (!item || !product) {
+        return {
+          message: 'محصول مورد نظر یافت نشد',
+          statusCode: 400,
+          error: 'محصول مورد نظر یافت نشد'
+        }
+      }
+
+      if (+body.count < +product.count) {
+        return {
+          message: 'تعداد درخواست شما بیشتر از موجودی محصول می باشد',
+          statusCode: 400,
+          error: 'تعداد درخواست شما بیشتر از موجودی محصول میباشد'
+        }
+      }
+
+      let addCart = await this.cartModel.findOne({ user: userid })
+      if (!addCart) {
+        let newAddCard = await this.cartModel.create({
+          user: userid,
+          products: [],
+          history: []
+        })
+        addCart = await this.cartModel.findOne({ user: userid })
+      }
+
+      addCart?.products.push(new mongoose.Types.ObjectId(item._id))
+
+      await addCart?.save()
+
+      console.log('after creation >>> ', addCart)
+
+      return {
+        message: 'موفق',
+        statusCode: 200,
+        data: addCart
+      }
+    } catch (error) {
+      console.log('error occured >>> ', error)
+      return {
+        message: 'خطای داخلی سیستم',
+        statusCode: 500,
+        error: 'خطای داخلی سیستم'
+      }
+    }
+  }
+
+
+  async getAllCarts(userId : string){
+    let cart = await this.cartModel.findOne({user : userId})
+    if (!cart){
+      cart = await this.cartModel.create({
+        user : userId,
+        products : [],
+        history : []
+      })
+    }
+
+    return {
+      message : 'موفق' ,
+      statusCode : 200,
+      data : cart
+    }
+  }
+
+
+}

@@ -45,8 +45,6 @@ export class Product {
   @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
   lastCategory: Types.ObjectId;
 
-  
-
 
 }
 

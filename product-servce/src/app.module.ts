@@ -13,6 +13,7 @@ import { ProductModule } from './product/product.module';
 import {RedisServiceService} from "./redis-service/redis-service.service"
 import { CacheModule } from '@nestjs/cache-manager';
 import { RedisOptions } from 'configs/redis.config';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports:  [
@@ -22,7 +23,8 @@ import { RedisOptions } from 'configs/redis.config';
     MongooseModule.forFeature([{ name: Category.name, schema: CategorySchema }]),
     CategoryModule,
     KafkaModule,
-    ProductModule
+    ProductModule,
+    CartModule
   ],
   controllers: [AppController],
   providers: [AppService,JwtService,InterserviceService,RedisServiceService],

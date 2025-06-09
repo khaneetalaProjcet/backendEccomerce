@@ -13,7 +13,6 @@ export interface ProductItemsDocment  extends Document{
 @Schema()
 export class ProductItems {
 
-  
   @Prop()
   size: string;
 
@@ -25,6 +24,7 @@ export class ProductItems {
 
   @Prop()
   count: number;
+  
 }
 
 
