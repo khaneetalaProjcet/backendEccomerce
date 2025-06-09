@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Res  } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -88,6 +88,15 @@ export class ProductController {
   removeItem(@Param('id') id: string,@Param('pid') productId: string) {
     return this.productService.removeProductItems(id,productId);
   }
+
+
+  @Get('category/:categoryId')
+  @UseGuards(JwtAdminAuthGuard)
+  @ApiOperation({ summary: 'get product based on category' })
+  async getProductBasedOnCategory(@Req() req : any , @Res() res : any , @Param('categoryId') categoryId : string){
+    return this.productService.getProductBasedOnCategory(categoryId)
+  }
+
 
 
 

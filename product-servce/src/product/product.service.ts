@@ -8,10 +8,12 @@ import { Model } from 'mongoose';
 import { ProductItems, ProductItemsDocment } from './entities/productItems.entity';
 import { UpdateProductItemDto } from './dto/update-productItem.dto';
 import e from 'express';
+import { Category, CategoryDocumnet } from 'src/category/entities/category.entity';
 
 @Injectable()
 export class ProductService {
   constructor(@InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
+  @InjectModel(Category.name) private categoryModel : Model<CategoryDocumnet>,
    @InjectModel(ProductItems.name) private productItemModel: Model<ProductItemsDocment>){}
   async create(createProductDto: CreateProductDto) {
     try{
@@ -329,17 +331,39 @@ export class ProductService {
   }
 
   
+  async getProductBasedOnCategory(categoryId : string){
 
+    try {
+        let category = await this.categoryModel.findById(categoryId)
+    if (!category){
+      return {
+        message : 'دسته بندی انتخابی موجود نمی باشد' , 
+        statusCode : 400,
+        error : 'دسته بندی انتخابی موجود نمی باشد'
+      }
+    }
+
+    let allProducts = await this.productModel.find({
+      $or:[
+        {firstCategory : categoryId},
+        {midCategory : categoryId},
+        {lastCategory : categoryId}
+      ]
+    }).populate('items')
+    return{
+      message : 'موفق' , 
+      statusCode : 200,
+      data : allProducts
+    }
+    } catch (error) {
+      console.log('error in getting category products')
+        return {
+        message : 'نا موفق' , 
+        statusCode : 500,
+        error : 'خطای داخلی سرور'
+      }
+    }
   
-  
-
-  
-
-
-
-
-
-
-
+}
 
 }
