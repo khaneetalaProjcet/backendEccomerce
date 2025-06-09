@@ -95,7 +95,7 @@ export class CartService {
 
 
   async getAllCarts(userId : string){
-    let cart = await this.cartModel.findOne({user : userId}).populate('products')
+    let cart = await this.cartModel.findOne({user : userId}).populate('products.product')
     if (!cart){
       cart = await this.cartModel.create({
         user : userId,
