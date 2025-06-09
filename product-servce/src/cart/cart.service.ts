@@ -40,34 +40,34 @@ export class CartService {
         }
       }
 
-      // if (+body.count < +product.count) {
-      //   return {
-      //     message: 'تعداد درخواست شما بیشتر از موجودی محصول می باشد',
-      //     statusCode: 400,
-      //     error: 'تعداد درخواست شما بیشتر از موجودی محصول میباشد'
-      //   }
-      // }
+      if (+body.count < +product.count) {
+        return {
+          message: 'تعداد درخواست شما بیشتر از موجودی محصول می باشد',
+          statusCode: 400,
+          error: 'تعداد درخواست شما بیشتر از موجودی محصول میباشد'
+        }
+      }
 
-      // let addCart = await this.cartModel.findOne({ user: userid })
-      // if (!addCart) {
-      //   let newAddCard = await this.cartModel.create({
-      //     user: userid,
-      //     products: [],
-      //     history: []
-      //   })
-      //   addCart = await this.cartModel.findOne({ user: userid })
-      // }
+      let addCart = await this.cartModel.findOne({ user: userid })
+      if (!addCart) {
+        let newAddCard = await this.cartModel.create({
+          user: userid,
+          products: [],
+          history: []
+        })
+        addCart = await this.cartModel.findOne({ user: userid })
+      }
 
-      // addCart?.products.push(new mongoose.Types.ObjectId(item._id))
+      addCart?.products.push(new mongoose.Types.ObjectId(item._id))
 
-      // await addCart?.save()
+      await addCart?.save()
 
-      // console.log('after creation >>> ', addCart)
+      console.log('after creation >>> ', addCart)
 
       return {
         message: 'موفق',
         statusCode: 200,
-        data: 'ssss'
+        data: addCart
       }
     } catch (error) {
       console.log('error occured >>> ', error)
