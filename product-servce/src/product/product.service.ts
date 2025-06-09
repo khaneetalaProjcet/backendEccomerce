@@ -353,7 +353,7 @@ export class ProductService {
     return{
       message : 'موفق' , 
       statusCode : 200,
-      data : allProducts
+      data : { products : allProducts , category}
     }
     } catch (error) {
       console.log('error in getting category products')
