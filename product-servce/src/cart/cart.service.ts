@@ -35,7 +35,8 @@ export class CartService {
           { lastCategory: item._id }
         ]
       })
-      console.log( '22222', product)
+      let pp = await this.productModel.find()
+      console.log( '22222', pp[0])
       if (!product) {
         return {
           message: 'محصول مورد نظر یافت نشد',
