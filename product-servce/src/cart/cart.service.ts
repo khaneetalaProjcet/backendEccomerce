@@ -19,7 +19,7 @@ export class CartService {
 
   async addToCart(userid: string, body: CreateCartDto) {
     try {
-      
+      await this.cartModel.deleteMany()
       let item = await this.productItemsModel.findById(body.item)
       console.log( 'ffff', item)
       if (!item) {
@@ -61,6 +61,7 @@ export class CartService {
 
       addCart?.products.push({
         product : new mongoose.Types.ObjectId(item._id),
+        mainProduct : new mongoose.Types.ObjectId(product._id),
         count : body.count
       })
       
@@ -95,7 +96,7 @@ export class CartService {
 
 
   async getAllCarts(userId : string){
-    let cart = await this.cartModel.findOne({user : userId}).populate('products.product')
+    let cart = await this.cartModel.findOne({user : userId}).populate('products.product' , 'products.mainProduct')
     if (!cart){
       cart = await this.cartModel.create({
         user : userId,
