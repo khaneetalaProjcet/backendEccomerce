@@ -10,12 +10,13 @@ import { JwtStrategy } from 'src/jwt/jwt.strategy';
 import { JwtAdminStrategy } from 'src/jwt/admin-jwt.strategy';
 import { LockerService } from 'src/locker/locker.service';
 import { RedisServiceService } from 'src/redis-service/redis-service.service';
+import { Cart, cartSchema } from './entities/cart.entity';
 
 
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema },
-  { name: Category.name, schema: CategorySchema }
+  { name: Category.name, schema: CategorySchema }, { name: Cart.name, schema: cartSchema }
     , { name: ProductItems.name, schema: ProductItemSchema }])],
   controllers: [CartController],
   providers: [CartService, JwtService,
@@ -24,4 +25,5 @@ import { RedisServiceService } from 'src/redis-service/redis-service.service';
     LockerService,
     RedisServiceService],
 })
+
 export class CartModule { }
