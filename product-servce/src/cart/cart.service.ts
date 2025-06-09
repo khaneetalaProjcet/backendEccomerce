@@ -19,6 +19,7 @@ export class CartService {
 
   async addToCart(userid: string, body: CreateCartDto) {
     try {
+      await this.cartModel.deleteMany()
       let item = await this.productItemsModel.findById(body.item)
       console.log( 'ffff', item)
       if (!item) {
@@ -58,8 +59,11 @@ export class CartService {
         addCart = await this.cartModel.findOne({ user: userid })
       }
 
-      addCart?.products.push(new mongoose.Types.ObjectId(item._id))
-
+      addCart?.products.push({
+        product : new mongoose.Types.ObjectId(item._id),
+        count : body.count
+      })
+      
       await addCart?.save()
 
       console.log('after creation >>> ', addCart)
@@ -67,7 +71,7 @@ export class CartService {
       return {
         message: 'موفق',
         statusCode: 200,
-        data: addCart
+        data: 
       }
     } catch (error) {
       console.log('error occured >>> ', error)

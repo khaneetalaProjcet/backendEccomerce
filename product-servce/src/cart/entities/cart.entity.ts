@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { count } from "console";
 import mongoose from "mongoose";
 import { ProductItems } from "src/product/entities/productItems.entity";
 
@@ -7,9 +8,9 @@ import { ProductItems } from "src/product/entities/productItems.entity";
 export interface CartInterface extends Document {
     user: string;
 
-    products: mongoose.Types.ObjectId[]
+    products: {product : mongoose.Types.ObjectId , count : number}[]
     
-    history: mongoose.Types.ObjectId[]
+    history: {product : mongoose.Types.ObjectId , count : number}[]
 }
 
 
@@ -21,11 +22,21 @@ export class Cart {
     @Prop({type : String})
     user:string
 
-    @Prop({type : [mongoose.Schema.Types.ObjectId] , ref : ProductItems.name})
-    products : mongoose.Types.ObjectId[]
+    @Prop({
+        type: [{
+            product: { type: mongoose.Schema.Types.ObjectId, ref: ProductItems.name },
+            count: { type: Number }
+        }]
+    })
+    products: { product: mongoose.Types.ObjectId, count: number }[]
 
-    @Prop({type : [mongoose.Schema.Types.ObjectId] , ref : ProductItems.name})
-    history : mongoose.Types.ObjectId[]
+    @Prop({
+        type: [{
+            product: { type: mongoose.Schema.Types.ObjectId, ref: ProductItems.name },
+            count: { type: Number }
+        }]
+    })
+    history: { product: mongoose.Types.ObjectId, count: number }[]
 
 }
 
