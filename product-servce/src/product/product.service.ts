@@ -334,7 +334,12 @@ export class ProductService {
   async getProductBasedOnCategory(categoryId : string){
 
     try {
-    let category = await this.categoryModel.findById(categoryId)
+    let category = await this.categoryModel.findById(categoryId).populate({
+      path : 'parent',
+      populate : ({
+        path : 'parent'
+      })
+    })
     if (!category){
       return {
         message : 'دسته بندی انتخابی موجود نمی باشد' , 

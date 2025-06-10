@@ -77,7 +77,7 @@ export class WalletService {
       data: wallet,
     };
   }
-  
+
   findAll() {
     return `This action returns all wallet`;
   }
@@ -98,4 +98,15 @@ export class WalletService {
   remove(id: number) {
     return `This action removes a #${id} wallet`;
   }
+
+
+  async payOrder(orderId : string){
+    console.log('order id' , orderId)
+
+    
+
+  }
+
+
+
 }

@@ -127,4 +127,12 @@ export class WalletController {
   remove(@Param('id') id: string) {
     return this.walletService.remove(+id);
   }
+
+  @Post('/pay/:orderId')
+  async payTheOrder(@Req() req : any , @Res() res : any , @Param('orderId') orderId :string){
+    
+  }
+
+
+
 }
