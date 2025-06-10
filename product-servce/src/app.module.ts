@@ -14,6 +14,7 @@ import {RedisServiceService} from "./redis-service/redis-service.service"
 import { CacheModule } from '@nestjs/cache-manager';
 import { RedisOptions } from 'configs/redis.config';
 import { CartModule } from './cart/cart.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports:  [
@@ -24,7 +25,8 @@ import { CartModule } from './cart/cart.module';
     CategoryModule,
     KafkaModule,
     ProductModule,
-    CartModule
+    CartModule,
+    OrderModule
   ],
   controllers: [AppController],
   providers: [AppService,JwtService,InterserviceService,RedisServiceService],
