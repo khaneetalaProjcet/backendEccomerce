@@ -15,6 +15,8 @@ export interface CartInterface extends Document {
 
     count : number
 
+    totalPrice:number
+
 }
 
 
@@ -44,10 +46,11 @@ export class Cart {
     })
     history: { product: mongoose.Types.ObjectId, mainProduct: mongoose.Types.ObjectId ,count: number }[]
 
-
-
     @Prop({type : Number , default : 0})
     count : number
+
+    @Prop({type : Number , default : 0})
+    totalPrice : number
 
 }
 

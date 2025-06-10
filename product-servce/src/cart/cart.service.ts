@@ -50,17 +50,28 @@ export class CartService {
         }
       }
 
-      let addCart = await this.cartModel.findOne({ user: userid })
+      let addCart = await this.cartModel.findOne({ user: userid }).populate( 'products.product' ).populate('products.mainProduct')
       if (!addCart) {
         let newAddCard = await this.cartModel.create({
           user: userid,
           products: [],
           history: []
         })
-        addCart = await this.cartModel.findOne({ user: userid })
+        addCart = await this.cartModel.findOne({ user: userid }).populate( 'products.product' ).populate('products.mainProduct')
       }
 
-      addCart?.products.push({
+
+  
+      if(!addCart){
+        return {
+            message: 'سبد مورد نظر یافت نشد',
+            statusCode: 400,
+            error: 'سبد مورد نظر یافت نشد' 
+        }
+      }
+      
+
+      addCart.products.push({
         product : new mongoose.Types.ObjectId(item._id),
         mainProduct : new mongoose.Types.ObjectId(product._id),
         count : body.count
@@ -68,17 +79,19 @@ export class CartService {
       
 
       let allCount = 0
-      if (addCart?.products){
+      if (addCart.products){
         for (let i of addCart?.products){
             allCount += +i.count
         }
         addCart.count = allCount
       }
       
+    const goldPrice=6000000
+    const totalPrice=this.calculateCartTotalPrice(addCart.products as any,goldPrice)
+    addCart.totalPrice=totalPrice
+    await addCart.save()
 
-      await addCart?.save()
-
-      console.log('after creation >>> ', addCart)
+    console.log('after creation >>> ', addCart)
 
       return {
         message: 'موفق',
@@ -128,6 +141,8 @@ export class CartService {
       }
 
       let addCart = await this.cartModel.findOne({ user: userId })
+      .populate('products.product')
+      .populate('products.mainProduct');
       if(!addCart){
         return {
            message: '',
@@ -137,7 +152,7 @@ export class CartService {
       }
 
        const productIndex = addCart.products.findIndex(p =>
-      p.product.toString() === item._id.toString()
+      p.product._id.toString() === item._id.toString()
     );
 
     if (productIndex === -1) {
@@ -163,6 +178,12 @@ export class CartService {
     }
     addCart.count = totalCount;
 
+
+    const goldPrice=6000000
+
+    const totalPrice=this.calculateCartTotalPrice(addCart.products as any,goldPrice)
+ 
+    addCart.totalPrice=totalPrice
     await addCart.save();
 
     return {
@@ -197,6 +218,35 @@ export class CartService {
       data : cart
     }
   }
+
+ 
+  private  calculateCartTotalPrice(
+  cartProducts: {
+    product: { weight: string | number };
+    mainProduct: { wages: number };
+    count: number;
+  }[],
+  goldPricePerGram: number
+): number {
+  let total = 0;
+
+  for (const item of cartProducts) {
+    const weight = typeof item.product.weight === 'string'
+      ? parseFloat(item.product.weight)
+      : item.product.weight;
+
+    const wagePercent = item.mainProduct.wages;
+    const wageGrams = weight * (wagePercent / 100);
+    const totalWeight = weight + wageGrams;
+
+    const itemPrice = totalWeight * goldPricePerGram;
+    total += itemPrice * item.count;
+  }
+
+  return total;
+  }
+
+
 
 
 }
