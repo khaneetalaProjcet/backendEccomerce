@@ -106,6 +106,8 @@ export class CartService {
 
 
   async updateCart(userId:string,body:UpdateItemCount){
+    console.log("body",body);
+    
     try{
        let item = await this.productItemsModel.findById(body.item)
       console.log( 'ffff', item)
@@ -172,6 +174,7 @@ export class CartService {
     }
     addCart.count = totalCount;
 
+    await addCart.save()
 
     return {
       message: 'سبد خرید بروزرسانی شد',
