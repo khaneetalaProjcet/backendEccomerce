@@ -137,8 +137,6 @@ export class CartService {
       }
 
       let addCart = await this.cartModel.findOne({ user: userId })
-      .populate('products.product')
-      .populate('products.mainProduct');
       if(!addCart){
         return {
            message: '',
@@ -148,7 +146,7 @@ export class CartService {
       }
 
       const productIndex = addCart.products.findIndex(p =>
-      p.product._id.toString() === item._id.toString()
+      p.product.toString() === item._id.toString()
     );
 
     if (productIndex === -1) {
