@@ -50,14 +50,14 @@ export class CartService {
         }
       }
 
-      let addCart = await this.cartModel.findOne({ user: userid }).populate( 'products.product' ).populate('products.mainProduct')
+      let addCart = await this.cartModel.findOne({ user: userid })
       if (!addCart) {
         let newAddCard = await this.cartModel.create({
           user: userid,
           products: [],
           history: []
         })
-        addCart = await this.cartModel.findOne({ user: userid }).populate( 'products.product' ).populate('products.mainProduct')
+        addCart = await this.cartModel.findOne({ user: userid })
       }
 
 
@@ -86,19 +86,33 @@ export class CartService {
         addCart.count = allCount
       }
       
-    const goldPrice=6000000
-    const totalPrice=this.calculateCartTotalPrice(addCart.products as any,goldPrice)
-    console.log(totalPrice);
-    
-    // addCart.totalPrice=totalPrice
+ 
     await addCart.save()
 
-    console.log('after creation >>> ', addCart)
+
+    let cart = await this.cartModel.findOne({ user:userid })
+      .populate('products.product')
+      .populate('products.mainProduct');
+      if(!cart){
+        return {
+           message: '',
+          statusCode: 400,
+          error: ''
+        }
+      }
+
+    const goldPrice=6000000
+    const totalPrice=this.calculateCartTotalPrice(cart.products as any,goldPrice)
+    console.log(totalPrice);
+    
+    cart.totalPrice=totalPrice
+
+    await cart.save()
 
       return {
         message: 'موفق',
         statusCode: 200,
-        data: addCart
+        data: cart
       }
     } catch (error) {
       console.log('error occured >>> ', error)
@@ -188,7 +202,7 @@ export class CartService {
     console.log(totalPrice);
     
  
-    // addCart.totalPrice=totalPrice
+    addCart.totalPrice=totalPrice
     await addCart.save();
 
     return {
@@ -238,7 +252,7 @@ export class CartService {
 
   console.log("cart products in loop",cartProducts);
   
-  
+
 
   for (const item of cartProducts) {
     const weight = typeof item.product.weight === 'string'
