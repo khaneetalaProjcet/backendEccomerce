@@ -195,7 +195,7 @@ export class CartService {
   let cart = await this.cartModel
     .findOne({ user: userId })
     .populate('products.product')
-    .populate('products.mainProduct').exec()
+    .populate('products.mainProduct')
 
   if (!cart) {
     cart = await this.cartModel.create({
@@ -207,11 +207,11 @@ export class CartService {
 
   const goldPrice = 3200000; 
 
-  const itemPrices =this.calculateCartItemPrices(cart.products as any, goldPrice);
+  const itemPrices =this.calculateCartItemPrices(cart?.products as any, goldPrice);
 
   const totalPrice = itemPrices.reduce((sum, item) => sum + item.totalPrice, 0);
 
-  const enrichedProducts = cart.products.map((p, i) => ({
+  const enrichedProducts = cart?.products.map((p, i) => ({
     ...p, // اطلاعات اصلی محصول
     pricing: itemPrices[i] // قیمت‌گذاری اضافه‌شده
   }));
@@ -220,12 +220,12 @@ export class CartService {
     message: 'موفق',
     statusCode: 200,
     data: {
-      ...cart.toObject(),
+      cart,
       products: enrichedProducts,
       totalPrice
     }
   };
-}
+ }
 
  private calculateCartItemPrices(
   cartProducts: {
@@ -263,7 +263,7 @@ export class CartService {
       totalWeight
     };
   });
-}
+ }
 
 
 }
