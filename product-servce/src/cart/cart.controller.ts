@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, Validation
 import { CartService } from './cart.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
+import { UpdateItemCount } from './dto/updateItemCount.dto';
 import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
 
 @Controller('cart')
@@ -14,6 +15,14 @@ export class CartController {
   async createCart(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body : CreateCartDto){
     let userId = req.user.userId  
     return this.cartService.addToCart(userId , body)
+  }
+
+
+  @Post('/update')
+  @UseGuards(JwtAuthGuard)
+  async updateCart(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body : UpdateItemCount){
+    let userId = req.user.userId  
+    return this.cartService.updateCart(userId , body)
   }
 
 
