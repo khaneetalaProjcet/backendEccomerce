@@ -191,49 +191,58 @@ export class CartService {
     }
   }
 
-  async getAllCarts(userId : string){
-    let cart = await this.cartModel.findOne({user : userId}).populate( 'products.product' ).populate('products.mainProduct')
-    if (!cart){
-      cart = await this.cartModel.create({
-        user : userId,
-        products : [],
-        history : []
-      })
-    }
+  async getAllCarts(userId: string) {
+  let cart = await this.cartModel
+    .findOne({ user: userId })
+    .populate('products.product')
+    .populate('products.mainProduct').exec()
 
-    const goldPrice=6000000
-
-    const totalPrice=this.calculateCartTotalPrice(cart.products as any,goldPrice)
-
-    console.log(totalPrice);
-    
- 
-    cart.totalPrice=totalPrice
-    await cart.save();
-
-    return {
-      message : 'موفق' ,
-      statusCode : 200,
-      data : cart
-    }
+  if (!cart) {
+    cart = await this.cartModel.create({
+      user: userId,
+      products: [],
+      history: []
+    });
   }
 
-  private  calculateCartTotalPrice(
+  const goldPrice = 3200000; 
+
+  const itemPrices =this.calculateCartItemPrices(cart.products as any, goldPrice);
+
+  const totalPrice = itemPrices.reduce((sum, item) => sum + item.totalPrice, 0);
+
+  const enrichedProducts = cart.products.map((p, i) => ({
+    ...p, // اطلاعات اصلی محصول
+    pricing: itemPrices[i] // قیمت‌گذاری اضافه‌شده
+  }));
+
+  return {
+    message: 'موفق',
+    statusCode: 200,
+    data: {
+      ...cart.toObject(),
+      products: enrichedProducts,
+      totalPrice
+    }
+  };
+}
+
+ private calculateCartItemPrices(
   cartProducts: {
     product: { weight: string | number };
     mainProduct: { wages: number };
     count: number;
   }[],
   goldPricePerGram: number
-): number {
-  let total = 0;
-
-
-  console.log("cart products in loop",cartProducts);
-  
-
-
-  for (const item of cartProducts) {
+): {
+  unitPrice: number;     // قیمت یک عدد
+  totalPrice: number;    // قیمت کل × تعداد
+  count: number;
+  weight: number;
+  wagePercent: number;
+  totalWeight: number;
+}[] {
+  return cartProducts.map(item => {
     const weight = typeof item.product.weight === 'string'
       ? parseFloat(item.product.weight)
       : item.product.weight;
@@ -242,12 +251,19 @@ export class CartService {
     const wageGrams = weight * (wagePercent / 100);
     const totalWeight = weight + wageGrams;
 
-    const itemPrice = totalWeight * goldPricePerGram;
-    total += itemPrice * item.count;
-  }
+    const unitPrice = totalWeight * goldPricePerGram;
+    const totalPrice = unitPrice * item.count;
 
-  return total;
-  }
+    return {
+      unitPrice,
+      totalPrice,
+      count: item.count,
+      weight,
+      wagePercent,
+      totalWeight
+    };
+  });
+}
 
 
 }
