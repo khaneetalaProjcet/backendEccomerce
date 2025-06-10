@@ -18,7 +18,17 @@ export class AppController {
   
   @Get()
   async getHello() {
-    await this.kafkaService.sendMessage('order_created', { orderId: '123', status: 'new',value:"salllll" });
-    return this.appService.getHello();
+ 
+    console.log("here");
+
+    const rrr=await this.kafkaService.sendMessage('order_created', { orderId: '123', status: 'new',value:"salllll" });
+
+    console.log("rrr",rrr);
+    
+    return{
+      message : 'موفق' , 
+      statusCode : 200,
+      data : "ss"
+    }
   }
 }
