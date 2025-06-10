@@ -17,7 +17,38 @@ export class OrderService {
       @InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
       @InjectModel(Order.name) private orderModel : Model<OrderInterface>
     ) { }
-  create(createOrderDto: CreateOrderDto) {
+  async create(userId:string) {
+     const cart = await this.cartModel
+      .findOne({ user: userId })
+      .populate('products.product')
+      .populate('products.mainProduct');
+
+    if (!cart || cart.products.length === 0) {
+      return {
+        statusCode: 400,
+        message: 'سبد خرید شما خالی است',
+      };
+    }
+
+    const goldPrice = 3200000; // could be dynamic
+    const itemPrices =this.calculateCartItemPrices(cart.products as any, goldPrice);
+    const totalPrice = itemPrices.reduce((sum, item) => sum + item.totalPrice, 0);
+
+    const now = new Date();
+    const time = now.toTimeString().slice(0, 5);
+    const date = now.toLocaleDateString('fa-IR');
+
+    const order = await this.orderModel.create({
+      user: userId,
+      products: cart.products.map(p => ({
+        product: p.product._id,
+        mainProduct: p.mainProduct._id,
+        count: p.count,
+      })),
+      totalPrice,
+      date,
+      time,
+    });
     return 'This action adds a new order';
   }
 
@@ -35,5 +66,44 @@ export class OrderService {
 
   remove(id: number) {
     return `This action removes a #${id} order`;
+  }
+
+
+  private calculateCartItemPrices(
+  cartProducts: {
+    product: { weight: string | number };
+    mainProduct: { wages: number };
+    count: number;
+  }[],
+  goldPricePerGram: number
+): {
+  unitPrice: number;     // قیمت یک عدد
+  totalPrice: number;    // قیمت کل × تعداد
+  count: number;
+  weight: number;
+  wagePercent: number;
+  totalWeight: number;
+}[] {
+  return cartProducts.map(item => {
+    const weight = typeof item.product.weight === 'string'
+      ? parseFloat(item.product.weight)
+      : item.product.weight;
+
+    const wagePercent = item.mainProduct.wages;
+    const wageGrams = weight * (wagePercent / 100);
+    const totalWeight = weight + wageGrams;
+
+    const unitPrice = totalWeight * goldPricePerGram;
+    const totalPrice = unitPrice * item.count;
+
+    return {
+      unitPrice,
+      totalPrice,
+      count: item.count,
+      weight,
+      wagePercent,
+      totalWeight
+    };
+  });
   }
 }

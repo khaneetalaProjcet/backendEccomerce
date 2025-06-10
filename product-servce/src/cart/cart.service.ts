@@ -227,7 +227,7 @@ export class CartService {
   };
   }
 
- private calculateCartItemPrices(
+  private calculateCartItemPrices(
   cartProducts: {
     product: { weight: string | number };
     mainProduct: { wages: number };
@@ -263,7 +263,7 @@ export class CartService {
       totalWeight
     };
   });
- }
+  }
 
 
 }
