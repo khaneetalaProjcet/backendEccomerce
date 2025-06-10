@@ -87,32 +87,12 @@ export class CartService {
       }
       
  
-    await addCart.save()
-
-
-    let cart = await this.cartModel.findOne({ user:userid })
-      .populate('products.product')
-      .populate('products.mainProduct');
-      if(!cart){
-        return {
-           message: '',
-          statusCode: 400,
-          error: ''
-        }
-      }
-
-    const goldPrice=6000000
-    const totalPrice=this.calculateCartTotalPrice(cart.products as any,goldPrice)
-    console.log(totalPrice);
-    
-    cart.totalPrice=totalPrice
-
-    await cart.save()
+     await addCart.save()
 
       return {
         message: 'موفق',
         statusCode: 200,
-        data: cart
+        data: addCart
       }
     } catch (error) {
       console.log('error occured >>> ', error)
@@ -195,16 +175,6 @@ export class CartService {
     addCart.count = totalCount;
 
 
-    const goldPrice=6000000
-
-    const totalPrice=this.calculateCartTotalPrice(addCart.products as any,goldPrice)
-
-    console.log(totalPrice);
-    
- 
-    addCart.totalPrice=totalPrice
-    await addCart.save();
-
     return {
       message: 'سبد خرید بروزرسانی شد',
       statusCode: 200,
@@ -220,7 +190,6 @@ export class CartService {
     }
   }
 
-
   async getAllCarts(userId : string){
     let cart = await this.cartModel.findOne({user : userId}).populate( 'products.product' ).populate('products.mainProduct')
     if (!cart){
@@ -231,6 +200,16 @@ export class CartService {
       })
     }
 
+    const goldPrice=6000000
+
+    const totalPrice=this.calculateCartTotalPrice(cart.products as any,goldPrice)
+
+    console.log(totalPrice);
+    
+ 
+    cart.totalPrice=totalPrice
+    await cart.save();
+
     return {
       message : 'موفق' ,
       statusCode : 200,
@@ -238,7 +217,6 @@ export class CartService {
     }
   }
 
- 
   private  calculateCartTotalPrice(
   cartProducts: {
     product: { weight: string | number };
@@ -269,8 +247,6 @@ export class CartService {
 
   return total;
   }
-
-
 
 
 }
