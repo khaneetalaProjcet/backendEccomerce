@@ -55,7 +55,7 @@ export class Order {
     @Prop({type : String})
     invoiceId:string
 
-    @Prop({type : Number,required:false })
+    @Prop({type : Number,required:false ,default:1})
     paymentMethod : number
 
     

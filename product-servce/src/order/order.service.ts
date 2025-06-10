@@ -18,7 +18,8 @@ export class OrderService {
       @InjectModel(Order.name) private orderModel : Model<OrderInterface>
     ) { }
   async create(userId:string) {
-     const cart = await this.cartModel
+    try{
+        const cart = await this.cartModel
       .findOne({ user: userId })
       .populate('products.product')
       .populate('products.mainProduct');
@@ -30,7 +31,7 @@ export class OrderService {
       };
     }
 
-    const goldPrice = 3200000; // could be dynamic
+    const goldPrice = 6000000; // could be dynamic
     const itemPrices =this.calculateCartItemPrices(cart.products as any, goldPrice);
     const totalPrice = itemPrices.reduce((sum, item) => sum + item.totalPrice, 0);
 
@@ -49,11 +50,40 @@ export class OrderService {
       date,
       time,
     });
-    return 'This action adds a new order';
+    return {
+        message: '',
+        statusCode: 200,
+        data:order
+    };
+    }catch(error){
+      console.log(error);   
+      return {
+          message: 'مشکل داخلی سیسنم',
+          statusCode: 500,
+          error: 'مشکل داخلی سیسنم'
+        }
+  }
+   
   }
 
-  findAll() {
-    return `This action returns all order`;
+  async findAllForUser(userId : string) {
+    try{
+       const orders=await this.orderModel.find({
+      user:userId
+    })
+    return {
+        message: '',
+        statusCode: 200,
+        data:orders
+    }
+    }catch(error){
+      console.log(error);   
+      return {
+          message: 'مشکل داخلی سیسنم',
+          statusCode: 500,
+          error: 'مشکل داخلی سیسنم'
+        }
+    }
   }
 
   findOne(id: number) {
