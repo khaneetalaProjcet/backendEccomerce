@@ -88,7 +88,9 @@ export class CartService {
       
     const goldPrice=6000000
     const totalPrice=this.calculateCartTotalPrice(addCart.products as any,goldPrice)
-    addCart.totalPrice=totalPrice
+    console.log(totalPrice);
+    
+    // addCart.totalPrice=totalPrice
     await addCart.save()
 
     console.log('after creation >>> ', addCart)
@@ -151,7 +153,7 @@ export class CartService {
         }
       }
 
-       const productIndex = addCart.products.findIndex(p =>
+      const productIndex = addCart.products.findIndex(p =>
       p.product._id.toString() === item._id.toString()
     );
 
@@ -182,8 +184,11 @@ export class CartService {
     const goldPrice=6000000
 
     const totalPrice=this.calculateCartTotalPrice(addCart.products as any,goldPrice)
+
+    console.log(totalPrice);
+    
  
-    addCart.totalPrice=totalPrice
+    // addCart.totalPrice=totalPrice
     await addCart.save();
 
     return {
@@ -229,6 +234,11 @@ export class CartService {
   goldPricePerGram: number
 ): number {
   let total = 0;
+
+
+  console.log("cart products in loop",cartProducts);
+  
+  
 
   for (const item of cartProducts) {
     const weight = typeof item.product.weight === 'string'
