@@ -195,7 +195,7 @@ export class CartService {
   let cart = await this.cartModel
     .findOne({ user: userId })
     .populate('products.product')
-    .populate('products.mainProduct')
+    .populate('products.mainProduct');
 
   if (!cart) {
     cart = await this.cartModel.create({
@@ -205,27 +205,27 @@ export class CartService {
     });
   }
 
-  const goldPrice = 3200000; 
+  const goldPrice = 3200000; // مثال: 3,200,000 تومان به‌ازای هر گرم طلا
 
-  const itemPrices =this.calculateCartItemPrices(cart?.products as any, goldPrice);
+  const itemPrices = this.calculateCartItemPrices(cart.products as any, goldPrice);
+
+  const enrichedProducts = cart.products.map((p, i) => ({
+    ...JSON.parse(JSON.stringify(p)),
+    pricing: itemPrices[i]
+  }));
 
   const totalPrice = itemPrices.reduce((sum, item) => sum + item.totalPrice, 0);
-
-  const enrichedProducts = cart?.products.map((p, i) => ({
-    ...p, // اطلاعات اصلی محصول
-    pricing: itemPrices[i] // قیمت‌گذاری اضافه‌شده
-  }));
 
   return {
     message: 'موفق',
     statusCode: 200,
     data: {
-      cart,
+      ...JSON.parse(JSON.stringify(cart)),
       products: enrichedProducts,
       totalPrice
     }
   };
- }
+}
 
  private calculateCartItemPrices(
   cartProducts: {
