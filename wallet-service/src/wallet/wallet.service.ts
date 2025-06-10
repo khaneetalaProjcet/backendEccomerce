@@ -77,11 +77,11 @@ export class WalletService {
       data: wallet,
     };
   }
-
+  
   findAll() {
     return `This action returns all wallet`;
   }
-
+  
   async findOne(owner: string) {
     const wallet = await this.walletModel.findOne({ owner });
     return {
