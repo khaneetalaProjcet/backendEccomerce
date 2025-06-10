@@ -225,7 +225,7 @@ export class CartService {
       totalPrice
     }
   };
-}
+  }
 
  private calculateCartItemPrices(
   cartProducts: {
