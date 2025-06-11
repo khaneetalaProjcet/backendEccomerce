@@ -63,7 +63,7 @@ export class WalletController {
   })
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   create(@Body() createWalletDto: CreateWalletDto) {
     console.log('from user service', createWalletDto);
     return this.walletService.create(createWalletDto);
