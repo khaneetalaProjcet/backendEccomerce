@@ -18,7 +18,7 @@ export class InterserviceService {
         if (!rawResponse){
             return 0                       // no connection exist
         }
-        let response = rawResponse.Json()
+        let response = rawResponse.json()
 
         if (!response){
             return 0                      // no connection exist
