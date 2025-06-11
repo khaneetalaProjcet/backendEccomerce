@@ -15,6 +15,7 @@ import { InterserviceService } from './interservice/interservice.service';
 import { PaymentService } from './payment/payment.service';
 import { goldInvoice, goldInvoiceSchema } from './wallet/entities/goldBoxInvoice.entity';
 import { walletInvoice, walletInvoiceSchema } from './wallet/entities/walletInvoice.entity';
+import { wallet, walletSchema } from './wallet/entities/wallet.entity';
 
 
 @Module({
@@ -23,7 +24,7 @@ import { walletInvoice, walletInvoiceSchema } from './wallet/entities/walletInvo
     CacheModule.registerAsync(RedisOptions),
     MongooseModule.forRoot(process.env.MONGO_URI!),
     WalletModule,
-    MongooseModule.forFeature([{ name: goldInvoice.name, schema: goldInvoiceSchema }, { name: walletInvoice.name, schema: walletInvoiceSchema }]),
+    MongooseModule.forFeature([{ name: goldInvoice.name, schema: goldInvoiceSchema },{ name: wallet.name, schema: walletSchema }, { name: walletInvoice.name, schema: walletInvoiceSchema }]),
   ],
 
   controllers: [AppController],
