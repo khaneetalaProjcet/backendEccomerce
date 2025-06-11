@@ -42,6 +42,8 @@ export class UserService {
             firstName: oldUser.data.firstName,
             lastName: oldUser.data.lastName,
             fatherName: oldUser.data.fatherName,
+            nationalCode:oldUser.data.nationalCode,
+            birthDate:oldUser.data.birthDate,
             authStatus: 3,
             identityStatus : 1
           }], { session })
