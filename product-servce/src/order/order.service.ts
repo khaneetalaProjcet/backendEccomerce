@@ -122,6 +122,40 @@ export class OrderService {
     }
   }
 
+  async identityOrder(body:any){
+    try{
+       console.log("req.body",body);
+    const order=await this.orderModel.findById(body.orderId)
+    if(!order){
+      return {
+          message: 'سفارش پیدا نشد',
+          statusCode: 400,
+          error: 'سفارش پیدا نشد'
+      }
+    }
+    order.status=2
+    order.invoiceId=body.invoiceId
+
+
+    await order.save()
+
+    return {
+        message: '',
+        statusCode: 200,
+        data:order
+    }
+    }catch(error){
+      console.log("error",error);
+      
+      return {
+           message: 'مشکل داخلی سیسنم',
+          statusCode: 500,
+          error: 'مشکل داخلی سیسنم'
+      }
+    }
+   
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} order`;
   }
