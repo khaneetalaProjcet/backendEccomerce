@@ -49,11 +49,16 @@ export class OrderService {
       totalPrice,
       date,
       time,
+      goldPrice
     });
+    const enrichedProducts = cart.products.map((p, i) => ({
+    ...JSON.parse(JSON.stringify(p)),
+    pricing: itemPrices[i]
+  }));
     return {
         message: '',
         statusCode: 200,
-        data:order
+        data:{order,products:enrichedProducts}
     };
     }catch(error){
       console.log(error);   
@@ -71,6 +76,8 @@ export class OrderService {
        const orders=await this.orderModel.find({
       user:userId
     })
+    .populate('products.product')
+    .populate('products.mainProduct');
     return {
         message: '',
         statusCode: 200,
