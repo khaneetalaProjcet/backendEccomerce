@@ -68,3 +68,25 @@
 [2025-05-27T12:38:00.192Z] INFO: Checking identity for user 09743523453
 [2025-05-27T12:38:01.798Z] INFO: Identity check completed for user 68358fc158d1e7a9d139ab14, status: 0
 [2025-05-27T12:38:01.802Z] INFO: Cron job finished
+[2025-06-11T08:20:00.030Z] INFO: Cron job started
+[2025-06-11T08:20:03.960Z] INFO: MongoDB connected
+[2025-06-11T08:20:03.964Z] INFO: Sidecar service running on port 9012
+[2025-06-11T08:20:04.129Z] INFO: No users pending identity verification
+[2025-06-11T08:20:04.134Z] INFO: Cron job finished
+[2025-06-11T08:21:00.012Z] INFO: Cron job started
+[2025-06-11T08:21:00.143Z] INFO: No users pending identity verification
+[2025-06-11T08:21:00.145Z] INFO: Cron job finished
+[2025-06-11T08:34:00.032Z] INFO: Cron job started
+[2025-06-11T08:34:01.598Z] INFO: MongoDB connected
+[2025-06-11T08:34:01.613Z] INFO: Sidecar service running on port 9012
+[2025-06-11T08:34:01.829Z] INFO: Checking identity for user 09123460671
+[2025-06-11T08:34:15.176Z] INFO: Identity check completed for user 68493bbd4117a008e30975e7, status: 0
+[2025-06-11T08:34:15.181Z] INFO: Cron job finished
+[2025-06-11T08:35:00.010Z] INFO: Cron job started
+[2025-06-11T08:35:00.113Z] INFO: No users pending identity verification
+[2025-06-11T08:35:00.116Z] INFO: Cron job finished
+[2025-06-11T08:36:00.012Z] INFO: Cron job started
+[2025-06-11T08:36:00.154Z] INFO: No users pending identity verification
+[2025-06-11T08:36:00.156Z] INFO: Cron job finished
+[2025-06-11T08:38:28.096Z] INFO: MongoDB connected
+[2025-06-11T08:38:28.099Z] INFO: Sidecar service running on port 9012

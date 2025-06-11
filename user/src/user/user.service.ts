@@ -196,7 +196,8 @@ export class UserService {
       const user = await this.userModel.findByIdAndUpdate(userId, {
        phoneNumber:data.phoneNumber,
        birthDate:data.birthDate,
-       nationalCode:data.nationalCode
+       nationalCode:data.nationalCode,
+       identityStatus:2
       }).session(session)
 
       console.log(user);

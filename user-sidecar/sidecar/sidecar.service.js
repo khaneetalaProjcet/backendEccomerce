@@ -81,6 +81,10 @@ async function processIdentityCheck() {
     }
 
 
+    console.log("");
+    
+
+
     if(response.statusCode==1){
         console.log("1",response.statusCode);
         
@@ -106,9 +110,25 @@ async function processIdentityCheck() {
          await user.save()
         
     }  //?
+     if(response.statusCode==6){
+      console.log("response",response);
+         console.log("4",response.statusCode);
+         user.identityStatus=1
+         user.firstName=response.user.firstName
+         user.lastName=response.user.lastName
+         user.fatherName=response.user.fatherName
+         user.phoneNumber=response.user.phoneNumber
+         user.nationalCode=response.user.nationalCode
+         user.birthDate=response.user.birthDate
+         await user.save()
+        
+    }  //
     if(response.statusCode==5){
         console.log("response",response);
         user.identityStatus=1
+         user.firstName=response.user.firstName
+         user.lastName=response.user.lastName
+         user.fatherName=response.user.fatherName
         await user.save()
     }
   
