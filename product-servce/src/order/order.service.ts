@@ -8,10 +8,11 @@ import { Model } from 'mongoose';
 import { ProductItems, ProductItemsDocment } from 'src/product/entities/productItems.entity';
 import { Product, ProductDocumnet } from 'src/product/entities/product.entity';
 import { Order, OrderInterface } from './entities/order.entity';
-
+import { goldPriceService } from 'src/goldPrice/goldPrice.service';
 @Injectable()
 export class OrderService {
    constructor(
+      private readonly goldPriceService : goldPriceService,
       @InjectModel(Cart.name) private cartModel: Model<CartInterface>,
       @InjectModel(ProductItems.name) private productItemsModel: Model<ProductItemsDocment>,
       @InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
@@ -103,6 +104,13 @@ export class OrderService {
 
   remove(id: number) {
     return `This action removes a #${id} order`;
+  }
+
+
+  async getGoldPrice(){
+        const goldP=await this.goldPriceService.getGoldPrice()
+        console.log("goldP",goldP);
+        return goldP
   }
 
 

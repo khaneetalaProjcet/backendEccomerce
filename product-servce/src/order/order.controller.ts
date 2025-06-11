@@ -22,6 +22,12 @@ export class OrderController {
     return this.orderService.findAllForUser(userId);
   }
 
+
+  @Get("price")
+  goldPrice(@Req() req : any , @Res() res : any) {
+    return this.orderService.getGoldPrice();
+  }
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.orderService.findOne(+id);

@@ -15,6 +15,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { RedisOptions } from 'configs/redis.config';
 import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
+import { goldPriceService } from './goldPrice/goldPrice.service';
 
 @Module({
   imports:  [
@@ -29,6 +30,6 @@ import { OrderModule } from './order/order.module';
     OrderModule
   ],
   controllers: [AppController],
-  providers: [AppService,JwtService,InterserviceService,RedisServiceService],
+  providers: [AppService,JwtService,InterserviceService,RedisServiceService,goldPriceService],
 })
 export class AppModule {}
