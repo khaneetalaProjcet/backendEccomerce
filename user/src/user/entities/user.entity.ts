@@ -76,7 +76,7 @@ export class User2 {
   @Prop({ type: mongoose.Schema.Types.Number })
   authStatus: number   //? 1 just init - 2 compelteProfile - 3 exist in old service 
  
-  @Prop({type:mongoose.Schema.Types.Number }) //? 0 false   1->true  2-->pending
+  @Prop({type:mongoose.Schema.Types.Number , default : 0 }) //? 0 false   1->true  2-->pending
   identityStatus:number
 
   @Prop({ default: true })
