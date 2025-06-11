@@ -516,25 +516,19 @@ export class UserController {
       }
     },
   })
-  @ApiBody({
-    
+  @ApiBody({    
     description: 'data must like this dto',
   })
-   changeStatus(@Req() req: any, @Res() res: any, @Body(new ValidationPipe()) body:any ) {
+  changeStatus(@Req() req: any, @Res() res: any, @Body(new ValidationPipe()) body:any ) {
     console.log("reqUser", req.user);
     const userId = req.user.userId
-    console.log("body",body.identityStatus);
-    
+    console.log("body",body.identityStatus);  
     return this.userService.changeStatus(userId, body.identityStatus);
   }
-
 
   @Get('/remover')
   async deleter() {
     return this.userService.deletAll()
   }
-
-
-
 
 }
