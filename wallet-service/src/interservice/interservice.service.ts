@@ -8,7 +8,8 @@ export class InterserviceService {
 
 
     async getOrder(id : string){
-        let rawResponse = await fetch(`https://localhost:9014/order/internal/findone/${id}` , {
+        
+        let rawResponse = await fetch(`http://localhost:9014/order/internal/findone/${id}` , {
             method : 'GET',
         })
 
