@@ -30,7 +30,7 @@ export class WalletService {
           {
             owner: createWalletDto.owner,
             balance: createWalletDto.balance,
-            goldWeight: createWalletDto.goldWeight,
+            goldWeight: createWalletDto.goldWeight.toString(),
             date,
             time,
           },          

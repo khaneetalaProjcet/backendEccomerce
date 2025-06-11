@@ -52,7 +52,8 @@ export class UserService {
             goldWeight: oldUser.data.goldWeight
           }
           console.log('what is the fucking this >>>> ' , oldNewUser)
-          await this.internalService.createWallet(wallet)
+          let a = await this.internalService.createWallet(wallet)
+          console.log('after request to wallet , ' , a)
           await session.commitTransaction();
           return oldNewUser[0]
 
