@@ -8,16 +8,16 @@ export class InterserviceService {
 
 
     async getOrder(id : string){
-        let rawResponse = await fetch(`https://localhost:9014/order/${id}` , {
+        let rawResponse = await fetch(`https://localhost:9014/order/internal/findone/${id}` , {
             method : 'GET',
         })
+
+        console.log('requests results from product >>>> ' , rawResponse)
 
         if (!rawResponse){
             return 0                       // no connection exist
         }
         let response = rawResponse.Json()
-
-
 
         if (!response){
             return 0                      // no connection exist
@@ -30,7 +30,15 @@ export class InterserviceService {
         }else if(response.code == 3){
             return ""
         }
-
-
 }
+
+
+    async updateorder(orderId : string , invoice : any , status : number){
+        
+return {
+    statusCode : 2
+}
+
+    }
+
 }
