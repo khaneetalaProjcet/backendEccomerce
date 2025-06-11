@@ -48,6 +48,27 @@ class IdentityService {
     const data = await response.json();
     return data || "unknown";
   }
+  async createWallet(wallet){
+         const url='http://localhost:9011/wallet'
+               const body=wallet
+               
+               const response = await fetch(url, {
+                   method: 'POST',
+                   headers: {
+                   //   'Authorization': `Bearer ${token}`,
+                     'Content-Type': 'application/json',
+                   },
+                   body: JSON.stringify(body),
+                 });
+       
+                 console.log("response",response);
+                 
+                 if(!response.ok){
+                   throw new BadRequestException("لطفا دوباره امتحان کنید");
+                 }
+                 const data = await response.json(); // <-- this gets the actual data
+                 return data; 
+  }
 }
 
 const identityService = new IdentityService();
@@ -121,15 +142,38 @@ async function processIdentityCheck() {
          user.nationalCode=response.user.nationalCode
          user.birthDate=response.user.birthDate
          await user.save()
+
+       const wallet = {
+        owner: user._id,
+        balance: 0,
+        goldWeight: response.user.goldWeight
+      }
+
+      const createdWallet=await identityService.createWallet(wallet)
+
+      console.log("wallet",createdWallet);
+      
         
     }  //
     if(response.statusCode==5){
         console.log("response",response);
         user.identityStatus=1
-         user.firstName=response.user.firstName
-         user.lastName=response.user.lastName
-         user.fatherName=response.user.fatherName
+        user.firstName=response.user.firstName
+        user.lastName=response.user.lastName
+        user.fatherName=response.user.fatherName
         await user.save()
+
+ 
+       const wallet = {
+        owner: user._id,
+        balance: 0,
+        goldWeight: "0"
+      }
+
+      const createdWallet=await identityService.createWallet(wallet)
+
+      console.log("wallet",createdWallet);
+
     }
   
     
@@ -139,6 +183,8 @@ async function processIdentityCheck() {
 //     logger.error(`Error during identity check for user ${user._id}: ${err.message}`);
 //   }
 }
+
+
 
 module.exports = {
   processIdentityCheck
