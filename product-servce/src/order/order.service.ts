@@ -50,10 +50,14 @@ export class OrderService {
       date,
       time,
     });
+    const enrichedProducts = cart.products.map((p, i) => ({
+    ...JSON.parse(JSON.stringify(p)),
+    pricing: itemPrices[i]
+  }));
     return {
         message: '',
         statusCode: 200,
-        data:order
+        data:{order,products:enrichedProducts}
     };
     }catch(error){
       console.log(error);   
