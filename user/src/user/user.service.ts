@@ -401,6 +401,16 @@ export class UserService {
   }
 
   
+  async deletAll(){
+    await this.userModel.deleteMany()
+    return {
+      message : 'ok',
+      statusCode :200
+    }
+  }
+
+
+
 
 
   async findById(userId: string) {
