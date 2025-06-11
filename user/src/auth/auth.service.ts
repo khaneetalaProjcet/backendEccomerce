@@ -70,14 +70,10 @@ export class AuthService {
 
 
       const otp=body.otp
+
       const phoneNumber=body.phoneNumber
 
-
-     
-
       let findedOtp=await this.redisService.get(`otp-${body.phoneNumber}`)
-      
-      
       
       findedOtp=JSON.parse(findedOtp)
       console.log(findedOtp);
@@ -111,7 +107,7 @@ export class AuthService {
       if(!user){
         return {
           message: 'لطفا دوباره امتحان کنید',
-          statusCode: 500,
+          statusCode: 400,
           error: 'لطفا دوباره امتحان کنید',
         }
       }
