@@ -24,6 +24,14 @@ export class RedisServiceService {
     async setOtp(key : string , value : any) : Promise<any>{
         await this.cache.set(key , value , 120000)
     }
+
+    async setGoldPrice(value:any){
+        await this.cache.set("goldPrice" , value , 300000)
+    }
+    async getGoldPrice(){
+      const data=await this.cache.get("goldPrice")
+      return data
+    }
     
     // async del(){}
 }

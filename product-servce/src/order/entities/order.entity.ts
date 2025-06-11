@@ -24,7 +24,16 @@ export interface OrderInterface extends Document {
 
     totalPrice:number
 
-    status:number
+    status:number,
+
+    address:{
+        addressId:string,
+        adress: string,
+        postCode: string,
+        name: string,
+        plate: number,
+        unit: number
+    }
 
 }
 
@@ -55,6 +64,22 @@ export class Order {
     @Prop({type : String})
     invoiceId:string
 
+    @Prop({type:{
+       addressId:{type:String},
+       adress: { type: String },
+       postCode: { type: String },
+       name: { type: String },
+       plate: { type: Number }, 
+       unit: { type: Number }
+    }})
+    address:{
+        addressId:string,
+        adress: string,
+        postCode: string,
+        name: string,
+        plate: number,
+        unit: number
+    }
     @Prop({type : Number,required:false ,default:1})
     paymentMethod : number
 

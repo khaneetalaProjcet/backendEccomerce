@@ -28,7 +28,7 @@ export class InterserviceService {
     }
 
 
-     async checkExistOldUser(phoneNumber: string){
+    async checkExistOldUser(phoneNumber: string){
            
            const url="https://gateway.khanetala.ir/v1/query/internal/checkUser"
            const body={
@@ -58,7 +58,7 @@ export class InterserviceService {
           
           return data; 
 
-     }
+    }
 
     async identity(info:any){
           
