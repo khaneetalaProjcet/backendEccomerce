@@ -529,9 +529,9 @@ export class UserController {
   }
 
 
-  @Get()
+  @Get('/remover')
   async deleter() {
-    return
+    return this.userService.deletAll()
   }
 
 
