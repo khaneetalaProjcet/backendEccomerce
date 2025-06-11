@@ -15,17 +15,23 @@ export class ResponseInterceptor implements NestInterceptor {
   }
 
   responseHandler(res: any, context: ExecutionContext) {
-    const ctx = context.switchToHttp();
-    const response = ctx.getResponse();
-    const request = ctx.getRequest();
-    console.log('final test2')
     
-    let newResponse = { success : (res.statusCode == 200) ? true : false ,  
-      ...res , 
-      error : (res.error) ? res.error : null ,
-      data : (res.data) ? res.data : null ,
-      timestamp: format(new Date().toISOString(), 'yyyy-MM-dd HH:mm:ss')}
-    delete newResponse.statusCode
-    return response.status(+res.statusCode).json(newResponse)
+        const ctx = context.switchToHttp();
+        const response = ctx.getResponse();
+        const request = ctx.getRequest();
+
+    if (res.statusCode === 301){
+      return response.status(200).send(res.data)
+    }else{
+      console.log('final test2')
+      
+      let newResponse = { success : (res.statusCode == 200) ? true : false ,  
+        ...res , 
+        error : (res.error) ? res.error : null ,
+        data : (res.data) ? res.data : null ,
+        timestamp: format(new Date().toISOString(), 'yyyy-MM-dd HH:mm:ss')}
+      delete newResponse.statusCode
+      return response.status(+res.statusCode).json(newResponse)
+    }
   }
 }

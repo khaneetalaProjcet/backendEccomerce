@@ -5,11 +5,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import {walletDocument} from "./entities/wallet.entity"
 import { Model, ClientSession} from 'mongoose';
 import { responseInterface } from 'src/interfaces/interfaces.interface';
+import { InterserviceService } from 'src/interservice/interservice.service';
+import { PaymentService } from 'src/payment/payment.service';
 
 @Injectable()
 export class WalletService {
   constructor(
     @InjectModel('wallet') private walletModel: Model<walletDocument>,
+    private interService : InterserviceService,
+    private payments : PaymentService
   ) {}
 
   async create(createWalletDto: CreateWalletDto) {
@@ -103,5 +107,46 @@ export class WalletService {
 
   async payOrder(orderId : string){
     console.log('order id' , orderId)
+    
+    let order = await this.interService.getOrder(orderId)
+
+    if (order == 0){
+      console.log('internal services error , not connected to order service')
+      return {
+          message : 'خطای بین سرویس',
+          statusCode : 503,
+          error : "خطای بین سرویس"
+        }
+    }else if (order == "orderNotFound"){
+      console.log('orderNotFound from order product')
+      return {
+        message: 'محصول مورد نظر برای ادامه خرید پیدا نشد',
+        statusCode: 400,
+        error: 'محصول مورد نظر برای ادامه خرید پیدا نشد'
+      }
+    } else if (order.statusCode === 1) {
+      if (order._id.toString() !== orderId) {           // if the order was not the main order that i want
+        console.log('the order is not the same >>>> ', orderId, order._id)
+        return {
+          message: 'خطای داخلی سرور',
+          statusCode: 503,
+          error: "خطای داخلی سرور"
+        }
+      }
+
+      // let { paymentMethod } = order.paymentMethod      // its the payment method
+      
+      let createdInvoice = await this.payments.payment(order)
+
+      return createdInvoice
+
+    } else {
+      console.log('unknown response', order)
+      return {
+        message: 'خطای داخلی سرور',
+        statusCode: 503,
+        error: "خطای داخلی سرور"
+      }
+    }
   }
 }
