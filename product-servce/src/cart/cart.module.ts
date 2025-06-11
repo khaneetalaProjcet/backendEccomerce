@@ -11,6 +11,7 @@ import { JwtAdminStrategy } from 'src/jwt/admin-jwt.strategy';
 import { LockerService } from 'src/locker/locker.service';
 import { RedisServiceService } from 'src/redis-service/redis-service.service';
 import { Cart, cartSchema } from './entities/cart.entity';
+import { goldPriceService } from 'src/goldPrice/goldPrice.service';
 
 
 
@@ -23,7 +24,8 @@ import { Cart, cartSchema } from './entities/cart.entity';
     JwtStrategy,
     JwtAdminStrategy,
     LockerService,
-    RedisServiceService],
+    RedisServiceService,
+   goldPriceService],
 })
 
 export class CartModule { }

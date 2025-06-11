@@ -7,11 +7,13 @@ import { Cart, CartInterface } from './entities/cart.entity';
 import mongoose, { Model } from 'mongoose';
 import { ProductItems, ProductItemsDocment } from 'src/product/entities/productItems.entity';
 import { Product, ProductDocumnet } from 'src/product/entities/product.entity';
+import { goldPriceService } from 'src/goldPrice/goldPrice.service';
 
 @Injectable()
 export class CartService {
 
   constructor(
+    private readonly goldPriceService : goldPriceService,
     @InjectModel(Cart.name) private cartModel: Model<CartInterface>,
     @InjectModel(ProductItems.name) private productItemsModel: Model<ProductItemsDocment>,
     @InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
@@ -205,7 +207,7 @@ export class CartService {
     });
   }
 
-  const goldPrice = 3200000; // مثال: 3,200,000 تومان به‌ازای هر گرم طلا
+  const goldPrice =await this.goldPriceService.getGoldPrice(); // مثال: 3,200,000 تومان به‌ازای هر گرم طلا
 
   const itemPrices = this.calculateCartItemPrices(cart.products as any, goldPrice);
 

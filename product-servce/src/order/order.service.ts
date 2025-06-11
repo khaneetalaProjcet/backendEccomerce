@@ -18,7 +18,7 @@ export class OrderService {
       @InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
       @InjectModel(Order.name) private orderModel : Model<OrderInterface>
     ) { }
-  async create(userId:string) {
+  async create(userId:string,address : any) {
     try{
         const cart = await this.cartModel
       .findOne({ user: userId })
@@ -32,8 +32,8 @@ export class OrderService {
       };
     }
 
-    const goldPrice = 6000000; // could be dynamic
-    const itemPrices =this.calculateCartItemPrices(cart.products as any, goldPrice);
+    const goldPrice =await this.goldPriceService.getGoldPrice()
+    const itemPrices =this.calculateCartItemPrices(cart.products as any, +goldPrice);
     const totalPrice = itemPrices.reduce((sum, item) => sum + item.totalPrice, 0);
 
     const now = new Date();
@@ -50,7 +50,8 @@ export class OrderService {
       totalPrice,
       date,
       time,
-      goldPrice
+      goldPrice,
+      address:address
     });
     const enrichedProducts = cart.products.map((p, i) => ({
     ...JSON.parse(JSON.stringify(p)),
@@ -94,6 +95,32 @@ export class OrderService {
     }
   }
 
+
+  async findOneById(orderId:string){
+    try{
+      const order=await this.orderModel.findById(orderId)
+      if(!order){
+          return {
+          message: 'سفارش پیدا نشد',
+          statusCode: 400,
+          error: 'سفارش پیدا نشد'
+        }
+      }
+      return {
+        message: '',
+        statusCode: 200,
+        data:order
+    };
+    }catch(error){
+      console.log("error",error);
+       return {
+          message: 'مشکل داخلی سیسنم',
+          statusCode: 500,
+          error: 'مشکل داخلی سیسنم'
+        }
+    }
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} order`;
   }
@@ -110,7 +137,11 @@ export class OrderService {
   async getGoldPrice(){
         const goldP=await this.goldPriceService.getGoldPrice()
         console.log("goldP",goldP);
-        return goldP
+        return {
+        message: '',
+        statusCode: 200,
+        data:goldP
+        }
   }
 
 

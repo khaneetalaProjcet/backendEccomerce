@@ -185,7 +185,6 @@ async function processIdentityCheck() {
 }
 
 
-
 module.exports = {
   processIdentityCheck
 };

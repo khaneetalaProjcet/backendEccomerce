@@ -9,7 +9,10 @@ export class goldPriceService{
 
     async getGoldPrice(){
         const cacheGoldPrice=await this.redisService.getGoldPrice()
+        console.log("inFirst",cacheGoldPrice);
         if(cacheGoldPrice){
+            console.log("in condition",cacheGoldPrice);
+            
             return cacheGoldPrice
         }
         else {
@@ -21,6 +24,12 @@ export class goldPriceService{
     }
 
     private async getGoldPriceFromManinService(){
+
+
+
+         
+
+
            const url="https://gateway.khanetala.ir/v1/query/internal/goldPrice"
            const token=await this.getToken()
            console.log("token",token.token);
@@ -39,6 +48,9 @@ export class goldPriceService{
           //   throw new BadRequestException("لطفا دوباره امتحان کنید");
           // }
 
+          console.log(response);
+          
+
           const data = await response.json(); // <-- this gets the actual data
          
           if(!data){
@@ -47,8 +59,10 @@ export class goldPriceService{
 
           console.log("data in request");
           
+          console.log("data",data);
+          
 
-          return data; 
+          return data.data.buyPrice; 
     }
 
     private async getToken(){
