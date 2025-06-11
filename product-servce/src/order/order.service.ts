@@ -137,7 +137,15 @@ export class OrderService {
     order.invoiceId=body.invoiceId
 
 
+    
+    
+
+
     await order.save()
+
+
+    console.log("order");
+    
 
     return {
         message: '',
