@@ -8,16 +8,17 @@ import { Model } from 'mongoose';
 import { ProductItems, ProductItemsDocment } from 'src/product/entities/productItems.entity';
 import { Product, ProductDocumnet } from 'src/product/entities/product.entity';
 import { Order, OrderInterface } from './entities/order.entity';
-
+import { goldPriceService } from 'src/goldPrice/goldPrice.service';
 @Injectable()
 export class OrderService {
    constructor(
+      private readonly goldPriceService : goldPriceService,
       @InjectModel(Cart.name) private cartModel: Model<CartInterface>,
       @InjectModel(ProductItems.name) private productItemsModel: Model<ProductItemsDocment>,
       @InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
       @InjectModel(Order.name) private orderModel : Model<OrderInterface>
     ) { }
-  async create(userId:string) {
+  async create(userId:string,body : any) {
     try{
         const cart = await this.cartModel
       .findOne({ user: userId })
@@ -31,8 +32,8 @@ export class OrderService {
       };
     }
 
-    const goldPrice = 6000000; // could be dynamic
-    const itemPrices =this.calculateCartItemPrices(cart.products as any, goldPrice);
+    const goldPrice =await this.goldPriceService.getGoldPrice()
+    const itemPrices =this.calculateCartItemPrices(cart.products as any, +goldPrice);
     const totalPrice = itemPrices.reduce((sum, item) => sum + item.totalPrice, 0);
 
     const now = new Date();
@@ -49,7 +50,9 @@ export class OrderService {
       totalPrice,
       date,
       time,
-      goldPrice
+      goldPrice,
+      address:body.address,
+      paymentMethod:body.paymentMethod
     });
     const enrichedProducts = cart.products.map((p, i) => ({
     ...JSON.parse(JSON.stringify(p)),
@@ -93,6 +96,32 @@ export class OrderService {
     }
   }
 
+
+  async findOneById(orderId:string){
+    try{
+      const order=await this.orderModel.findById(orderId)
+      if(!order){
+          return {
+          message: 'سفارش پیدا نشد',
+          statusCode: 400,
+          error: 'سفارش پیدا نشد'
+        }
+      }
+      return {
+        message: '',
+        statusCode: 200,
+        data:order
+    };
+    }catch(error){
+      console.log("error",error);
+       return {
+          message: 'مشکل داخلی سیسنم',
+          statusCode: 500,
+          error: 'مشکل داخلی سیسنم'
+        }
+    }
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} order`;
   }
@@ -103,6 +132,17 @@ export class OrderService {
 
   remove(id: number) {
     return `This action removes a #${id} order`;
+  }
+
+
+  async getGoldPrice(){
+        const goldP=await this.goldPriceService.getGoldPrice()
+        console.log("goldP",goldP);
+        return {
+        message: '',
+        statusCode: 200,
+        data:goldP
+        }
   }
 
 

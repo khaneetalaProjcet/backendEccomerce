@@ -3,16 +3,18 @@ import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
-  @Get("create")
+  @Post("create")
   @UseGuards(JwtAuthGuard)
-  create(@Req() req : any , @Res() res : any) {
+  @ApiBody({ type: CreateOrderDto })
+  create(@Req() req : any , @Res() res : any,@Body() body:CreateOrderDto) {
     const userId=req.user.userId
-    return this.orderService.create(userId);
+    return this.orderService.create(userId,body);
   }
 
   @Get("user")
@@ -20,6 +22,17 @@ export class OrderController {
   findAll(@Req() req : any , @Res() res : any) {
     const userId=req.user.userId
     return this.orderService.findAllForUser(userId);
+  }
+
+
+  @Get("price")
+  goldPrice(@Req() req : any , @Res() res : any) {
+    return this.orderService.getGoldPrice();
+  }
+
+  @Get("/internal/findone/:id")
+  findOne(@Param('id') id: string) {
+    return this.orderService.findOneById(id);
   }
 
   // @Get(':id')

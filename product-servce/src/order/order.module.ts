@@ -11,6 +11,7 @@ import { RedisServiceService } from 'src/redis-service/redis-service.service';
 import { Cart, cartSchema } from '../cart/entities/cart.entity';
 import { Order, orderSchema } from './entities/order.entity';
 import { OrderService } from './order.service';
+import { goldPriceService } from 'src/goldPrice/goldPrice.service';
 
 
 
@@ -24,7 +25,7 @@ import { OrderService } from './order.service';
     JwtAdminStrategy,
     LockerService,
     RedisServiceService,
-    OrderService],
+    OrderService,goldPriceService],
 })
 
 export class OrderModule {}
