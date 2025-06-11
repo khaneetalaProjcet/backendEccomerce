@@ -58,7 +58,7 @@ export class WalletService {
 
   async findSpecificUserWallet(req : any , res : any ): Promise<responseInterface> {
     let userId : string = req.user.userId
-    let wallet = await this.walletModel.findOne({ 'owner.id': userId });
+    let wallet = await this.walletModel.findOne({ 'owner': userId });
     // const all=await this.walletModel.find()
 
     // const wallet=all[0]
