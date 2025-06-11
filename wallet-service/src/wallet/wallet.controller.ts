@@ -109,6 +109,7 @@ export class WalletController {
     },
   })
   findSpecificWallet(@Req() req: any, @Res() res: any) {
+    console.log('checking user id' , req.user)
     return this.walletService.findSpecificUserWallet(req, res);
   }
 
