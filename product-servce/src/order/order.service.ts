@@ -49,6 +49,7 @@ export class OrderService {
       totalPrice,
       date,
       time,
+      goldPrice
     });
     const enrichedProducts = cart.products.map((p, i) => ({
     ...JSON.parse(JSON.stringify(p)),
@@ -75,6 +76,8 @@ export class OrderService {
        const orders=await this.orderModel.find({
       user:userId
     })
+    .populate('products.product')
+    .populate('products.mainProduct');
     return {
         message: '',
         statusCode: 200,
