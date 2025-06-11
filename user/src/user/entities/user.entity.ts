@@ -16,6 +16,7 @@ export interface UserDocument extends Document {
   password: string;
   pictureProfile: string;
   nationalCode: string
+  birthDate:string
   authStatus: number   //? 0 just init - 1 compelteProfile - 2 exist in old service
   isActive: boolean;
   adresses: {
