@@ -20,41 +20,39 @@ export class WalletService {
     //   await this.walletModel.findByIdAndDelete(element._id)
 
     // }
-    const session: ClientSession = await this.walletModel.db.startSession();
-    session.startTransaction();
-
+    // const session: ClientSession = await this.walletModel.db.startSession();
+    // session.startTransaction();
+    console.log('wallet creation' , createWalletDto)
     try {
       const time = new Date().toLocaleString('fa-IR').split(',')[1];
       const date = new Date().toLocaleString('fa-IR').split(',')[0];
       const wallet = await this.walletModel.create(
-        [
           {
             owner: createWalletDto.owner,
             balance: createWalletDto.balance,
             goldWeight: createWalletDto.goldWeight,
             date,
             time,
-          },
-        ],
-        { session },
+          },          
       );
-
-      await session.commitTransaction();
-
+      console.log('created wallet' , wallet)
+      // await session.commitTransaction();
       return {
         message: '',
         statusCode: 200,
-        data: wallet[0],
+        data: wallet,
       };
     } catch (err) {
-      await session.abortTransaction();
+      // await session.abortTransaction();
+      console.log('error in creation of wallet' ,  err)
       return {
         message: 'مشکلی از سمت سرور به وجود آمده',
         statusCode: 500,
         error: 'خطای داخلی سیستم',
       };
     } finally {
-      session.endSession();
+      console.log('asdfadsfadsfasdfsfda')
+      // session.endSession();
     }
   }
 
