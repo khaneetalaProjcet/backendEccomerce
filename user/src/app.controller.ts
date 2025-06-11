@@ -11,4 +11,6 @@ export class AppController {
     this.kafkaService.sendMessage('order_created', { orderId: '123', status: 'new',value:"salllll" });
     return this.appService.getHello();
   }
+
+
 }

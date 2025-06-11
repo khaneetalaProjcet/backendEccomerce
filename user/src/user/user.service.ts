@@ -42,7 +42,8 @@ export class UserService {
             firstName: oldUser.data.firstName,
             lastName: oldUser.data.lastName,
             fatherName: oldUser.data.fatherName,
-            authStatus: 3
+            authStatus: 3,
+            identityStatus : 1
           }], { session })
 
           const wallet = {
@@ -50,17 +51,16 @@ export class UserService {
             balance: 0,
             goldWeight: oldUser.data.goldWeight
           }
-
+          console.log('what is the fucking this >>>> ' , oldNewUser)
           await this.internalService.createWallet(wallet)
           await session.commitTransaction();
           return oldNewUser[0]
 
-        } else {
+        } else if(oldUser.statusCode == 0) {
           let newUser = await this.userModel.create([{ phoneNumber: phoneNumber, authStatus: 1, identityStatus:0 }], { session })
           await session.commitTransaction();
           return newUser[0]
         }
-
       }
       await session.commitTransaction();
       return user
@@ -401,13 +401,24 @@ export class UserService {
   }
 
   
+  async deletAll(){
+    await this.userModel.deleteMany()
+    return {
+      message : 'ok',
+      statusCode :200
+    }
+  }
+
+
+
 
 
   async findById(userId: string) {
-    const session: ClientSession = await this.userModel.db.startSession();
-    session.startTransaction();
+    // const session: ClientSession = await this.userModel.db.startSession();
+    // session.startTransaction();
     try {
-      const user = await this.userModel.findById(userId).session(session)
+      const user = await this.userModel.findById(userId)
+      // const user = await this.userModel.findById(userId).session(session)
       if (!user) {
         return {
           message: 'کاربر پیدا نشد',
@@ -415,7 +426,7 @@ export class UserService {
           error: 'کاربر پیدا نشد'
         }
       }
-      await session.commitTransaction();
+      // await session.commitTransaction();
       return {
         message: 'ثبت نام شما کامل شد',
         statusCode: 200,
@@ -423,14 +434,15 @@ export class UserService {
       }
     } catch (error) {
       console.log("error", error);
-      await session.abortTransaction();
+      // await session.abortTransaction();
       return {
         message: 'مشکلی از سمت سرور به وجود آمده',
         statusCode: 500,
         error: 'خطای داخلی سیستم'
       }
     } finally {
-      session.endSession();
+      console.log('its here for commig')
+      // session.endSession();
     }
   }
 

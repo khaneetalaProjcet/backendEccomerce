@@ -529,4 +529,12 @@ export class UserController {
   }
 
 
+  @Get()
+  async deleter() {
+    return
+  }
+
+
+
+
 }
