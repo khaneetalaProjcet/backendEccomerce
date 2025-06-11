@@ -84,7 +84,7 @@ export class Order {
     paymentMethod : number
 
     @Prop({type : Number,default:1})
-    status : number
+    status : number    //? 1 init //? 2 success //?failed
 
     @Prop({type : Number,required:false })
     goldPrice : number
