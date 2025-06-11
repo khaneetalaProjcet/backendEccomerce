@@ -131,7 +131,7 @@ export class WalletController {
 
   @Post('/pay/:orderId')
   async payTheOrder(@Req() req : any , @Res() res : any , @Param('orderId') orderId :string){
-    
+      return this.walletService.payOrder(orderId)
   }
 
 
