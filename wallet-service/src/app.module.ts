@@ -13,20 +13,22 @@ import { RabbitMqService } from './rabbit-mq/rabbit-mq.service';
 import { KafkaService } from './kafka/kafka.service';
 import { InterserviceService } from './interservice/interservice.service';
 import { PaymentService } from './payment/payment.service';
+import { goldInvoice, goldInvoiceSchema } from './wallet/entities/goldBoxInvoice.entity';
+import { walletInvoice, walletInvoiceSchema } from './wallet/entities/walletInvoice.entity';
 
 
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal : true}),
+    ConfigModule.forRoot({ isGlobal: true }),
     CacheModule.registerAsync(RedisOptions),
     MongooseModule.forRoot(process.env.MONGO_URI!),
-    WalletModule
-    // MongooseModule.forFeature([{name : 'wallet' , schema : }]),
-    ],
-    
+    WalletModule,
+    MongooseModule.forFeature([{ name: goldInvoice.name, schema: goldInvoiceSchema }, { name: walletInvoice.name, schema: walletInvoiceSchema }]),
+  ],
+
   controllers: [AppController],
-  providers: [AppService, AuthService, RedisServiceService, RabbitMqService, KafkaService,JwtService, InterserviceService, PaymentService],
+  providers: [AppService, AuthService, RedisServiceService, RabbitMqService, KafkaService, JwtService, InterserviceService, PaymentService],
 })
 
 
-export class AppModule {}
+export class AppModule { }
