@@ -6,6 +6,7 @@ import { walletSchema } from './entities/wallet.entity';
 import { JwtStrategy } from 'src/jwt/jwt.strategy';
 import { walletInvoice, walletInvoiceSchema } from './entities/walletInvoice.entity';
 import { goldInvoice, goldInvoiceSchema } from './entities/goldBoxInvoice.entity';
+import { InterserviceService } from 'src/interservice/interservice.service';
 
 @Module({
   imports: [
@@ -14,6 +15,6 @@ import { goldInvoice, goldInvoiceSchema } from './entities/goldBoxInvoice.entity
 
   ],
   controllers: [WalletController],
-  providers: [WalletService,JwtStrategy],
+  providers: [WalletService,JwtStrategy,InterserviceService],
 })
 export class WalletModule {}
