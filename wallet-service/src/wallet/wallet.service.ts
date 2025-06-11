@@ -38,6 +38,9 @@ export class WalletService {
         ],
         { session },
       );
+
+      await session.commitTransaction();
+
       return {
         message: '',
         statusCode: 200,
@@ -102,8 +105,5 @@ export class WalletService {
 
   async payOrder(orderId : string){
     console.log('order id' , orderId)
-
-    
-
   }
 }
