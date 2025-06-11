@@ -83,7 +83,6 @@ export class Order {
     @Prop({type : Number,required:false ,default:1})
     paymentMethod : number
 
-    
     @Prop({type : Number,default:1})
     status : number
 

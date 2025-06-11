@@ -50,4 +50,8 @@ export class CreateOrderDto {
   @ValidateNested()
   @Type(() => OrderAddressDto)
   address: OrderAddressDto;
+  @ApiProperty({ example: 1, description: 'House number or plate' })
+  @IsNumber()
+  @IsNotEmpty()
+  paymentMethod: number;
 }
