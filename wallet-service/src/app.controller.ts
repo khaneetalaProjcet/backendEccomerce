@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Req, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Ctx, EventPattern, KafkaContext, Payload } from '@nestjs/microservices';
 
@@ -17,6 +17,13 @@ export class AppController {
     
     return offset
   }
+
+
+  @Get("/redirect")
+  async redirectAfterGateway(@Req() req : any , @Res() res : any , @Body() body : any){
+    return 
+  }
+
 
 
 

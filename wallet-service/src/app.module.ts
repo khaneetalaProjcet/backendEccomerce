@@ -12,6 +12,7 @@ import { RedisOptions } from 'configs/redis.config';
 import { RabbitMqService } from './rabbit-mq/rabbit-mq.service';
 import { KafkaService } from './kafka/kafka.service';
 import { InterserviceService } from './interservice/interservice.service';
+import { PaymentService } from './payment/payment.service';
 
 
 @Module({
@@ -24,7 +25,7 @@ import { InterserviceService } from './interservice/interservice.service';
     ],
     
   controllers: [AppController],
-  providers: [AppService, AuthService, RedisServiceService, RabbitMqService, KafkaService,JwtService, InterserviceService],
+  providers: [AppService, AuthService, RedisServiceService, RabbitMqService, KafkaService,JwtService, InterserviceService, PaymentService],
 })
 
 
