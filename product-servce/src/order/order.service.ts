@@ -18,7 +18,7 @@ export class OrderService {
       @InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
       @InjectModel(Order.name) private orderModel : Model<OrderInterface>
     ) { }
-  async create(userId:string,address : any) {
+  async create(userId:string,body : any) {
     try{
         const cart = await this.cartModel
       .findOne({ user: userId })
@@ -51,7 +51,8 @@ export class OrderService {
       date,
       time,
       goldPrice,
-      address:address
+      address:body.address,
+      paymentMethod:body.paymentMethod
     });
     const enrichedProducts = cart.products.map((p, i) => ({
     ...JSON.parse(JSON.stringify(p)),

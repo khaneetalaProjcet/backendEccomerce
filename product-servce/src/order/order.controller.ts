@@ -14,7 +14,7 @@ export class OrderController {
   @ApiBody({ type: CreateOrderDto })
   create(@Req() req : any , @Res() res : any,@Body() body:CreateOrderDto) {
     const userId=req.user.userId
-    return this.orderService.create(userId,body.address);
+    return this.orderService.create(userId,body);
   }
 
   @Get("user")
