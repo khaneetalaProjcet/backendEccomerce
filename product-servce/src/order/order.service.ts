@@ -20,7 +20,7 @@ export class OrderService {
     ) { }
   async create(userId:string,body : any) {
     try{
-        const cart = await this.cartModel
+      const cart = await this.cartModel
       .findOne({ user: userId })
       .populate('products.product')
       .populate('products.mainProduct');
@@ -31,7 +31,7 @@ export class OrderService {
         message: 'سبد خرید شما خالی است',
       };
     }
-
+    const cash : number = body.cash
     const goldPrice =await this.goldPriceService.getGoldPrice()
     const itemPrices =this.calculateCartItemPrices(cart.products as any, +goldPrice);
     const totalPrice = itemPrices.reduce((sum, item) => sum + item.totalPrice, 0);
@@ -39,6 +39,16 @@ export class OrderService {
     const now = new Date();
     const time = now.toTimeString().slice(0, 5);
     const date = now.toLocaleDateString('fa-IR');
+
+    let goldBox="0"
+    
+    if (body.paymentMethod === 2){
+      goldBox = await this.caculateNumberOfGoldBox(((totalPrice - cash) / +goldPrice).toString())
+    }
+
+    if (body.paymentMethod === 3){
+      goldBox = await this.caculateNumberOfGoldBox((totalPrice / +goldPrice).toString())
+    }
 
     const order = await this.orderModel.create({
       user: userId,
@@ -52,8 +62,10 @@ export class OrderService {
       time,
       goldPrice,
       address:body.address,
-      paymentMethod:body.paymentMethod
+      paymentMethod:body.paymentMethod,
+      goldBox
     });
+
     const enrichedProducts = cart.products.map((p, i) => ({
     ...JSON.parse(JSON.stringify(p)),
     pricing: itemPrices[i]
@@ -102,7 +114,7 @@ export class OrderService {
       const order=await this.orderModel.findById(orderId)
       if(!order){
           return {
-          message: 'سفارش پیدا نشد',
+          message: 'notFound',
           statusCode: 400,
           error: 'سفارش پیدا نشد'
         }
@@ -110,12 +122,12 @@ export class OrderService {
       return {
         message: '',
         statusCode: 200,
-        data:order
+        data:{order}
     };
     }catch(error){
       console.log("error",error);
        return {
-          message: 'مشکل داخلی سیسنم',
+          message: 'internalError',
           statusCode: 500,
           error: 'مشکل داخلی سیسنم'
         }
@@ -135,11 +147,6 @@ export class OrderService {
     }
     order.status=2
     order.invoiceId=body.invoiceId
-
-
-    
-    
-
 
     await order.save()
 
@@ -186,6 +193,20 @@ export class OrderService {
         data:goldP
         }
   }
+
+
+  private async caculateNumberOfGoldBox(goldBox : string){
+    let seperator = goldBox.split('')
+
+    let calculatedGoldBox = '' 
+
+    for (let i=0 ; i < 5 ; i ++){
+      calculatedGoldBox += i
+    }
+    return calculatedGoldBox
+
+  }
+
 
 
   private calculateCartItemPrices(

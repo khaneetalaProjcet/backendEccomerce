@@ -20,6 +20,8 @@ export interface goldInvoiceInterface extends Document {
 
     time: string
 
+    state: number
+
 }
 
 
@@ -40,6 +42,9 @@ export class goldInvoice {
 
     @Prop({ type: String })
     status: string
+    
+    @Prop({ type: Number , default : 0 })
+    state: number                // 0 : init    1 : send to khanetala   2 : successFromKhaneetala   3 : send to product    4 : successFrom product
 
     @Prop({ type: String })
     date: string

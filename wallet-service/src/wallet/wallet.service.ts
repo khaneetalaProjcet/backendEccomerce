@@ -124,7 +124,14 @@ export class WalletService {
         statusCode: 400,
         error: 'محصول مورد نظر برای ادامه خرید پیدا نشد'
       }
-    } else if (order.statusCode === 1) {
+    }else if(order == "unknown"){
+      console.log('unknown error in getting product')
+      return {
+          message: 'خطای داخلی سرور',
+          statusCode: 503,
+          error: "خطای داخلی سرور"
+      }
+    }else {
       if (order._id.toString() !== orderId) {           // if the order was not the main order that i want
         console.log('the order is not the same >>>> ', orderId, order._id)
         return {
@@ -136,17 +143,8 @@ export class WalletService {
 
       // let { paymentMethod } = order.paymentMethod      // its the payment method
       
-      let createdInvoice = await this.payments.payment(order)
-
+      let createdInvoice = await this.payments.paymentHandler(order)
       return createdInvoice
-
-    } else {
-      console.log('unknown response', order)
-      return {
-        message: 'خطای داخلی سرور',
-        statusCode: 503,
-        error: "خطای داخلی سرور"
-      }
     }
   }
 }

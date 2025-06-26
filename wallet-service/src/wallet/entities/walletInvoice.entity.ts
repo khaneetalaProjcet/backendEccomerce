@@ -22,6 +22,8 @@ export interface walletInvoiceInterface extends Document {
 
     paymentDetail : {}
 
+    walletInvoice: mongoose.Types.ObjectId
+
     state : number        // 0 : init     // 1 : in the gatewya      // 2 : send to product    // 3 : success from product
 
 }
@@ -43,6 +45,9 @@ export class walletInvoice {
 
     @Prop({ type: String })
     wallet: mongoose.Types.ObjectId
+
+    @Prop({ type: String , default : null })
+    walletInvoice: mongoose.Types.ObjectId
 
     @Prop({ type: String })
     status: string

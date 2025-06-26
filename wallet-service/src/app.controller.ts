@@ -21,12 +21,15 @@ export class AppController {
 
   @Get("/redirect")
   async redirectAfterGateway(@Req() req : any , @Res() res : any , @Body() body : any){
-    return 
+    return this.appService.redirectFromBehPardakht(body)
   }
 
+   @Get("/redirect/secondPayment")
+  async redirectAfterGatewayForGoldBox(@Req() req : any , @Res() res : any , @Body() body : any){
+    return this.appService.redirectFromBehPardakhtForSecondPayment(body)
+  }
 
-
-
+  
   @Get()
   getHello(): string {
     return this.appService.getHello();
