@@ -1,10 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, ValidationPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { AdminService } from 'src/admin/admin.service';
 import { LoginAdminDto } from './dto/login.dto';
+import { UpdateAdminDto } from 'src/admin/dto/update-admin.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -71,8 +70,8 @@ export class AuthController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
+  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAdminDto) {
+    return this.authService.update(id, updateAuthDto);
   }
 
   @Delete(':id')

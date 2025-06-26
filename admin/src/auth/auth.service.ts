@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { AdminService } from 'src/admin/admin.service';
 import { CreateAdminDto } from 'src/admin/dto/create-admin.dto';
 import { TokenizeService } from 'src/tokenize/tokenize.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Admin } from '../admin/entities/admin.entity';
 import * as bcrypt from 'bcrypt';
+import { UpdateAdminDto } from 'src/admin/dto/update-admin.dto';
 
 @Injectable()
 export class AuthService {
@@ -42,7 +44,7 @@ export class AuthService {
         '12h',
         0,
       );
-      let newData = {...admin.toObject() , token : token}
+      let newData = { ...admin.toObject(), token: token };
       return {
         message: 'خوش امدید',
         statusCode: 200,
@@ -70,8 +72,9 @@ export class AuthService {
     return `This action returns a #${id} auth`;
   }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
+  async update(id: string, updateAuthDto: UpdateAdminDto) {
+    try {
+    } catch (error) {}
   }
 
   remove(id: number) {

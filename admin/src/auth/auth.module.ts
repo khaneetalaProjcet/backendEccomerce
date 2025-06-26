@@ -7,9 +7,10 @@ import { TokenizeService } from 'src/tokenize/tokenize.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Admin, AdminSchema } from 'src/admin/entities/admin.entity';
 import { JwtService } from '@nestjs/jwt';
+import { Page, PageSchema } from 'src/page/entities/page.entity';
 
 @Module({
-  imports:[AdminModule,MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }])],
+  imports:[AdminModule,MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema } , { name: Page.name, schema: PageSchema }])],
   controllers: [AuthController],
   providers: [AuthService,AdminService,TokenizeService,JwtService],
 })
