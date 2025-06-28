@@ -124,7 +124,7 @@ export class OrderService {
       return {
         message: '',
         statusCode: 200,
-        data:{order}
+        data:order
     };
     }catch(error){
       console.log("error",error);
