@@ -111,6 +111,8 @@ export class OrderService {
 
   async findOneById(orderId:string){
     try{
+      console.log();
+      
       const order=await this.orderModel.findById(orderId)
       if(!order){
           return {
@@ -119,6 +121,8 @@ export class OrderService {
           error: 'سفارش پیدا نشد'
         }
       }
+      console.log("order",order);
+      
       return {
         message: '',
         statusCode: 200,
