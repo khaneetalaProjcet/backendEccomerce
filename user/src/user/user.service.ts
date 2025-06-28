@@ -22,10 +22,12 @@ export class UserService {
 
   async checkOrCreate(phoneNumber: string) {
 
-    const session: ClientSession = await this.userModel.db.startSession();
-    session.startTransaction();
+    // const session: ClientSession = await this.userModel.db.startSession();
+    // session.startTransaction();
     try {
-      const user = await this.userModel.findOne({ phoneNumber: phoneNumber }).session(session)
+      // const user = await this.userModel.findOne({ phoneNumber: phoneNumber }).session(session)
+      const user = await this.userModel.findOne({ phoneNumber: phoneNumber })
+
       console.log('user after getting', user)
       if (!user) {
         const oldUser = await this.internalService.checkExistOldUser(phoneNumber)
@@ -37,7 +39,17 @@ export class UserService {
         if (oldUser && oldUser.statusCode == 1) {
           console.log("oldUser", oldUser);
 
-          const oldNewUser = await this.userModel.create([{
+          // const oldNewUser = await this.userModel.create([{
+          //   phoneNumber,
+          //   firstName: oldUser.data.firstName,
+          //   lastName: oldUser.data.lastName,
+          //   fatherName: oldUser.data.fatherName,
+          //   nationalCode:oldUser.data.nationalCode,
+          //   birthDate:oldUser.data.birthDate,
+          //   authStatus: 3,
+          //   identityStatus : 1
+          // }], { session })
+           const oldNewUser = await this.userModel.create([{
             phoneNumber,
             firstName: oldUser.data.firstName,
             lastName: oldUser.data.lastName,
@@ -46,7 +58,7 @@ export class UserService {
             birthDate:oldUser.data.birthDate,
             authStatus: 3,
             identityStatus : 1
-          }], { session })
+          }])
 
           const wallet = {
             owner: oldNewUser[0]._id,
@@ -56,48 +68,61 @@ export class UserService {
           console.log('what is the fucking this >>>> ' , oldNewUser)
           let a = await this.internalService.createWallet(wallet)
           console.log('after request to wallet , ' , a)
-          await session.commitTransaction();
+          // await session.commitTransaction();
           return oldNewUser[0]
 
         } else if(oldUser.statusCode == 0) {
-          let newUser = await this.userModel.create([{ phoneNumber: phoneNumber, authStatus: 1, identityStatus:0 }], { session })
-          await session.commitTransaction();
+          // let newUser = await this.userModel.create([{ phoneNumber: phoneNumber, authStatus: 1, identityStatus:0 }], { session })
+          let newUser = await this.userModel.create([{ phoneNumber: phoneNumber, authStatus: 1, identityStatus:0 }])
+
+          // await session.commitTransaction();
           return newUser[0]
         }
       }
-      await session.commitTransaction();
+      // await session.commitTransaction();
       return user
 
     } catch (error) {
       console.log(error);
-      await session.abortTransaction();
+      // await session.abortTransaction();
       // return {
       //   message: 'مشکلی از سمت سرور به وجود آمده',
       //   statusCode: 500,
       //   error: 'خطای داخلی سیستم'
       // }
     }
-    finally {
-      session.endSession();
-    }
+    // finally {
+    //   session.endSession();
+    // }
   }
 
 
   async completeRegister(userId: string, data: compelteRegisterDto) {
-    const session: ClientSession = await this.userModel.db.startSession();
-    session.startTransaction();
+    // const session: ClientSession = await this.userModel.db.startSession();
+    // session.startTransaction();
     try {
       console.log(userId);
 
 
-      const user = await this.userModel.findByIdAndUpdate(userId, {
+      // const user = await this.userModel.findByIdAndUpdate(userId, {
+      //   firstName: data.firstName,
+      //   lastName: data.lastName,
+      //   fatherName: data.fatherName,
+      //   adresses: data.adresses,
+      //   email: data.email,
+      //   authStatus: 2
+      // }).session(session)
+
+       const user = await this.userModel.findByIdAndUpdate(userId, {
         firstName: data.firstName,
         lastName: data.lastName,
         fatherName: data.fatherName,
         adresses: data.adresses,
         email: data.email,
         authStatus: 2
-      }).session(session)
+      })
+
+
       console.log(user);
 
 
@@ -117,7 +142,7 @@ export class UserService {
       }
 
       await this.internalService.createWallet(wallet)
-      await session.commitTransaction();
+      // await session.commitTransaction();
       return {
         message: 'ثبت نام شما کامل شد',
         statusCode: 200,
@@ -127,29 +152,38 @@ export class UserService {
     }
     catch (error) {
       console.log("error", error);
-      await session.abortTransaction();
+      // await session.abortTransaction();
       return {
         message: 'مشکلی از سمت سرور به وجود آمده',
         statusCode: 500,
         error: 'خطای داخلی سیستم'
       }
     }
-    finally {
-      session.endSession();
-    }
+    // finally {
+    //   session.endSession();
+    // }
   }
 
   async identity(userId: string ,data:IdentityDto ){
-    const session: ClientSession = await this.userModel.db.startSession();
-    session.startTransaction();
+    // const session: ClientSession = await this.userModel.db.startSession();
+    // session.startTransaction();
     try{
+    // const user=await this.userModel.findByIdAndUpdate(userId,{
+    //   birthDate:data.birthDate,
+    //   nationalCode:data.nationalCode,
+    //   // phoneNumber:data.phoneNumber,
+    //   authStatus:2,
+    //   identityStatus:2
+    // }).session(session)
+
     const user=await this.userModel.findByIdAndUpdate(userId,{
       birthDate:data.birthDate,
       nationalCode:data.nationalCode,
       // phoneNumber:data.phoneNumber,
       authStatus:2,
       identityStatus:2
-    }).session(session)
+    })
+
     if(!user){
       return {
           message: 'کاربر پیدا نشد',
@@ -158,7 +192,7 @@ export class UserService {
       }
     }
    
-  await session.commitTransaction();
+  // await session.commitTransaction();
 
    return {
       message: '',
@@ -169,15 +203,17 @@ export class UserService {
     }catch(error){
       console.log("error",error);
       
-       await session.abortTransaction();
+      //  await session.abortTransaction();
         return {
         message: 'مشکلی از سمت سرور به وجود آمده',
         statusCode: 500,
         error: 'خطای داخلی سیستم'
       }
-    }finally{
-      session.endSession();
     }
+    // finally{
+    //   // session.endSession();
+    // }
+
 
   }
 
@@ -188,17 +224,23 @@ export class UserService {
 
 
   async upgradeProfile(userId: string, data: upgradeProfileDto) {
-    const session: ClientSession = await this.userModel.db.startSession();
-    session.startTransaction();
+    // const session: ClientSession = await this.userModel.db.startSession();
+    // session.startTransaction();
     try {
       console.log(userId);
 
+      // const user = await this.userModel.findByIdAndUpdate(userId, {
+      //  phoneNumber:data.phoneNumber,
+      //  birthDate:data.birthDate,
+      //  nationalCode:data.nationalCode,
+      //  identityStatus:2
+      // }).session(session)
       const user = await this.userModel.findByIdAndUpdate(userId, {
        phoneNumber:data.phoneNumber,
        birthDate:data.birthDate,
        nationalCode:data.nationalCode,
        identityStatus:2
-      }).session(session)
+      })
 
       console.log(user);
 
@@ -209,7 +251,7 @@ export class UserService {
           error: 'کاربر پیدا نشد'
         }
       }
-      await session.commitTransaction();
+      // await session.commitTransaction();
       return {
         message: 'ثبت نام شما کامل شد',
         statusCode: 200,
@@ -217,15 +259,16 @@ export class UserService {
       }
     } catch (error) {
       console.log("error", error);
-      await session.abortTransaction();
+      // await session.abortTransaction();
       return {
         message: 'مشکلی از سمت سرور به وجود آمده',
         statusCode: 500,
         error: 'خطای داخلی سیستم'
       }
-    } finally {
-      session.endSession();
     }
+    //  finally {
+    //   session.endSession();
+    // }
   }
 
   async addAddress(userId: string, data: AddressDto) {
