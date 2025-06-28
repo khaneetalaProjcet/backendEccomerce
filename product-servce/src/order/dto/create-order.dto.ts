@@ -54,4 +54,7 @@ export class CreateOrderDto {
   @IsNumber()
   @IsNotEmpty()
   paymentMethod: number;
+  @IsNumber()
+  @IsNotEmpty()
+  cash: number;
 }
