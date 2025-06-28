@@ -49,7 +49,7 @@ export class PaymentService {
 
             wallet: wallet._id,
 
-            ivnoiceId: await this.generateInvoice(),
+            invoiceId: await this.generateInvoice(),
 
             status: "init",
 
