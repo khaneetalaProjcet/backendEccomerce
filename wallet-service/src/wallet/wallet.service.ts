@@ -111,6 +111,9 @@ export class WalletService {
     let order = await this.interService.getOrder(orderId)
 
     console.log("order",order);
+
+    console.log("order.order",order.order);
+    
     
     if (order == 0){
       console.log('internal services error , not connected to order service')
