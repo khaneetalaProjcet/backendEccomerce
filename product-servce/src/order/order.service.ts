@@ -111,8 +111,6 @@ export class OrderService {
 
   async findOneById(orderId:string){
     try{
-      console.log();
-      
       const order=await this.orderModel.findById(orderId)
       if(!order){
           return {
