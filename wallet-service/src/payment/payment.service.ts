@@ -75,6 +75,9 @@ export class PaymentService {
         const bpm = await BahPardakht.create();
         const responseOfBuyProcess = await bpm.bpPayRequest(info);
 
+        console.log("code",responseOfBuyProcess.return.split(",")[0] );
+        
+
         if (responseOfBuyProcess.return.split(",")[0] == "0") {       // it means that it is success 
             initInvoice.status = "pending"
             initInvoice.authority = responseOfBuyProcess.return.split(",")[1]
@@ -86,8 +89,13 @@ export class PaymentService {
                 data: responseOfBuyProcess.return.split(",")[1]
             }
         } else {
+
+
+            
+            
+
             initInvoice.status = "failed",
-                initInvoice.authority = responseOfBuyProcess?.return?.split(",")[1];
+            initInvoice.authority = responseOfBuyProcess?.return?.split(",")[1];
             await initInvoice.save()
             return {
                 message: 'درگاه پرداخت موقتا در دسترس نمی باشد.لطفا مجددا تلاش کنید',
