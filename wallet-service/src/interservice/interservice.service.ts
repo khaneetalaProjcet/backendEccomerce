@@ -22,10 +22,16 @@ export class InterserviceService {
             }
             let response = rawResponse.json()
 
+            console.log(response);
+
+            
+            
+            
+
             if (!response) {
                 return 0                      // no connection exist
             }
-            if (response.success) {
+            if (response.status==200) {
                 return response.data
             } else if (response.message == "notFound") {
                 return "orderNotFound"
