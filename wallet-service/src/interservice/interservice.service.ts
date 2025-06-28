@@ -20,30 +20,25 @@ export class InterserviceService {
             if (!rawResponse) {
                 return 0                       // no connection exist
             }
-            let response = rawResponse.json()
-
-            console.log(response);
+            let response =await rawResponse.json()
 
 
-
-            console.log("respo");
-            
-            
-            return response.data.order
+            // console.log("order",response.order);
+            console.log("response",response.data);
             
 
-            // if (!response) {
-            //     return 0                      // no connection exist
-            // }
-            // if (response.status==200) {
-            //     return response.data
-            // } else if (response.message == "notFound") {
-            //     return "orderNotFound"
-            // } else if (response.message == "internalError") {
-            //     return "productError"
-            // } else {
-            //     return "unknown"
-            // }
+            if (!response) {
+                return 0                      // no connection exist
+            }
+            if (response.success) {
+                return response.data
+            } else if (response.message == "notFound") {
+                return "orderNotFound"
+            } else if (response.message == "internalError") {
+                return "productError"
+            } else {
+                return "unknown"
+            }
         } catch (error) {
             console.log('error occured in getting order >>>> ', error)
             return 0
