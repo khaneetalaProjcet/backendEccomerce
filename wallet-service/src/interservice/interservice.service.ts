@@ -74,6 +74,8 @@ export class InterserviceService {
         }
     }
 
+    
+
 
     /**
      * this module is for update khanetala goldBox of user after completing behPardakht gateway
