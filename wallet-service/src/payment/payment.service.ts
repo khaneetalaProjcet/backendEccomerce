@@ -204,6 +204,11 @@ export class PaymentService {
             let updated = await this.goldInvoiceModel.findByIdAndUpdate(goldBoxInvoiceInitial._id , 
                 {state : 2 , status : "completed"}
             )
+
+        const order=await this.interService.updateorder(body._id,goldBoxInvoiceInitial,1)  
+        
+        console.log("order",order);
+        
             return {
                 message : "خرید با موفقیت انجام شد",
                 statusCode : 200,
