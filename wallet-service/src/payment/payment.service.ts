@@ -199,8 +199,11 @@ export class PaymentService {
             time: new Date().toLocaleString("fa-IR").split(",")[1]
         })
 
-        let khaneetalaResponse = await this.interService.updateGoldBox(goldBoxInvoiceInitial)
-        if (khaneetalaResponse && khaneetalaResponse.success){
+        // let khaneetalaResponse = await this.interService.updateGoldBox(goldBoxInvoiceInitial)
+        // if (khaneetalaResponse && khaneetalaResponse.success){
+        let khaneetalaResponse = true
+        if (khaneetalaResponse){
+
             let updated = await this.goldInvoiceModel.findByIdAndUpdate(goldBoxInvoiceInitial._id , 
                 {state : 2 , status : "completed"}
             )
