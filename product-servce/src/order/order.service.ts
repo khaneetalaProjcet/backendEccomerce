@@ -174,6 +174,25 @@ export class OrderService {
    
   }
 
+  async getAllOrder(){
+    try{
+      const all=await this.orderModel.find().populate("products.product").populate("products.mainProduct")
+      return {
+        message: '',
+        statusCode: 200,
+        data:all
+      }
+    }
+    catch(err){
+      console.log("err");
+      return {
+          message: 'مشکل داخلی سیسنم',
+          statusCode: 500,
+          error: 'مشکل داخلی سیسنم'
+      }
+    }
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} order`;
   }
@@ -283,6 +302,24 @@ export class OrderService {
 
         order.status=2
         order.invoiceId=invoice._id
+        let cart =await this.cartModel.findOne({user:order.user})
+        if(!cart){
+          return {
+            message:"",
+            statusCode:400,
+            error:""
+          }
+        }
+        let cartItems=cart.products
+        let history=cart.history
+        for (let index = 0; index < cartItems.length; index++) {
+          const element = cartItems[index];
+          history.push(element)
+          
+        }
+        cart.products=[]
+        cart.history=history
+        await cart.save()
 
       }else{
 
