@@ -217,7 +217,24 @@ export class UserService {
 
   }
 
+  async getAllUser(){
+    try{
+      const users=await this.userModel.find()
+      return {
+        message:'',
+        statusCode:200,
+        data:users
+      }
 
+    }catch(error){
+      console.log("error",error);
+      return {
+        message: 'مشکلی از سمت سرور به وجود آمده',
+        statusCode: 500,
+        error: 'خطای داخلی سیستم'
+      }
+    }
+  }
   
 
   
