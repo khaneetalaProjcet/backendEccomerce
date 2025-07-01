@@ -139,7 +139,7 @@ export class AdminController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.adminService.findOne(+id);
+    return this.adminService.findOne(id);
   }
 
   @Patch(':id')
@@ -149,6 +149,6 @@ export class AdminController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.adminService.remove(+id);
+    return this.adminService.remove(id);
   }
 }

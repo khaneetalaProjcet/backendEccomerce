@@ -1,7 +1,10 @@
-import { RedisServiceService } from '../redis-service/redis-service';
+import { Injectable } from '@nestjs/common';
+import { RedisServiceService } from 'src/redis-service/redis-service';
 
-export class LockerService {
-  constructor(private redisService: RedisServiceService) {}
+@Injectable()
+export class LocknewService {
+
+ constructor(private redisService: RedisServiceService) {}
   async check(id, ttl: number) {
     let a = await this.redisService.getter(`lock-${id}`);
     if (!a) {
@@ -60,4 +63,5 @@ export class LockerService {
       return false;
     }
   }
+
 }
