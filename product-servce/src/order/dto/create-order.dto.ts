@@ -54,4 +54,7 @@ export class CreateOrderDto {
   @IsNumber()
   @IsNotEmpty()
   paymentMethod: number;
+  @ApiProperty({ example: 4000000, description: 'cash money' })
+  @IsNumber()
+  cash: number;
 }

@@ -9,6 +9,7 @@ import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
 import { UpdateAddressDto } from './dto/updateAdress.sto';
 import { AddressDto } from './dto/addAdress.dto';
 import { IdentityDto } from './dto/Identity.dto';
+import { JwtAdminAuthGuard } from 'src/jwt/admin-jwt-auth.guard';
 
 
 
@@ -529,6 +530,13 @@ export class UserController {
   @Get('/remover')
   async deleter() {
     return this.userService.deletAll()
+  }
+
+  @Get('/admin/users')
+  @UseGuards(JwtAdminAuthGuard)
+  @ApiBearerAuth()
+  async getAllUsers() {
+    return this.userService.getAllUser()
   }
 
 }

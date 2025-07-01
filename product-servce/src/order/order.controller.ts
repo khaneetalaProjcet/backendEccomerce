@@ -3,6 +3,7 @@ import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
+import {JwtAdminAuthGuard} from '../jwt/admin-jwt-auth.guard'
 import { ApiBody } from '@nestjs/swagger';
 
 @Controller('order')
@@ -15,6 +16,11 @@ export class OrderController {
   create(@Req() req : any , @Res() res : any,@Body() body:CreateOrderDto) {
     const userId=req.user.userId
     return this.orderService.create(userId,body);
+  }
+  @Get("admin/orders")
+  @UseGuards(JwtAdminAuthGuard)
+  findAllOrderAdmin(@Req() req : any , @Res() res : any) {
+    return this.orderService.getAllOrder();
   }
 
   @Get("user")
@@ -34,9 +40,19 @@ export class OrderController {
     return this.orderService.findOneById(id);
   }
 
+
   @Post("internal/identity")
   identity(@Body() body:any){
     return this.orderService.identityOrder(body)
+  }afterpay
+
+   @Get("internal/afterpay/:id")
+   updateAfterPayment(@Param('id') id: string) {
+    return this.orderService.updateOrderAfterPayment(id);
+  }
+  @Post("internal/update/:id/:status")
+   update(@Param('id') id: string,@Param('status') status: string,@Body() body:any) {
+    return this.orderService.updateOrder(id,status,body);
   }
 
   // @Get(':id')

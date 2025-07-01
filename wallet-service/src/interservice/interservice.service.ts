@@ -20,7 +20,12 @@ export class InterserviceService {
             if (!rawResponse) {
                 return 0                       // no connection exist
             }
-            let response = rawResponse.json()
+            let response =await rawResponse.json()
+
+
+            // console.log("order",response.order);
+            console.log("response",response.data);
+            
 
             if (!response) {
                 return 0                      // no connection exist
@@ -68,6 +73,8 @@ export class InterserviceService {
             return { success: false }
         }
     }
+
+    
 
 
     /**

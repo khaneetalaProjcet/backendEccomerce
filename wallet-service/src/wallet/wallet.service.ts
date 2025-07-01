@@ -110,6 +110,9 @@ export class WalletService {
     
     let order = await this.interService.getOrder(orderId)
 
+    
+    
+    
     if (order == 0){
       console.log('internal services error , not connected to order service')
       return {
@@ -142,8 +145,13 @@ export class WalletService {
       }
 
       // let { paymentMethod } = order.paymentMethod      // its the payment method
+
+      console.log("here");
+      
+
       
       let createdInvoice = await this.payments.paymentHandler(order)
+
       return createdInvoice
     }
   }

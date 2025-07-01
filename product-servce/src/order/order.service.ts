@@ -9,6 +9,7 @@ import { ProductItems, ProductItemsDocment } from 'src/product/entities/productI
 import { Product, ProductDocumnet } from 'src/product/entities/product.entity';
 import { Order, OrderInterface } from './entities/order.entity';
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
+
 @Injectable()
 export class OrderService {
    constructor(
@@ -119,10 +120,12 @@ export class OrderService {
           error: 'سفارش پیدا نشد'
         }
       }
+      console.log("order",order);
+      
       return {
         message: '',
         statusCode: 200,
-        data:{order}
+        data:order
     };
     }catch(error){
       console.log("error",error);
@@ -171,6 +174,25 @@ export class OrderService {
    
   }
 
+  async getAllOrder(){
+    try{
+      const all=await this.orderModel.find().populate("products.product").populate("products.mainProduct")
+      return {
+        message: '',
+        statusCode: 200,
+        data:all
+      }
+    }
+    catch(err){
+      console.log("err");
+      return {
+          message: 'مشکل داخلی سیسنم',
+          statusCode: 500,
+          error: 'مشکل داخلی سیسنم'
+      }
+    }
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} order`;
   }
@@ -193,6 +215,136 @@ export class OrderService {
         data:goldP
         }
   }
+
+  async updateOrderAfterPayment(orderId:string){
+    try{
+      const order=await this.orderModel.findById(orderId).populate("products.product")
+      if(!order){
+        return {
+          message: 'سفارش پیدا نشد',
+          statusCode: 400,
+          error: 'سفارش پیدا نشد'
+      }
+      }
+      const items=order.products
+      for (let index = 0; index < items.length; index++) {
+        const element = items[index];
+        const productItem=await this.productItemsModel.findById(element.product._id)
+        if(!productItem){
+          break ;
+        }
+        const remain=productItem.count-element.count
+        if(remain>0){
+          break ; 
+        }
+
+        productItem.count=remain
+
+
+        await productItem.save()
+
+
+      }
+
+      order.status=2
+
+      await order.save()
+
+      return {
+        message: '',
+        statusCode: 200,
+        data:order
+      }
+
+
+    }catch(err){
+      console.log("err",err);
+      return {
+          message: 'مشکل داخلی سیسنم',
+          statusCode: 500,
+          error: 'مشکل داخلی سیسنم'
+        }
+    }
+  }
+
+
+  async updateOrder(orderId:string,status:string,invoice:any){
+    try{
+      let order=await this.orderModel.findById(orderId).populate("products.product")
+      if(!order){
+        return {
+          message: 'سفارش پیدا نشد',
+          statusCode: 400,
+          error: 'سفارش پیدا نشد'
+      }
+      }
+      if(+status==1){
+
+      const items=order.products
+      for (let index = 0; index < items.length; index++) {
+        const element = items[index];
+        const productItem=await this.productItemsModel.findById(element.product._id)
+        if(!productItem){
+          break ;
+        }
+        const remain=productItem.count-element.count
+        if(remain>0){
+          break ; 
+        }
+
+        productItem.count=remain
+
+
+        await productItem.save()
+
+
+      }
+
+        order.status=2
+        order.invoiceId=invoice._id
+        let cart =await this.cartModel.findOne({user:order.user})
+        if(!cart){
+          return {
+            message:"",
+            statusCode:400,
+            error:""
+          }
+        }
+        let cartItems=cart.products
+        let history=cart.history
+        for (let index = 0; index < cartItems.length; index++) {
+          const element = cartItems[index];
+          history.push(element)
+          
+        }
+        cart.products=[]
+        cart.history=history
+        await cart.save()
+
+      }else{
+
+        order.status=3
+        order.invoiceId=invoice._id
+      }
+
+      await order.save()
+      return{
+        message: '',
+        statusCode: 200,
+        data:order
+      }
+    
+    }catch(err){
+      console.log("error");
+      return {
+          message: 'مشکل داخلی سیسنم',
+          statusCode: 500,
+          error: 'مشکل داخلی سیسنم'
+        }
+    }
+  }
+
+  
 
 
   private async caculateNumberOfGoldBox(goldBox : string){
