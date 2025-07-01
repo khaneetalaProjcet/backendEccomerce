@@ -47,7 +47,7 @@ export class PaymentService {
 
             orderId: body._id,
 
-            wallet: wallet._id,
+            wallet: wallet?._id,
 
             invoiceId: await this.generateInvoice(),
 
@@ -120,7 +120,7 @@ export class PaymentService {
 
             orderId: body._id,
 
-            wallet: wallet._id,
+            wallet: wallet?._id,
 
             ivnoiceId: await this.generateInvoice(),
 
@@ -135,7 +135,7 @@ export class PaymentService {
             goldWeight: +body.goldBox,
             orderId: body._id,
             invoiceId: await this.generateInvoice(),
-            wallet: wallet._id,
+            wallet: wallet?._id,
             status: "init",
             date: new Date().toLocaleString("fa-IR").split(",")[0],
             time: new Date().toLocaleString("fa-IR").split(",")[1]
@@ -193,7 +193,7 @@ export class PaymentService {
             goldWeight: +body.goldBox,
             orderId: body._id,
             invoiceId: await this.generateInvoice(),
-            wallet: wallet._id,
+            wallet: wallet?._id,
             status: "init",
             date: new Date().toLocaleString("fa-IR").split(",")[0],
             time: new Date().toLocaleString("fa-IR").split(",")[1]
@@ -232,6 +232,9 @@ export class PaymentService {
 
 
 
+   ////////////////////////// installment ////////////////////////
+
+
 
     /**
      * this module is payment handler
@@ -252,6 +255,13 @@ export class PaymentService {
             return await this.justGoldBox(body)
         }
     }
+
+
+
+
+
+
+
 }
 
 

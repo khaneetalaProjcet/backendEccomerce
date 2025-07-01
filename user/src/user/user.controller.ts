@@ -1,542 +1,610 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, ValidationPipe, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+  Res,
+  ValidationPipe,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { upgradeProfileDto } from "./dto/upgradeProfile.dto"
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import {  compelteRegisterDto } from './dto/completeRegister.dto';
+import { upgradeProfileDto } from './dto/upgradeProfile.dto';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
+import { compelteRegisterDto } from './dto/completeRegister.dto';
 import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
 import { UpdateAddressDto } from './dto/updateAdress.sto';
 import { AddressDto } from './dto/addAdress.dto';
 import { IdentityDto } from './dto/Identity.dto';
 import { JwtAdminAuthGuard } from 'src/jwt/admin-jwt-auth.guard';
 
-
-
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
-  @Post("/complete")
+  @Post('/complete')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'complete user info' })
   @ApiResponse({
-    status: 200, description: 'the user complete info successfully',
+    status: 200,
+    description: 'the user complete info successfully',
     schema: {
       example: {
         success: true,
         message: 'the user complete info successfully',
         error: null,
-        data: {}
-      }
+        data: {},
+      },
     },
   })
   @ApiResponse({
-    status: 403, description: 'Forbidden.',
+    status: 403,
+    description: 'Forbidden.',
     schema: {
       example: {
         success: false,
         message: 'the ngo creation failed',
         error: 'forbidden user',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiResponse({
-    status: 409, description: 'duplicate data',
+    status: 409,
+    description: 'duplicate data',
     schema: {
       example: {
         success: false,
         message: 'this project already cpmpleted',
         error: 'duplicate project',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiResponse({
-    status: 500, description: 'internal service error',
+    status: 500,
+    description: 'internal service error',
     schema: {
       example: {
         success: false,
         message: 'internal error',
         error: 'internal service error',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiBody({
     type: compelteRegisterDto,
     description: 'data must like this dto',
   })
-  complete(@Req() req: any, @Res() res: any, @Body(new ValidationPipe()) body: compelteRegisterDto) {
-    console.log("reqUser", req.user);
-    const userId = req.user.userId
+  complete(
+    @Req() req: any,
+    @Res() res: any,
+    @Body(new ValidationPipe()) body: compelteRegisterDto,
+  ) {
+    console.log('reqUser', req.user);
+    const userId = req.user.userId;
     return this.userService.completeRegister(userId, body);
   }
 
-  @Post("/identity")
+  @Post('/identity')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'identity user info' })
   @ApiResponse({
-    status: 200, description: 'the user identity info successfully',
+    status: 200,
+    description: 'the user identity info successfully',
     schema: {
       example: {
         success: true,
         message: 'the user identity info successfully',
         error: null,
-        data: {}
-      }
+        data: {},
+      },
     },
   })
   @ApiResponse({
-    status: 403, description: 'Forbidden.',
+    status: 403,
+    description: 'Forbidden.',
     schema: {
       example: {
         success: false,
         message: 'the ngo creation failed',
         error: 'forbidden user',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiResponse({
-    status: 409, description: 'duplicate data',
+    status: 409,
+    description: 'duplicate data',
     schema: {
       example: {
         success: false,
         message: 'this project already cpmpleted',
         error: 'duplicate project',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiResponse({
-    status: 500, description: 'internal service error',
+    status: 500,
+    description: 'internal service error',
     schema: {
       example: {
         success: false,
         message: 'internal error',
         error: 'internal service error',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiBody({
     type: IdentityDto,
     description: 'data must like this dto',
   })
-   identity(@Req() req: any, @Res() res: any, @Body(new ValidationPipe()) body:IdentityDto ) {
-    console.log("reqUser", req.user);
-    const userId = req.user.userId
-    console.log("body",body);
-    
+  identity(
+    @Req() req: any,
+    @Res() res: any,
+    @Body(new ValidationPipe()) body: IdentityDto,
+  ) {
+    console.log('reqUser', req.user);
+    const userId = req.user.userId;
+    console.log('body', body);
+
     return this.userService.identity(userId, body);
   }
 
-
-
-
-  @Post("/update")
+  @Post('/update')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'update user info' })
   @ApiResponse({
-    status: 200, description: 'the user complete info successfully',
+    status: 200,
+    description: 'the user complete info successfully',
     schema: {
       example: {
         success: true,
         message: 'the user complete info successfully',
         error: null,
-        data: {}
-      }
+        data: {},
+      },
     },
   })
   @ApiResponse({
-    status: 403, description: 'Forbidden.',
+    status: 403,
+    description: 'Forbidden.',
     schema: {
       example: {
         success: false,
         message: 'the ngo creation failed',
         error: 'forbidden user',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiResponse({
-    status: 409, description: 'duplicate data',
+    status: 409,
+    description: 'duplicate data',
     schema: {
       example: {
         success: false,
         message: 'this project already cpmpleted',
         error: 'duplicate project',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiResponse({
-    status: 500, description: 'internal service error',
+    status: 500,
+    description: 'internal service error',
     schema: {
       example: {
         success: false,
         message: 'internal error',
         error: 'internal service error',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiBody({
     type: upgradeProfileDto,
     description: 'data must like this dto',
   })
-  upgrade(@Req() req: any, @Res() res: any, @Body(new ValidationPipe()) body: upgradeProfileDto) {
-    console.log("reqUser", req.user);
-    const userId = req.user.userId
+  upgrade(
+    @Req() req: any,
+    @Res() res: any,
+    @Body(new ValidationPipe()) body: upgradeProfileDto,
+  ) {
+    console.log('reqUser', req.user);
+    const userId = req.user.userId;
     return this.userService.upgradeProfile(userId, body);
   }
 
-  @Get("/info")
+  @Get('/info')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'get user info' })
   @ApiResponse({
-    status: 200, description: 'the user complete info successfully',
+    status: 200,
+    description: 'the user complete info successfully',
     schema: {
       example: {
         success: true,
         message: 'the user complete info successfully',
         error: null,
-        data: {}
-      }
+        data: {},
+      },
     },
   })
   @ApiResponse({
-    status: 403, description: 'Forbidden.',
+    status: 403,
+    description: 'Forbidden.',
     schema: {
       example: {
         success: false,
         message: 'the ngo creation failed',
         error: 'forbidden user',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiResponse({
-    status: 409, description: 'duplicate data',
+    status: 409,
+    description: 'duplicate data',
     schema: {
       example: {
         success: false,
         message: 'this project already cpmpleted',
         error: 'duplicate project',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiResponse({
-    status: 500, description: 'internal service error',
+    status: 500,
+    description: 'internal service error',
     schema: {
       example: {
         success: false,
         message: 'internal error',
         error: 'internal service error',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   getUser(@Req() req: any, @Res() res: any) {
-    console.log("reqUser", req.user);
-    const userId = req.user.userId
+    console.log('reqUser', req.user);
+    const userId = req.user.userId;
     return this.userService.findById(userId);
   }
 
-
-  @Post("/address/add")
+  @Post('/address/add')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'add address to user ' })
   @ApiResponse({
-    status: 200, description: 'the user complete info successfully',
+    status: 200,
+    description: 'the user complete info successfully',
     schema: {
       example: {
         success: true,
         message: 'the user complete info successfully',
         error: null,
-        data: {}
-      }
+        data: {},
+      },
     },
   })
   @ApiResponse({
-    status: 403, description: 'Forbidden.',
+    status: 403,
+    description: 'Forbidden.',
     schema: {
       example: {
         success: false,
         message: 'the ngo creation failed',
         error: 'forbidden user',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiResponse({
-    status: 409, description: 'duplicate data',
+    status: 409,
+    description: 'duplicate data',
     schema: {
       example: {
         success: false,
         message: 'this project already cpmpleted',
         error: 'duplicate project',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiResponse({
-    status: 500, description: 'internal service error',
+    status: 500,
+    description: 'internal service error',
     schema: {
       example: {
         success: false,
         message: 'internal error',
         error: 'internal service error',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiBody({
     type: AddressDto,
     description: 'data must like this dto',
   })
-  addAdress(@Req() req: any, @Res() res: any, @Body(new ValidationPipe()) body: AddressDto) {
-    console.log("reqUser", req.user);
-    const userId = req.user.userId
+  addAdress(
+    @Req() req: any,
+    @Res() res: any,
+    @Body(new ValidationPipe()) body: AddressDto,
+  ) {
+    console.log('reqUser', req.user);
+    const userId = req.user.userId;
     return this.userService.addAddress(userId, body);
   }
 
-
-  @Post("/address/update")
+  @Post('/address/update')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'update address for user' })
   @ApiResponse({
-    status: 200, description: 'the user complete info successfully',
+    status: 200,
+    description: 'the user complete info successfully',
     schema: {
       example: {
         success: true,
         message: 'the user complete info successfully',
         error: null,
-        data: {}
-      }
+        data: {},
+      },
     },
   })
   @ApiResponse({
-    status: 403, description: 'Forbidden.',
+    status: 403,
+    description: 'Forbidden.',
     schema: {
       example: {
         success: false,
         message: 'the ngo creation failed',
         error: 'forbidden user',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiResponse({
-    status: 409, description: 'duplicate data',
+    status: 409,
+    description: 'duplicate data',
     schema: {
       example: {
         success: false,
         message: 'this project already cpmpleted',
         error: 'duplicate project',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiResponse({
-    status: 500, description: 'internal service error',
+    status: 500,
+    description: 'internal service error',
     schema: {
       example: {
         success: false,
         message: 'internal error',
         error: 'internal service error',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiBody({
     type: UpdateAddressDto,
     description: 'data must like this dto',
   })
-  updateAdress(@Req() req: any, @Res() res: any, @Body(new ValidationPipe()) body: UpdateAddressDto) {
-    console.log("reqUser", req.user);
-    const userId = req.user.userId
+  updateAdress(
+    @Req() req: any,
+    @Res() res: any,
+    @Body(new ValidationPipe()) body: UpdateAddressDto,
+  ) {
+    console.log('reqUser', req.user);
+    const userId = req.user.userId;
     return this.userService.updateAddress(userId, body);
   }
 
-
-
-
-  @Get("/address/remove/:id")
+  @Get('/address/remove/:id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'remove user address' })
   @ApiResponse({
-    status: 200, description: 'get all ngo succeed',
+    status: 200,
+    description: 'get all ngo succeed',
     schema: {
       example: {
         success: true,
         message: 'get all ngo succeed',
         error: null,
-        data: { ngoTabel: [], mapNgo: [] }
-      }
+        data: { ngoTabel: [], mapNgo: [] },
+      },
     },
   })
   @ApiResponse({
-    status: 500, description: 'internal service error',
+    status: 500,
+    description: 'internal service error',
     schema: {
       example: {
         success: false,
         message: 'internal error',
         error: 'internal service error',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   removeAddress(@Req() req: any, @Res() res: any, @Param('id') id: string) {
-    const userId = req.user.userId
+    const userId = req.user.userId;
     return this.userService.deleteAddress(userId, id);
   }
 
-
-
-
-  @Get("/address")
+  @Get('/address')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'get all user address' })
   @ApiResponse({
-    status: 200, description: 'get all ngo succeed',
+    status: 200,
+    description: 'get all ngo succeed',
     schema: {
       example: {
         success: true,
         message: 'get all ngo succeed',
         error: null,
-        data: { ngoTabel: [], mapNgo: [] }
-      }
+        data: { ngoTabel: [], mapNgo: [] },
+      },
     },
   })
   @ApiResponse({
-    status: 500, description: 'internal service error',
+    status: 500,
+    description: 'internal service error',
     schema: {
       example: {
         success: false,
         message: 'internal error',
         error: 'internal service error',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   getUserAdress(@Req() req: any, @Res() res: any) {
-    const userId = req.user.userId
+    const userId = req.user.userId;
     return this.userService.getAddresses(userId);
   }
 
-
-
-
-  @Get("/address/:addressId")
+  @Get('/address/:addressId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'get user address' })
   @ApiResponse({
-    status: 200, description: 'get ngo succeed',
+    status: 200,
+    description: 'get ngo succeed',
     schema: {
       example: {
         success: true,
         message: 'get address succeed',
         error: null,
-        data: { ngoTabel: [], mapNgo: [] }
-      }
+        data: { ngoTabel: [], mapNgo: [] },
+      },
     },
   })
   @ApiResponse({
-    status: 500, description: 'internal service error',
+    status: 500,
+    description: 'internal service error',
     schema: {
       example: {
         success: false,
         message: 'internal error',
         error: 'internal service error',
-        data: null
-      }
+        data: null,
+      },
     },
   })
-  getUserSpecificAdress(@Req() req: any, @Res() res: any ,@Param('addressId') addressId : string) {
-    return this.userService.getSpecificAddress(req , res , addressId);
+  getUserSpecificAdress(
+    @Req() req: any,
+    @Res() res: any,
+    @Param('addressId') addressId: string,
+  ) {
+    return this.userService.getSpecificAddress(req, res, addressId);
   }
 
-  @Post("/chs")
+  @Post('/chs')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'identity user info' })
   @ApiResponse({
-    status: 200, description: 'the user identity info successfully',
+    status: 200,
+    description: 'the user identity info successfully',
     schema: {
       example: {
         success: true,
         message: 'the user identity info successfully',
         error: null,
-        data: {}
-      }
+        data: {},
+      },
     },
   })
   @ApiResponse({
-    status: 403, description: 'Forbidden.',
+    status: 403,
+    description: 'Forbidden.',
     schema: {
       example: {
         success: false,
         message: 'the ngo creation failed',
         error: 'forbidden user',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiResponse({
-    status: 409, description: 'duplicate data',
+    status: 409,
+    description: 'duplicate data',
     schema: {
       example: {
         success: false,
         message: 'this project already cpmpleted',
         error: 'duplicate project',
-        data: null
-      }
+        data: null,
+      },
     },
   })
   @ApiResponse({
-    status: 500, description: 'internal service error',
+    status: 500,
+    description: 'internal service error',
     schema: {
       example: {
         success: false,
         message: 'internal error',
         error: 'internal service error',
-        data: null
-      }
+        data: null,
+      },
     },
   })
-  @ApiBody({    
+  @ApiBody({
     description: 'data must like this dto',
   })
-  changeStatus(@Req() req: any, @Res() res: any, @Body(new ValidationPipe()) body:any ) {
-    console.log("reqUser", req.user);
-    const userId = req.user.userId
-    console.log("body",body.identityStatus);  
+  changeStatus(
+    @Req() req: any,
+    @Res() res: any,
+    @Body(new ValidationPipe()) body: any,
+  ) {
+    console.log('reqUser', req.user);
+    const userId = req.user.userId;
+    console.log('body', body.identityStatus);
     return this.userService.changeStatus(userId, body.identityStatus);
   }
 
   @Get('/remover')
   async deleter() {
-    return this.userService.deletAll()
+    return this.userService.deletAll();
   }
 
   @Get('/admin/users')
   @UseGuards(JwtAdminAuthGuard)
   @ApiBearerAuth()
   async getAllUsers() {
-    return this.userService.getAllUser()
+    return this.userService.getAllUser();
   }
 
+
+  @Patch('/disable/:id')
+  async disable(@Param('id') userId: string,) {
+    return this.userService.activation(userId);
+  }
 }
