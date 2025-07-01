@@ -105,7 +105,7 @@ export class AdminService {
       const admins = await this.adminModel.find();
 
       return {
-        message: 'done',
+        message: '',
         statusCode: 200,
         data: admins,
       };

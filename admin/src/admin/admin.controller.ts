@@ -19,6 +19,7 @@ import {
   ApiBody,
   ApiOperation,
   ApiResponse,
+  ApiParam,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
 import { UpdateAdminAccessDto } from './dto/adminAccessibility.dto';
@@ -77,7 +78,6 @@ export class AdminController {
     return this.adminService.register(body);
   }
 
-  
   @Get('/info')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -125,29 +125,92 @@ export class AdminController {
   }
 
   @Post('access/:id')
+  @ApiOperation({ summary: 'Update admin access pages' })
+  @ApiParam({ name: 'id', description: 'Admin ID' })
+  @ApiBody({ type: UpdateAdminAccessDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Admin access updated',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Admin not found',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Access is currently locked',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal error during access update',
+  })
   async addAdminAccessibility(
     @Param('id') id: string,
     @Body() updateAdminAccessDto: UpdateAdminAccessDto,
   ) {
-    return this.adminService.updateAdminAccess(id, updateAdminAccessDto.pageIds);
+    return this.adminService.updateAdminAccess(
+      id,
+      updateAdminAccessDto.pageIds,
+    );
   }
 
   @Get()
+  @ApiOperation({ summary: 'List all admins' })
+  @ApiResponse({
+    status: 200,
+    description: 'All admins returned successfully',
+  })
   findAll() {
     return this.adminService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Find one admin by ID' })
+  @ApiParam({ name: 'id', description: 'Admin ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Admin found',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Admin not found',
+  })
+  @Get(':id')
   findOne(@Param('id') id: string) {
     return this.adminService.findOne(id);
   }
 
+  @ApiOperation({ summary: 'Update an admin' })
+  @ApiParam({ name: 'id', description: 'Admin ID' })
+  @ApiBody({ type: UpdateAdminDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Admin updated successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Update is locked or admin not found',
+  })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAuthDto: UpdateAdminDto) {
     return this.adminService.update(id, updateAuthDto);
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete an admin' })
+  @ApiParam({ name: 'id', description: 'Admin id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Admin deleted successfully',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Admin not found',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Remove is locked',
+  })
   remove(@Param('id') id: string) {
     return this.adminService.remove(id);
   }

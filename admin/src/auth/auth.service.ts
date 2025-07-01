@@ -41,7 +41,7 @@ export class AuthService {
 
       const token = await this.tokenize.tokenize(
         { _id: admin?._id, phoneNumber: admin?.phoneNumber },
-        '12h',
+        '1m',
         0,
       );
       let newData = { ...admin.toObject(), token: token };
