@@ -6,6 +6,8 @@ import { Admin, AdminSchema } from './entities/admin.entity';
 import { JwtStrategy } from 'src/jwt/jwt.strategy';
 import { Page, PageSchema } from 'src/page/entities/page.entity';
 import { HttpModule } from '@nestjs/axios';
+import { LocknewService } from 'src/locknew/locknew.service';
+import { RedisServiceService } from 'src/redis-service/redis-service';
 
 @Module({
   imports: [
@@ -16,6 +18,6 @@ import { HttpModule } from '@nestjs/axios';
     ]),
   ],
   controllers: [AdminController],
-  providers: [AdminService, JwtStrategy],
+  providers: [AdminService, JwtStrategy,LocknewService,RedisServiceService ],
 })
 export class AdminModule {}

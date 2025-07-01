@@ -9,9 +9,7 @@ import { Page, pageDocument } from 'src/page/entities/page.entity';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { CreateLogDto } from './dto/createLog.dto';
-import { LockerService } from 'src/locker/locker.service';
-
-// fasdfadfsdf
+import { LocknewService } from 'src/locknew/locknew.service';
 
 @Injectable()
 export class AdminService {
@@ -19,7 +17,7 @@ export class AdminService {
     @InjectModel(Admin.name) private adminModel: Model<AdminDocument>,
     @InjectModel(Page.name) private pageModel: Model<pageDocument>,
     private readonly httpService: HttpService,
-    private readonly lockerService: LockerService,
+    private readonly lockerService: LocknewService,
   ) {}
 
   async register(dto: CreateAdminDto) {
@@ -102,8 +100,22 @@ export class AdminService {
     };
   }
 
-  findAll() {
-    return 'This action returns all admins';
+  async findAll() {
+    try {
+      const admins = await this.adminModel.find();
+
+      return {
+        message: 'done',
+        statusCode: 200,
+        data: admins,
+      };
+    } catch (error) {
+      return {
+        message: 'خطا در دریافت کاربر',
+        statusCode: 500,
+        error: error.message,
+      };
+    }
   }
 
   async findOne(id: string) {
@@ -235,8 +247,51 @@ export class AdminService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes admin #${id}`;
+  async remove(id: string) {
+    const isLocked = await this.lockerService.check(`admin-remove:${id}`, 5);
+
+    if (isLocked) {
+      return {
+        message: 'چند لحظه دیگر تلاش کنید',
+        statusCode: 400,
+      };
+    }
+
+    try {
+      const admin = await this.adminModel.findByIdAndDelete(id);
+
+      if (!admin) {
+        return {
+          message: 'کاربر یافت نشد',
+          statusCode: 404,
+          error: 'کاربر با این شناسه یافت نشد',
+        };
+      }
+
+      await this.sendLog({
+        level: 'info',
+        serviceName: 'AdminService',
+        firstName: admin.firstName,
+        lastName: admin.lastName,
+        message: 'کاربر حذف شد',
+        timestamp: new Date().toISOString(),
+        role: 'admin',
+      });
+
+      await this.lockerService.disablor(`admin-access${id}`);
+
+      return {
+        message: 'کاربر با موفقیت حذف شد',
+        statusCode: 200,
+        data: admin,
+      };
+    } catch (error) {
+      return {
+        message: 'خطا در حذف کاربر',
+        statusCode: 500,
+        error: error.message,
+      };
+    }
   }
 
   private async sendLog(createLogDto: CreateLogDto) {

@@ -18,6 +18,8 @@ import { AdminModule } from './admin/admin.module';
 import { Admin, AdminSchema } from './admin/entities/admin.entity';
 import { PageModule } from './page/page.module';
 
+import { LocknewService } from './locknew/locknew.service';
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -40,6 +42,7 @@ import { PageModule } from './page/page.module';
     TokenizeService,
     InterserviceService,
     JwtService,
+    LocknewService,
   ],
 })
 export class AppModule {}
