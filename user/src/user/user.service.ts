@@ -505,9 +505,7 @@ export class UserService {
 
   async activation(userId: string) {
     try {
-
-
-      const user = await this.userModel.findById(userId)
+      const user = await this.userModel.findById(userId);
       if (!user) {
         return {
           message: 'کاربر پیدا نشد',
@@ -515,18 +513,21 @@ export class UserService {
           error: 'کاربر پیدا نشد',
         };
       }
-      
+
       if (user.isActive) {
-        user.updateOne({isActive:false})
+        await user.updateOne({ isActive: false });
       } else {
-         user.updateOne({isActive:true})
+        await user.updateOne({ isActive: true });
       }
 
-      return {
-        message: 'user successfully disabled',
-        statusCode: 200,
-        data: user,
-      };
+      const updatedUser = await this.userModel.findById(userId);
+      if (!updatedUser) {
+        return {
+          message: 'کاربر پیدا نشد بعد از آپدیت',
+          statusCode: 500,
+          error: 'خطا در دریافت اطلاعات بروزرسانی شده',
+        };
+      }
     } catch (error) {
       console.log('error', error);
       return {
