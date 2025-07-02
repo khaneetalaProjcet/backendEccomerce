@@ -44,7 +44,7 @@ export class OrderController {
   @Post("internal/identity")
   identity(@Body() body:any){
     return this.orderService.identityOrder(body)
-  }afterpay
+  }
 
    @Get("internal/afterpay/:id")
    updateAfterPayment(@Param('id') id: string) {
