@@ -109,12 +109,12 @@ export class AuthService {
       }
       const token = await this.tokenize.tokenize(
         { _id: user?._id, phoneNumber: user?.phoneNumber },
-        '1m',
+        '10h',
         0,
       );
       const refreshToken = await this.tokenize.tokenize(
         { _id: user?._id, phoneNumber: user?.phoneNumber },
-        '1m',
+        '10h',
         1,
       );
       return {
@@ -147,7 +147,7 @@ export class AuthService {
 
       const token = await this.tokenize.tokenize(
         { _id: decoded?._id, phoneNumber: decoded?.phoneNumber },
-        '1m',
+        '10h',
         0,
       );
 
