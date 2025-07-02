@@ -33,7 +33,7 @@ export class Admin {
   @Prop({ type: mongoose.Schema.Types.String })
   fatherName: string;
 
-  @Prop({ type: mongoose.Schema.Types.String })
+  @Prop({ required: true, select: false })
   password: string;
 
   @Prop({ type: mongoose.Schema.Types.String, default: '' })
@@ -44,7 +44,6 @@ export class Admin {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'page' })
   accessPoint: mongoose.Types.ObjectId[];
- 
 }
 
 export const AdminSchema = SchemaFactory.createForClass(Admin);

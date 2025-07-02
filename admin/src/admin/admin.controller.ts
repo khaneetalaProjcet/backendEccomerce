@@ -28,7 +28,7 @@ import { UpdateAdminAccessDto } from './dto/adminAccessibility.dto';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  @Post('/register')
+  @Post('register')
   @ApiOperation({ summary: 'validate otp code' })
   @ApiResponse({
     status: 200,
