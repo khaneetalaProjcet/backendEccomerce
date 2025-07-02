@@ -503,37 +503,38 @@ export class UserService {
     return `This action removes a #${id} user`;
   }
 
-  async activation(userId: string) {
-    try {
-
-
-      const user = await this.userModel.findById(userId)
-      if (!user) {
-        return {
-          message: 'کاربر پیدا نشد',
-          statusCode: 400,
-          error: 'کاربر پیدا نشد',
-        };
-      }
-      
-      if (user.isActive) {
-        user.updateOne({isActive:false})
-      } else {
-         user.updateOne({isActive:true})
-      }
-
+ async activation(userId: string) {
+  try {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
       return {
-        message: 'user successfully disabled',
-        statusCode: 200,
-        data: user,
-      };
-    } catch (error) {
-      console.log('error', error);
-      return {
-        message: 'مشکلی از سمت سرور به وجود آمده',
-        statusCode: 500,
-        error: 'خطای داخلی سیستم',
+        message: 'کاربر پیدا نشد',
+        statusCode: 400,
+        error: 'کاربر پیدا نشد',
       };
     }
+
+    if (user.isActive) {
+      await user.updateOne({ isActive: false });
+    } else {
+      await user.updateOne({ isActive: true });
+    }
+
+    const updatedUser = await this.userModel.findById(userId);
+
+    return {
+      message: "done",
+      statusCode: 200,
+      data: updatedUser,
+    };
+  } catch (error) {
+    console.log('error', error);
+    return {
+      message: 'مشکلی از سمت سرور به وجود آمده',
+      statusCode: 500,
+      error: 'خطای داخلی سیستم',
+    };
   }
+}
+
 }
