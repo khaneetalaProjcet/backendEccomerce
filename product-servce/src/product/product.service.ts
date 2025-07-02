@@ -106,6 +106,7 @@ export class ProductService {
     try {
       const product = await this.productModel
         .findById(id)
+        .populate('items')
         .populate('firstCategory')
         .populate('midCategory')
         .populate('lastCategory')
