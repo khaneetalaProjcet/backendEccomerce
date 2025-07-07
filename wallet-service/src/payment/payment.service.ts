@@ -3,265 +3,259 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BahPardakht } from 'src/bah-pardakht/bah-pardakht';
 import { InterserviceService } from 'src/interservice/interservice.service';
-import { goldInvoice, goldInvoiceInterface } from 'src/wallet/entities/goldBoxInvoice.entity';
+import {
+  goldInvoice,
+  goldInvoiceInterface,
+} from 'src/wallet/entities/goldBoxInvoice.entity';
 import { wallet, walletDocument } from 'src/wallet/entities/wallet.entity';
-import { walletInvoice, walletInvoiceInterface } from 'src/wallet/entities/walletInvoice.entity';
+import {
+  WalletInvoice,
+  WalletInvoiceInterface,
+} from 'src/wallet/entities/walletInvoice.entity';
 
 @Injectable()
 export class PaymentService {
+  constructor(
+    @InjectModel(WalletInvoice.name)
+    private walletInvoiceModel: Model<WalletInvoiceInterface>,
+    @InjectModel(goldInvoice.name)
+    private goldInvoiceModel: Model<goldInvoiceInterface>,
+    @InjectModel(wallet.name) private walletModel: Model<walletDocument>,
+    private interService: InterserviceService,
+  ) {}
 
-    constructor(
-        @InjectModel(walletInvoice.name) private walletInvoiceModel: Model<walletInvoiceInterface>,
-        @InjectModel(goldInvoice.name) private goldInvoiceModel: Model<goldInvoiceInterface>,
-        @InjectModel(wallet.name) private walletModel: Model<walletDocument>,
-        private interService : InterserviceService,
-    ) { }
-
-    private async generateInvoice() {
-        let all = await this.walletInvoiceModel.countDocuments()
-        let status = true
-        while (status) {
-            let check = await this.walletInvoiceModel.find({ invoiceId: all })
-            if (check.length == 0) {
-                status = false
-            } else {
-                all = all + 1
-            }
-        }
-        return all
+  private async generateInvoice() {
+    let all = await this.walletInvoiceModel.countDocuments();
+    let status = true;
+    while (status) {
+      let check = await this.walletInvoiceModel.find({ invoiceId: all });
+      if (check.length == 0) {
+        status = false;
+      } else {
+        all = all + 1;
+      }
     }
+    return all;
+  }
 
+  // ///////////////////////////////////////////////////
+  // /**
+  //  * this module is for going to gateway for payment
+  //  * @param body
+  //  * @returns
+  //  */
+  // ///////////////////////////////////////////////////
+  // private async gateway(body) {
+  //   let wallet = await this.walletModel.findOne({ owner: body.user });
+  //   let initInvoice = await this.walletInvoiceModel.create({
+  //     amount: body.totalPrice,
 
-    ///////////////////////////////////////////////////
-    /**
-     * this module is for going to gateway for payment
-     * @param body 
-     * @returns 
-     */
-    ///////////////////////////////////////////////////
-    private async gateway(body) {
-        let wallet = await this.walletModel.findOne({ owner: body.user })
-        let initInvoice = await this.walletInvoiceModel.create({
+  //     orderId: body._id,
 
-            amount: body.totalPrice,
+  //     wallet: wallet?._id,
 
-            orderId: body._id,
+  //     invoiceId: await this.generateInvoice(),
 
-            wallet: wallet?._id,
+  //     status: 'init',
 
-            invoiceId: await this.generateInvoice(),
+  //     date: new Date().toLocaleString('fa-IR').split(',')[0],
 
-            status: "init",
+  //     time: new Date().toLocaleString('fa-IR').split(',')[1],
+  //   });
 
-            date: new Date().toLocaleString("fa-IR").split(",")[0],
+  //   const info = {
+  //     terminalId: 7374865,
+  //     userName: '7374865',
+  //     userPassword: '84915185',
+  //     orderId: +initInvoice.invoiceId,
+  //     amount: initInvoice.amount,
+  //     localDate: '14030310',
+  //     localTime: '143000',
+  //     additionalData: '',
+  //     callBackUrl: 'https://shop.khaneetala.ir/v1/mainw/redirect',
+  //     payerId: 0,
+  //     encPan: '',
+  //   };
 
-            time: new Date().toLocaleString("fa-IR").split(",")[1]
-        })
+  //   const bpm = await BahPardakht.create();
+  //   const responseOfBuyProcess = await bpm.bpPayRequest(info);
 
-        const info = {
-            terminalId: 7374865,
-            userName: "7374865",
-            userPassword: "84915185",
-            orderId: +initInvoice.invoiceId,
-            amount: initInvoice.amount,
-            localDate: "14030310",
-            localTime: "143000",
-            additionalData: "",
-            callBackUrl: "https://shop.khaneetala.ir/v1/mainw/redirect",
-            payerId: 0,
-            encPan: ''
-        };
+  //   console.log('code', responseOfBuyProcess.return.split(',')[0]);
 
-        const bpm = await BahPardakht.create();
-        const responseOfBuyProcess = await bpm.bpPayRequest(info);
+  //   if (responseOfBuyProcess.return.split(',')[0] == '0') {
+  //     // it means that it is success
+  //     initInvoice.status = 'pending';
+  //     initInvoice.authority = responseOfBuyProcess.return.split(',')[1];
+  //     initInvoice.state = 1;
+  //     await initInvoice.save();
+  //     return {
+  //       // after saving data
+  //       message: 'transfer to gateway',
+  //       statusCode: 200,
+  //       data: responseOfBuyProcess.return.split(',')[1],
+  //     };
+  //   } else {
+  //     (initInvoice.status = 'failed'),
+  //       (initInvoice.authority = responseOfBuyProcess?.return?.split(',')[1]);
+  //     await initInvoice.save();
+  //     return {
+  //       message: 'درگاه پرداخت موقتا در دسترس نمی باشد.لطفا مجددا تلاش کنید',
+  //       statusCode: 500,
+  //       error: 'درگاه پرداخت موقتا در دسترس نمی باشد.لطفا مجددا تلاش کنید',
+  //     };
+  //   }
+  // }
 
-        console.log("code",responseOfBuyProcess.return.split(",")[0] );
-        
+  // ///////////////////////////////////////////////////
+  // /**
+  //  * this module is for while the user want to pay with goldBox and gateway
+  //  * @param body
+  //  * @returns
+  //  */
+  // ///////////////////////////////////////////////////
+  // private async gatewayAndGoldBoxPayment(body) {
+  //   let wallet = await this.walletModel.findOne({ owner: body.user });
+  //   let walletInvoiceInitial = await this.walletInvoiceModel.create({
+  //     amount: body.totalPrice,
 
-        if (responseOfBuyProcess.return.split(",")[0] == "0") {       // it means that it is success 
-            initInvoice.status = "pending"
-            initInvoice.authority = responseOfBuyProcess.return.split(",")[1]
-            initInvoice.state = 1
-            await initInvoice.save()
-            return {                      // after saving data     
-                message: "transfer to gateway",
-                statusCode: 200,
-                data: responseOfBuyProcess.return.split(",")[1]
-            }
-        } else {
+  //     orderId: body._id,
 
+  //     wallet: wallet?._id,
 
-            
-            
+  //     ivnoiceId: await this.generateInvoice(),
 
-            initInvoice.status = "failed",
-            initInvoice.authority = responseOfBuyProcess?.return?.split(",")[1];
-            await initInvoice.save()
-            return {
-                message: 'درگاه پرداخت موقتا در دسترس نمی باشد.لطفا مجددا تلاش کنید',
-                statusCode: 500,
-                error: 'درگاه پرداخت موقتا در دسترس نمی باشد.لطفا مجددا تلاش کنید'
-            }
-        }
-    }
+  //     status: 'init',
 
+  //     date: new Date().toLocaleString('fa-IR').split(',')[0],
 
-    ///////////////////////////////////////////////////
-    /**
-     * this module is for while the user want to pay with goldBox and gateway
-     * @param body 
-     * @returns 
-     */
-    ///////////////////////////////////////////////////
-    private async gatewayAndGoldBoxPayment(body) {
-        let wallet = await this.walletModel.findOne({ owner: body.user })
-        let walletInvoiceInitial = await this.walletInvoiceModel.create({
-            amount: body.totalPrice,
+  //     time: new Date().toLocaleString('fa-IR').split(',')[1],
+  //   });
 
-            orderId: body._id,
+  //   let goldBoxInvoiceInitial = await this.goldInvoiceModel.create({
+  //     goldWeight: +body.goldBox,
+  //     orderId: body._id,
+  //     invoiceId: await this.generateInvoice(),
+  //     wallet: wallet?._id,
+  //     status: 'init',
+  //     date: new Date().toLocaleString('fa-IR').split(',')[0],
+  //     time: new Date().toLocaleString('fa-IR').split(',')[1],
+  //   });
 
-            wallet: wallet?._id,
+  //   const info = {
+  //     terminalId: 7374865,
+  //     userName: '7374865',
+  //     userPassword: '84915185',
+  //     orderId: +walletInvoiceInitial.invoiceId,
+  //     amount: walletInvoiceInitial.amount,
+  //     localDate: '14030310',
+  //     localTime: '143000',
+  //     additionalData: goldBoxInvoiceInitial._id.toString(),
+  //     callBackUrl: 'https://shop.khaneetala.ir/v1/mainw/redirect/secondPayment',
+  //     payerId: 0,
+  //     encPan: '',
+  //   };
 
-            ivnoiceId: await this.generateInvoice(),
+  //   const bpm = await BahPardakht.create();
+  //   const responseOfBuyProcess = await bpm.bpPayRequest(info);
 
-            status: "init",
+  //   if (responseOfBuyProcess.return.split(',')[0] == '0') {
+  //     // it means that it is success
+  //     walletInvoiceInitial.status = 'pending';
+  //     walletInvoiceInitial.authority =
+  //       responseOfBuyProcess.return.split(',')[1];
+  //     walletInvoiceInitial.state = 1;
+  //     await walletInvoiceInitial.save();
+  //     return {
+  //       // after saving data
+  //       message: 'transfer to gateway',
+  //       statusCode: 200,
+  //       data: responseOfBuyProcess.return.split(',')[1],
+  //     };
+  //   } else {
+  //     (walletInvoiceInitial.status = 'failed'),
+  //       (walletInvoiceInitial.authority =
+  //         responseOfBuyProcess?.return?.split(',')[1]);
+  //     await walletInvoiceInitial.save();
+  //     return {
+  //       message: 'درگاه پرداخت موقتا در دسترس نمی باشد.لطفا مجددا تلاش کنید',
+  //       statusCode: 500,
+  //       error: 'درگاه پرداخت موقتا در دسترس نمی باشد.لطفا مجددا تلاش کنید',
+  //     };
+  //   }
+  // }
 
-            date: new Date().toLocaleString("fa-IR").split(",")[0],
+  // /**
+  //  * this module is for pay the invoice just with goldBox
+  //  * @param body
+  //  */
+  // async justGoldBox(body) {
+  //   let wallet = await this.walletModel.findOne({ owner: body.user });
+  //   let goldBoxInvoiceInitial = await this.goldInvoiceModel.create({
+  //     goldWeight: +body.goldBox,
+  //     orderId: body._id,
+  //     invoiceId: await this.generateInvoice(),
+  //     wallet: wallet?._id,
+  //     status: 'init',
+  //     date: new Date().toLocaleString('fa-IR').split(',')[0],
+  //     time: new Date().toLocaleString('fa-IR').split(',')[1],
+  //   });
 
-            time: new Date().toLocaleString("fa-IR").split(",")[1]
-        })
+  //   // let khaneetalaResponse = await this.interService.updateGoldBox(goldBoxInvoiceInitial)
+  //   // if (khaneetalaResponse && khaneetalaResponse.success){
+  //   let khaneetalaResponse = true;
+  //   if (khaneetalaResponse) {
+  //     let updated = await this.goldInvoiceModel.findByIdAndUpdate(
+  //       goldBoxInvoiceInitial._id,
+  //       { state: 2, status: 'completed' },
+  //     );
 
-        let goldBoxInvoiceInitial = await this.goldInvoiceModel.create({
-            goldWeight: +body.goldBox,
-            orderId: body._id,
-            invoiceId: await this.generateInvoice(),
-            wallet: wallet?._id,
-            status: "init",
-            date: new Date().toLocaleString("fa-IR").split(",")[0],
-            time: new Date().toLocaleString("fa-IR").split(",")[1]
-        })
+  //     const order = await this.interService.updateorder(
+  //       body._id,
+  //       goldBoxInvoiceInitial,
+  //       1,
+  //     );
 
-        const info = {
-            terminalId: 7374865,
-            userName: "7374865",
-            userPassword: "84915185",
-            orderId: +walletInvoiceInitial.invoiceId,
-            amount: walletInvoiceInitial.amount,
-            localDate: "14030310",
-            localTime: "143000",
-            additionalData: goldBoxInvoiceInitial._id.toString(),
-            callBackUrl: "https://shop.khaneetala.ir/v1/mainw/redirect/secondPayment",
-            payerId: 0,
-            encPan: ''
-        };
+  //     console.log('order', order);
 
-        const bpm = await BahPardakht.create();
-        const responseOfBuyProcess = await bpm.bpPayRequest(info);
+  //     return {
+  //       message: 'خرید با موفقیت انجام شد',
+  //       statusCode: 200,
+  //       data: updated,
+  //     };
+  //   } else {
+  //     let updated = await this.goldInvoiceModel.findByIdAndUpdate(
+  //       goldBoxInvoiceInitial._id,
+  //       { state: 1, status: 'completed' },
+  //     );
+  //     return {
+  //       message: 'خرید در مرحله ی انجام است',
+  //       statusCode: 200,
+  //       data: updated,
+  //     };
+  //   }
+  // }
 
-        if (responseOfBuyProcess.return.split(",")[0] == "0") {       // it means that it is success 
-            walletInvoiceInitial.status = "pending"
-            walletInvoiceInitial.authority = responseOfBuyProcess.return.split(",")[1]
-            walletInvoiceInitial.state = 1
-            await walletInvoiceInitial.save()
-            return {                      // after saving data     
-                message: "transfer to gateway",
-                statusCode: 200,
-                data: responseOfBuyProcess.return.split(",")[1]
-            }
-        } else {
-            walletInvoiceInitial.status = "failed",
-                walletInvoiceInitial.authority = responseOfBuyProcess?.return?.split(",")[1];
-            await walletInvoiceInitial.save()
-            return {
-                message: 'درگاه پرداخت موقتا در دسترس نمی باشد.لطفا مجددا تلاش کنید',
-                statusCode: 500,
-                error: 'درگاه پرداخت موقتا در دسترس نمی باشد.لطفا مجددا تلاش کنید'
-            }
-        }
-    }
+  // ////////////////////////// installment ////////////////////////
 
+  // /**
+  //  * this module is payment handler
+  //  * @param body
+  //  * @returns
+  //  */
+  // async paymentHandler(body: any) {
+  //   if (body.paymentMethod == 1) {
+  //     // gateway
+  //     return await this.gateway(body);
+  //   }
 
+  //   if (body.paymentMethod == 2) {
+  //     // gateway and goldBox
+  //     return await this.gatewayAndGoldBoxPayment(body);
+  //   }
 
-    /**
-     * this module is for pay the invoice just with goldBox
-     * @param body 
-     */
-    async justGoldBox(body){
-
-        let wallet = await this.walletModel.findOne({ owner: body.user })
-         let goldBoxInvoiceInitial = await this.goldInvoiceModel.create({
-            goldWeight: +body.goldBox,
-            orderId: body._id,
-            invoiceId: await this.generateInvoice(),
-            wallet: wallet?._id,
-            status: "init",
-            date: new Date().toLocaleString("fa-IR").split(",")[0],
-            time: new Date().toLocaleString("fa-IR").split(",")[1]
-        })
-
-        // let khaneetalaResponse = await this.interService.updateGoldBox(goldBoxInvoiceInitial)
-        // if (khaneetalaResponse && khaneetalaResponse.success){
-        let khaneetalaResponse = true
-        if (khaneetalaResponse){
-
-            let updated = await this.goldInvoiceModel.findByIdAndUpdate(goldBoxInvoiceInitial._id , 
-                {state : 2 , status : "completed"}
-            )
-
-        const order=await this.interService.updateorder(body._id,goldBoxInvoiceInitial,1)  
-        
-        console.log("order",order);
-        
-            return {
-                message : "خرید با موفقیت انجام شد",
-                statusCode : 200,
-                data : updated
-            }
-        }else{
-            let updated = await this.goldInvoiceModel.findByIdAndUpdate(goldBoxInvoiceInitial._id , 
-                {state : 1 , status : "completed"}
-            )
-            return {
-                message : "خرید در مرحله ی انجام است",
-                statusCode : 200,
-                data : updated
-            }
-        }
-
-    }
-
-
-
-   ////////////////////////// installment ////////////////////////
-
-
-
-    /**
-     * this module is payment handler
-     * @param body 
-     * @returns 
-     */
-    async paymentHandler(body: any) {
-        
-        if (body.paymentMethod == 1) {           // gateway
-            return await this.gateway(body)
-        }
-
-        if (body.paymentMethod == 2) {           // gateway and goldBox
-            return await this.gatewayAndGoldBoxPayment(body)
-        }
-
-        if (body.paymentMethod == 3) {           // goldBox
-            return await this.justGoldBox(body)
-        }
-    }
-
-
-
-
-
-
-
+  //   if (body.paymentMethod == 3) {
+  //     // goldBox
+  //     return await this.justGoldBox(body);
+  //   }
+  // }
 }
-
-
