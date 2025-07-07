@@ -7,13 +7,14 @@ import { Model, ClientSession} from 'mongoose';
 import { responseInterface } from 'src/interfaces/interfaces.interface';
 import { InterserviceService } from 'src/interservice/interservice.service';
 import { PaymentService } from 'src/payment/payment.service';
+import { AppService } from 'src/app.service';
 
 @Injectable()
 export class WalletService {
   constructor(
     @InjectModel('wallet') private walletModel: Model<walletDocument>,
     private interService : InterserviceService,
-    private payments : PaymentService
+    private payments: AppService
   ) {}
 
   async create(createWalletDto: CreateWalletDto) {
@@ -110,9 +111,6 @@ export class WalletService {
     
     let order = await this.interService.getOrder(orderId)
 
-    
-    
-    
     if (order == 0){
       console.log('internal services error , not connected to order service')
       return {
@@ -136,7 +134,7 @@ export class WalletService {
       }
     }else {
       if (order._id.toString() !== orderId) {           // if the order was not the main order that i want
-        console.log('the order is not the same >>>> ', orderId, order._id)
+        console.log('the order is not the same >>>>', orderId, order._id)
         return {
           message: 'خطای داخلی سرور',
           statusCode: 503,
@@ -148,11 +146,13 @@ export class WalletService {
 
       console.log("here");
       
-
+      let createdInvoice = await this.payments.requestPayment(order)
+      // let createdInvoice = ''
       
-      let createdInvoice = await this.payments.paymentHandler(order)
-
       return createdInvoice
     }
   }
+  // async startPayment() {
+    
+  // }
 }

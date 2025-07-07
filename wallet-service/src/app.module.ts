@@ -14,7 +14,7 @@ import { KafkaService } from './kafka/kafka.service';
 import { InterserviceService } from './interservice/interservice.service';
 import { PaymentService } from './payment/payment.service';
 import { goldInvoice, goldInvoiceSchema } from './wallet/entities/goldBoxInvoice.entity';
-import { walletInvoice, walletInvoiceSchema } from './wallet/entities/walletInvoice.entity';
+import { WalletInvoice, WalletInvoiceSchema } from './wallet/entities/walletInvoice.entity';
 import { wallet, walletSchema } from './wallet/entities/wallet.entity';
 
 
@@ -24,7 +24,7 @@ import { wallet, walletSchema } from './wallet/entities/wallet.entity';
     CacheModule.registerAsync(RedisOptions),
     MongooseModule.forRoot(process.env.MONGO_URI!),
     WalletModule,
-    MongooseModule.forFeature([{ name: goldInvoice.name, schema: goldInvoiceSchema },{ name: wallet.name, schema: walletSchema }, { name: walletInvoice.name, schema: walletInvoiceSchema }]),
+    MongooseModule.forFeature([{ name: goldInvoice.name, schema: goldInvoiceSchema },{ name: wallet.name, schema: walletSchema }, { name: WalletInvoice.name, schema:WalletInvoiceSchema }]),
   ],
 
   controllers: [AppController],
