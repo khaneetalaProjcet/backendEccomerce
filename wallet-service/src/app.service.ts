@@ -31,7 +31,7 @@ export class AppService {
       TerminalId: process.env.SEP_TERMINAL_ID,
       Amount: order.amount,
       ResNum: order.ResNum,
-      RedirectUrl: "",
+      RedirectUrl: "//", 
       // CellNumber: order.,
     };
 
