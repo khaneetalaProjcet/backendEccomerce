@@ -11,8 +11,9 @@ export class PageService {
     @InjectModel(Page.name) private readonly pageModel: Model<pageDocument>,
   ) {}
 
-  async create(createDto: CreatePageDto) {
+  async create(createDto: any) {
     try {
+      console.log(createDto)
       const created = new this.pageModel(createDto);
       const response = await created.save();
       return {
