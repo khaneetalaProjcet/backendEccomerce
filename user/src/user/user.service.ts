@@ -506,6 +506,10 @@ export class UserService {
  async activation(userId: string) {
   try {
     const user = await this.userModel.findById(userId);
+    console.log(user,"user is heer");
+    console.log(userId,"userId is heer");
+    console.log( typeof userId,"user is heereeeeeeeeeee");
+    
     if (!user) {
       return {
         message: 'کاربر پیدا نشد',
@@ -535,6 +539,4 @@ export class UserService {
       error: 'خطای داخلی سیستم',
     };
   }
-}
-
-}
+}}

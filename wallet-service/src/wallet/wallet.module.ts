@@ -8,6 +8,7 @@ import { WalletInvoice,WalletInvoiceSchema } from './entities/walletInvoice.enti
 import { goldInvoice, goldInvoiceSchema } from './entities/goldBoxInvoice.entity';
 import { InterserviceService } from 'src/interservice/interservice.service';
 import { PaymentService } from 'src/payment/payment.service';
+import { AppService } from 'src/app.service';
 
 @Module({
   imports: [
@@ -16,6 +17,6 @@ import { PaymentService } from 'src/payment/payment.service';
 
   ],
   controllers: [WalletController],
-  providers: [WalletService,JwtStrategy,InterserviceService , PaymentService],
+  providers: [WalletService,JwtStrategy,InterserviceService , PaymentService ,AppService],
 })
 export class WalletModule {}

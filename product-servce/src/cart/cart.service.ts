@@ -108,7 +108,6 @@ export class CartService {
 
 
   async updateCart(userId:string,body:UpdateItemCount){
-    console.log("body",body);
     
     try{
        let item = await this.productItemsModel.findById(body.item)

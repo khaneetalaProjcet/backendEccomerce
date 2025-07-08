@@ -15,6 +15,7 @@ import {
   Category,
   CategoryDocumnet,
 } from 'src/category/entities/category.entity';
+import { productListQueryDto } from './dto/pagination.dto';
 
 @Injectable()
 export class ProductService {
@@ -332,46 +333,70 @@ export class ProductService {
     }
   }
 
-  async getProductBasedOnCategory(categoryId: string) {
-    try {
-      let category = await this.categoryModel.findById(categoryId).populate({
-        path: 'parent',
-        populate: {
-          path: 'parent',
-        },
-      });
-      if (!category) {
-        return {
-          message: 'دسته بندی انتخابی موجود نمی باشد',
-          statusCode: 400,
-          error: 'دسته بندی انتخابی موجود نمی باشد',
-        };
-      }
+  async getProductBasedOnCategory(
+  categoryId: string,
+  query: productListQueryDto,
+) {
+  try {
+    const limit = Number(query.limit) || 10;
+    const page = Number(query.page) || 0;
+    const skip = page * limit;
 
-      let allProducts = await this.productModel
-        .find({
-          $or: [
-            { firstCategory: categoryId },
-            { midCategory: categoryId },
-            { lastCategory: categoryId },
-          ],
-        })
+    const category = await this.categoryModel.findById(categoryId).populate({
+      path: 'parent',
+      populate: { path: 'parent' },
+    });
+
+    if (!category) {
+      return {
+        message: 'دسته بندی انتخابی موجود نمی‌باشد',
+        statusCode: 400,
+        error: 'دسته بندی انتخابی موجود نمی‌باشد',
+      };
+    }
+
+    const filter = {
+      $or: [
+        { firstCategory: categoryId },
+        { midCategory: categoryId },
+        { lastCategory: categoryId },
+      ],
+    };
+
+    const [products, total] = await Promise.all([
+      this.productModel
+        .find(filter)
         .populate('items')
         .populate('firstCategory')
         .populate('midCategory')
-        .populate('lastCategory');
-      return {
-        message: 'موفق',
-        statusCode: 200,
-        data: { products: allProducts, category },
-      };
-    } catch (error) {
-      console.log('error in getting category products');
-      return {
-        message: 'نا موفق',
-        statusCode: 500,
-        error: 'خطای داخلی سرور',
-      };
-    }
+        .populate('lastCategory')
+        .skip(skip)
+        .limit(limit),
+      this.productModel.countDocuments(filter),
+    ]);
+
+    return {
+      message: 'موفق',
+      statusCode: 200,
+      data: {
+        products,
+        category,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      },
+    };
+  } catch (error) {
+    console.log('error in getting category products', error);
+    return {
+      message: 'ناموفق',
+      statusCode: 500,
+      error: 'خطای داخلی سرور',
+    };
   }
+}
+
 }

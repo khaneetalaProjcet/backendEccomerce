@@ -21,7 +21,6 @@ export interface CartInterface extends Document {
 
 
 
-
 @Schema({timestamps:true})
 export class Cart {
 

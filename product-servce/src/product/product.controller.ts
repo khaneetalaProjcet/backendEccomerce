@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Res  } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Res, Query  } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -8,6 +8,8 @@ import { JwtAdminAuthGuard } from 'src/jwt/admin-jwt-auth.guard';
 import { ProductItems } from './entities/productItems.entity';
 import { CreateProductItemDto } from './dto/create-productItem.dto';
 import { UpdateProductItemDto } from './dto/update-productItem.dto';
+import { query } from 'winston';
+import { productListQueryDto } from './dto/pagination.dto';
  
 
 
@@ -93,12 +95,9 @@ export class ProductController {
   @Get('category/:categoryId')
   // @UseGuards(JwtAdminAuthGuard)
   @ApiOperation({ summary: 'get product based on category' })
-  async getProductBasedOnCategory(@Req() req : any , @Res() res : any , @Param('categoryId') categoryId : string){
-    return this.productService.getProductBasedOnCategory(categoryId)
+  async getProductBasedOnCategory(@Req() req : any , @Res() res : any , @Query() query:productListQueryDto, @Param('categoryId') categoryId : string){
+    return this.productService.getProductBasedOnCategory(categoryId, query)
   }
-
-
-
 
 
 }

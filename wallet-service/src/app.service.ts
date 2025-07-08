@@ -31,7 +31,7 @@ export class AppService {
       TerminalId: process.env.SEP_TERMINAL_ID,
       Amount: order.amount,
       ResNum: order.ResNum,
-      // RedirectUrl: callbackUrl,
+      RedirectUrl: "//", 
       // CellNumber: order.,
     };
 
@@ -49,8 +49,8 @@ export class AppService {
 
       if (result.status === 1 && result.token) {
         await this.walletInvoiceModel.create({
-          orderId,
-          amount,
+          orderId: order.id,
+          amount : order.totalPrice,
           token: result.token,
           status: 'pending',
           state: 1,
@@ -59,11 +59,8 @@ export class AppService {
         return {
           success: true,
           statusCode: 200,
-          data: result.token,
+          data:  `https://sep.shaparak.ir/OnlinePG/SendToken?token=${result.token}`,
         };
-        //  return {
-        //   //     redirectUrl: `https://sep.shaparak.ir/OnlinePG/SendToken?token=${tokenResult.data}`,
-        //   //   };
       } else {
         console.error(`Token Error: ${result.errorCode} - ${result.errorDesc}`);
         return {
@@ -84,6 +81,7 @@ export class AppService {
       };
     }
   }
+
 
   async verifyTransactionCallback(body: any) {
     const {
