@@ -155,12 +155,19 @@ export class AdminService {
 
 
   async getAdminAccess(adminId : string){
-    let admin = await this.adminModel.findById(adminId).populate('accessPoint')
+    let admin : any = await this.adminModel.findById(adminId).populate('accessPoint')
+    if (!admin){
+      return {
+        statusCode : 400,
+        message : 'ادمین یافت نشد',
+        error:'ادمین یافت نشد'
+      }
+    }
     let allAccess = await this.pageModel.find()
     let access :any = []
     for (let i of allAccess){
       let data = JSON.parse(JSON.stringify(i.toObject()))
-      if (admin.accessPoint.includes(i._id)){
+      if (admin.accessPoint.includes(data._id.toString())){
           data['access'] = true
           access.push(data)
       }else{
