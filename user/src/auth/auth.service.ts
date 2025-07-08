@@ -26,7 +26,7 @@ export class AuthService {
   ) {}
 
   private async otpGenerator() {
-    return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+    return Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
   }
 
   async sendOtp(@Req() req: any, @Res() res: any, body: sendOtpDto) {
