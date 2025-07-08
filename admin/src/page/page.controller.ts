@@ -24,7 +24,7 @@ export class PageController {
     return this.pageService.create(createPageDto);
   }
 
-  @UseGuards()
+  
   @Get()
   findAll() {
     return this.pageService.findAll();
