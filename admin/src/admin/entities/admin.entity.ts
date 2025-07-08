@@ -11,6 +11,7 @@ export interface AdminDocument extends Document {
   password: string;
   pictureProfile: string;
   isActive: boolean;
+  accessPoint : []
 }
 
 @Schema({ timestamps: true })
