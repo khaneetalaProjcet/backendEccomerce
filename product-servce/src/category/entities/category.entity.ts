@@ -20,8 +20,8 @@ export class Category  {
   parent: Types.ObjectId;
 
 
-  @Prop({default:""})
-  description:string
+  @Prop({ default: "" })
+  description: string;
 
   @Prop({ type: [Types.ObjectId], ref: 'Category', default: [] })
   children: Types.ObjectId[];
