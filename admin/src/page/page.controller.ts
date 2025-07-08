@@ -20,7 +20,7 @@ export class PageController {
 
   @UseGuards()
   @Post()
-  create(@Body() createPageDto: CreatePageDto) {
+  create(@Body() createPageDto: any) {
     return this.pageService.create(createPageDto);
   }
 

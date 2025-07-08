@@ -14,7 +14,6 @@ export class PageService {
   async create(createDto: CreatePageDto) {
     try {
       const created = new this.pageModel(createDto);
-
       const response = await created.save();
       return {
         message: 'done',
