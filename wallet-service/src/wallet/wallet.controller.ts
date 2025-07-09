@@ -134,6 +134,4 @@ export class WalletController {
       return this.walletService.payOrder(orderId)
   }
 
-
-
 }

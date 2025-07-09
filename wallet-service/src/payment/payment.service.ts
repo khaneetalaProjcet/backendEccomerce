@@ -235,27 +235,149 @@ export class PaymentService {
   //   }
   // }
 
-  // ////////////////////////// installment ////////////////////////
+  ////// pay with goldbox //////
 
-  // /**
-  //  * this module is payment handler
-  //  * @param body
-  //  * @returns
-  //  */
-  // async paymentHandler(body: any) {
-  //   if (body.paymentMethod == 1) {
-  //     // gateway
-  //     return await this.gateway(body);
-  //   }
+  async payWithGoldBox(body) {
+    const userWallet = await this.walletModel.findOne({ owner: body.user });
 
-  //   if (body.paymentMethod == 2) {
-  //     // gateway and goldBox
-  //     return await this.gatewayAndGoldBoxPayment(body);
-  //   }
+    const newGoldInvoice = await this.goldInvoiceModel.create({
+      goldWeight: +body.goldBox,
+      orderId: body._id,
+      invoiceId: await this.generateInvoice(),
+      wallet: userWallet?._id,
+      status: 'init',
+      date: new Date().toLocaleString('fa-IR').split(',')[0],
+      time: new Date().toLocaleString('fa-IR').split(',')[1],
+    });
 
-  //   if (body.paymentMethod == 3) {
-  //     // goldBox
-  //     return await this.justGoldBox(body);
-  //   }
-  // }
+    const data = {
+      nationalCode: '2420685628',
+      order: newGoldInvoice.orderId,
+      goldWeight: newGoldInvoice.goldWeight,
+    };
+
+    const goldBoxResponse = await this.interService.updateGoldBox(data);
+
+    if (goldBoxResponse === 0) {
+      return {
+        message: 'کاربر مورد نظر یافت نشد',
+        statusCode: 404,
+      };
+    }
+
+    if (goldBoxResponse === 2) {
+      return {
+        message: 'موجودی کافی نیست',
+        statusCode: 400,
+      };
+    }
+
+    if (goldBoxResponse === 3) {
+      return {
+        message: 'خطای داخلی',
+        statusCode: 500,
+      };
+    }
+
+    if (goldBoxResponse === 1) {
+      const finalizedInvoice = await this.goldInvoiceModel.findByIdAndUpdate(
+        newGoldInvoice._id,
+        { state: 2, status: 'completed' },
+      );
+
+      const updatedOrder = await this.interService.updateorder(
+        body._id,
+        newGoldInvoice,
+        1,
+      );
+
+      // if (!updatedOrder) {
+      //   await this.goldInvoiceModel.findByIdAndUpdate(newGoldInvoice._id, {
+      //     state: 3,
+      //     status: 'completed',
+      //   });
+      //   return {
+      //     message: 'فاکتور ثبت شد تا دقایقی دیگر نهایی میشه  ',
+      //     status: 200,
+      //     data: finalizedInvoice,
+      //   };
+      // }
+
+      if (updatedOrder.data.code === 0 || !updatedOrder) {
+        await this.goldInvoiceModel.findByIdAndUpdate(newGoldInvoice._id, {
+          state: 3,
+          status: 'completed',
+        });
+        return {
+          message: 'فاکتور ثبت شد تا دقایقی دیگر نهایی میشه',
+          statusCode: 200,
+          data: finalizedInvoice,
+        };
+      } else if (updatedOrder.data.code === 2) {
+        await this.goldInvoiceModel.findByIdAndUpdate(newGoldInvoice._id, {
+          state: 3,
+          status: 'completed',
+        });
+        return {
+          message: 'خطا در ثبت سفارش',
+          statusCode: 500,
+          data: finalizedInvoice,
+        };
+      } else if (updatedOrder.data.code === 3) {
+        await this.goldInvoiceModel.findByIdAndUpdate(newGoldInvoice._id, {
+          state: 3,
+          status: 'completed',
+        });
+        return {
+          message: 'خطای داخلی در ثبت سفارش',
+          statusCode: 500,
+          data: finalizedInvoice,
+        };
+      } else {
+        await this.goldInvoiceModel.findByIdAndUpdate(newGoldInvoice._id, {
+          state: 4,
+          status: 'completed',
+        });
+        return {
+          message: 'خرید با موفقیت انجام شد',
+          statusCode: 200,
+          data: finalizedInvoice,
+        };
+      }
+    }
+
+    const pendingInvoice = await this.goldInvoiceModel.findByIdAndUpdate(
+      newGoldInvoice._id,
+      { state: 1, status: 'completed' },
+    );
+
+    return {
+      message: 'خرید در مرحله ی انجام است',
+      statusCode: 200,
+      data: pendingInvoice,
+    };
+  }
+
+  /**
+   * this module is payment handler
+   * @param body
+   * @returns
+   */
+  async paymentHandler(body: any) {
+    if (body.paymentMethod == 1) {
+      // gateway
+      console.log('gateway');
+    }
+
+    if (body.paymentMethod == 2) {
+      // gateway and goldBox
+      console.log('gateway and goldbox');
+    }
+
+    if (body.paymentMethod == 3) {
+      // goldBox
+
+      this.payWithGoldBox(body);
+    }
+  }
 }
