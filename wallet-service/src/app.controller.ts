@@ -18,7 +18,7 @@ export class AppController {
     @Query('callbackUrl') callbackUrl: string,
     @Query('phoneNumber') phoneNumber: string,
   ) {
-    await this.appService.requestPayment2( );
+    return this.appService.requestPayment2( );
   }
 
   @Post('callback')
