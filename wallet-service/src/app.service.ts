@@ -87,8 +87,9 @@ export class AppService {
      action: 'token',
         TerminalId: process.env.SEP_TERMINAL_ID,
         Amount: 15000,
-        ResNum: '123456',
-        RedirectUrl: 'https://ecom.finatic.ir',
+        ResNum: '@#cc##',
+      RedirectUrl: 'https://ecom.finatic.ir',
+        cellNumber: "09229055682"
     };
 
     try {
