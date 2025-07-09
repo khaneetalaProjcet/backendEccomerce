@@ -74,7 +74,7 @@ export class CategoryService {
 
  async findOne(id:string){
   const category=await this.categoryModel.findById(id)
-
+  
      return {
         message: '',  
         statusCode: 200,

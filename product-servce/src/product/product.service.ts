@@ -337,10 +337,11 @@ export class ProductService {
   categoryId: string,
   query: productListQueryDto,
 ) {
+
   try {
     const limit = Number(query.limit) || 10;
     const page = Number(query.page) || 0;
-    const skip = page * limit;
+    const skip = (page-1) * limit;
 
     const category = await this.categoryModel.findById(categoryId).populate({
       path: 'parent',
