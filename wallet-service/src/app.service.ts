@@ -54,6 +54,7 @@ export class AppService {
       const result = await response.json();
 
       if (result.status === 1 && result.token) {
+        console.log('token is' , result.token)
         await this.walletInvoiceModel.create({
           orderId: order.id,
           amount: order.totalPrice,
