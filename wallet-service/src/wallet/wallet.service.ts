@@ -144,12 +144,12 @@ export class WalletService {
 
       // let { paymentMethod } = order.paymentMethod      // its the payment method
 
-      console.log('here');
+      console.log('here' , order.paymentMethod);
 
-      let createdInvoice = await this.paymentHandler.paymentHandler(order);
-      // let createdInvoice = ''
+     return this.paymentHandler.paymentHandler(order);
+     
 
-      return createdInvoice;
+     
     }
   }
 }
