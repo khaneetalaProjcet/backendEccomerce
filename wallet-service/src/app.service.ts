@@ -25,14 +25,20 @@ export class AppService {
     private interservice: InterserviceService,
   ) {}
 
+  async generator() {
+    const randomString = new Date().getTime()
+    return randomString.toString()
+  }
+
+
   async requestPayment(order: any) {
     const data = {
       action: 'token',
       TerminalId: process.env.SEP_TERMINAL_ID,
-      Amount: order.amount,
-      ResNum: order.ResNum,
+      Amount: order.totalPrice,
+      ResNum: await this.generator(),
       RedirectUrl: process.env.CALLBACK_URL,
-      // CellNumber: order.,
+      CellNumber: '09229055682',
     };
 
     try {
@@ -51,7 +57,6 @@ export class AppService {
         await this.walletInvoiceModel.create({
           orderId: order.id,
           amount: order.totalPrice,
-          token: result.token,
           status: 'pending',
           state: 1,
         });
@@ -84,12 +89,12 @@ export class AppService {
 
   async requestPayment2() {
     const data = {
-     action: 'token',
-        TerminalId: process.env.SEP_TERMINAL_ID,
-        Amount: 15000,
-        ResNum: '@#cc##',
+      action: 'token',
+      TerminalId: process.env.SEP_TERMINAL_ID,
+      Amount: 15000,
+      ResNum: '@1#cc##',
       RedirectUrl: 'https://ecom.finatic.ir',
-        cellNumber: "09229055682"
+      cellNumber: '09229055682',
     };
 
     try {
@@ -105,13 +110,13 @@ export class AppService {
       const result = await response.json();
 
       if (result.status === 1 && result.token) {
-        // await this.walletInvoiceModel.create({
-        //   action: 'token',
-        //   TerminalId: process.env.SEP_TERMINAL_ID,
-        //   Amount: 1000,
-        //   ResNum: '123456',
-        //   RedirectUrl: 'https://ecom.finatic.ir',
-        // });
+        await this.walletInvoiceModel.create({
+          action: 'token',
+          TerminalId: process.env.SEP_TERMINAL_ID,
+          Amount: 1000,
+          ResNum: '123456',
+          RedirectUrl: 'https://ecom.finatic.ir',
+        });
 
         return {
           success: true,

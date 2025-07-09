@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { AppService } from 'src/app.service';
 import { BahPardakht } from 'src/bah-pardakht/bah-pardakht';
 import { InterserviceService } from 'src/interservice/interservice.service';
 import {
@@ -22,6 +23,8 @@ export class PaymentService {
     private goldInvoiceModel: Model<goldInvoiceInterface>,
     @InjectModel(wallet.name) private walletModel: Model<walletDocument>,
     private interService: InterserviceService,
+
+    private appService: AppService
   ) {}
 
   private async generateInvoice() {
@@ -366,7 +369,7 @@ export class PaymentService {
   async paymentHandler(body: any) {
     if (body.paymentMethod == 1) {
       // gateway
-      console.log('gateway');
+     return this.appService.requestPayment(body)
     }
 
     if (body.paymentMethod == 2) {
