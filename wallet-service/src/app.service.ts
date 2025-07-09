@@ -55,12 +55,12 @@ export class AppService {
 
       if (result.status === 1 && result.token) {
         console.log('token is' , result.token)
-        await this.walletInvoiceModel.create({
-          orderId: order.id,
-          amount: order.totalPrice,
-          status: 'pending',
-          state: 1,
-        });
+        // await this.walletInvoiceModel.create({
+        //   orderId: order.id,
+        //   amount: order.totalPrice,
+        //   status: 'pending',
+        //   state: 1,
+        // });
 
         return {
           success: true,
