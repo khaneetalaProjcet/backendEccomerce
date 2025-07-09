@@ -11,23 +11,15 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) { }
 
-  // @Get('/')
-  // async startPayment(
-  //   @Query('amount') amount: string,
-  //   @Query('orderId') orderId: string,
-  //   @Query('callbackUrl') callbackUrl: string,
-  //   @Query('phoneNumber') phoneNumber: string,
-  // ) {
-  //   const tokenResult = await this.appService.requestPayment(
-  //     10000,
-  //     "3",
-  //     "1233",
-  //     "09229055682",
-  //   );
-  //   console.log(tokenResult);
-    
-  //  
-  // }
+  @Get('/')
+  async startPayment(
+    @Query('amount') amount: string,
+    @Query('orderId') orderId: string,
+    @Query('callbackUrl') callbackUrl: string,
+    @Query('phoneNumber') phoneNumber: string,
+  ) {
+    await this.appService.requestPayment2( );
+  }
 
   @Post('callback')
   @HttpCode(HttpStatus.OK)

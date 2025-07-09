@@ -36,19 +36,6 @@ export class wallet {
     
     @Prop({ type: String })
     time : string
-    
-
-    // @Prop({ type: String })
-    // owner: string
-    
-    // @Prop({ type: String })
-    // owner: string
-    
-    // @Prop({ type: String })
-    // owner: string
-
-
-
 
 }
 

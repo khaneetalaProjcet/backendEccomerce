@@ -31,7 +31,7 @@ export class AppService {
       TerminalId: process.env.SEP_TERMINAL_ID,
       Amount: order.amount,
       ResNum: order.ResNum,
-      RedirectUrl: "//", 
+      RedirectUrl: process.env.CALLBACK_URL,
       // CellNumber: order.,
     };
 
@@ -50,7 +50,7 @@ export class AppService {
       if (result.status === 1 && result.token) {
         await this.walletInvoiceModel.create({
           orderId: order.id,
-          amount : order.totalPrice,
+          amount: order.totalPrice,
           token: result.token,
           status: 'pending',
           state: 1,
@@ -59,7 +59,7 @@ export class AppService {
         return {
           success: true,
           statusCode: 200,
-          data:  `https://sep.shaparak.ir/OnlinePG/SendToken?token=${result.token}`,
+          data: `https://sep.shaparak.ir/OnlinePG/SendToken?token=${result.token}`,
         };
       } else {
         console.error(`Token Error: ${result.errorCode} - ${result.errorDesc}`);
@@ -82,6 +82,61 @@ export class AppService {
     }
   }
 
+  async requestPayment2() {
+    const data = {
+     action: 'token',
+        TerminalId: process.env.SEP_TERMINAL_ID,
+        Amount: 1000,
+        ResNum: '123456',
+        RedirectUrl: 'https://ecom.finatic.ir',
+    };
+
+    try {
+      const response = await fetch(
+        'https://sep.shaparak.ir/onlinepg/onlinepg',
+        {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+
+      const result = await response.json();
+
+      if (result.status === 1 && result.token) {
+        await this.walletInvoiceModel.create({
+          action: 'token',
+          TerminalId: process.env.SEP_TERMINAL_ID,
+          Amount: 1000,
+          ResNum: '123456',
+          RedirectUrl: 'https://ecom.finatic.ir',
+        });
+
+        return {
+          success: true,
+          statusCode: 200,
+          data: `https://sep.shaparak.ir/OnlinePG/SendToken?token=${result.token}`,
+        };
+      } else {
+        console.error(`Token Error: ${result.errorCode} - ${result.errorDesc}`);
+        return {
+          success: false,
+          statusCode: 400,
+          error: {
+            code: result.errorCode,
+            description: result.errorDesc,
+          },
+        };
+      }
+    } catch (err) {
+      console.error('Token Request Error:', err);
+      return {
+        success: false,
+        statusCode: 500,
+        error: 'Unexpected error while requesting token',
+      };
+    }
+  }
 
   async verifyTransactionCallback(body: any) {
     const {
@@ -145,6 +200,15 @@ export class AppService {
             },
             updatedAt: new Date(),
           },
+        );
+
+        await this.interservice.updateorder(
+          ResNum,
+          {
+            invoiceId: RefNum,
+            paymentMethod: 1,
+          },
+          2,
         );
 
         return {
