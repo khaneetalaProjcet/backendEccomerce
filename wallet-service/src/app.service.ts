@@ -104,13 +104,13 @@ export class AppService {
       const result = await response.json();
 
       if (result.status === 1 && result.token) {
-        await this.walletInvoiceModel.create({
-          action: 'token',
-          TerminalId: process.env.SEP_TERMINAL_ID,
-          Amount: 1000,
-          ResNum: '123456',
-          RedirectUrl: 'https://ecom.finatic.ir',
-        });
+        // await this.walletInvoiceModel.create({
+        //   action: 'token',
+        //   TerminalId: process.env.SEP_TERMINAL_ID,
+        //   Amount: 1000,
+        //   ResNum: '123456',
+        //   RedirectUrl: 'https://ecom.finatic.ir',
+        // });
 
         return {
           success: true,
