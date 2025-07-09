@@ -24,8 +24,6 @@ export class AuthService {
 
 async login(phoneNumber: string, password: string) {
   try {
-
-
     const admin = await this.adminService.findByPhoneNumber(phoneNumber)
     if (!admin || !admin.password) {
       return {
