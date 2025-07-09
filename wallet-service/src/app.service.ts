@@ -86,7 +86,7 @@ export class AppService {
     const data = {
      action: 'token',
         TerminalId: process.env.SEP_TERMINAL_ID,
-        Amount: 1000,
+        Amount: 15000,
         ResNum: '123456',
         RedirectUrl: 'https://ecom.finatic.ir',
     };
