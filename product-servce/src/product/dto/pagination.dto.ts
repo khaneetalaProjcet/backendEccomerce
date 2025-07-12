@@ -2,7 +2,7 @@ import { Transform } from "class-transformer";
 import { IsOptional } from "class-validator";
 
 
-export class productListQueryDto {
+export class  productListQueryDto {
   
   @Transform(({value}) => parseInt(value))
   @IsOptional()

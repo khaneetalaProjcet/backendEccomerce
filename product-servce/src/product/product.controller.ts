@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Res, Query  } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+  Res,
+  Query,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -10,9 +22,7 @@ import { CreateProductItemDto } from './dto/create-productItem.dto';
 import { UpdateProductItemDto } from './dto/update-productItem.dto';
 import { query } from 'winston';
 import { productListQueryDto } from './dto/pagination.dto';
- 
-
-
+import { ProductFilterDto } from './dto/productFilterdto';
 
 @Controller('product')
 export class ProductController {
@@ -22,16 +32,24 @@ export class ProductController {
   @UseGuards(JwtAdminAuthGuard)
   @ApiOperation({ summary: 'Create a new product' })
   @ApiBody({ type: CreateProductDto })
-  @ApiResponse({ status: 201, description: 'The product has been successfully created.', type: Product })
+  @ApiResponse({
+    status: 201,
+    description: 'The product has been successfully created.',
+    type: Product,
+  })
   create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all products' })
-  @ApiResponse({ status: 200, description: 'List of products', type: [Product] })
-  findAll() {
-    return this.productService.findAll();
+  @ApiResponse({
+    status: 200,
+    description: 'List of products',
+    type: [Product],
+  })
+  findAll(@Query() query: productListQueryDto) {
+    return this.productService.findAll(query);
   }
 
   @Get('one/:id')
@@ -48,7 +66,11 @@ export class ProductController {
   @ApiOperation({ summary: 'Update a product by ID' })
   @ApiParam({ name: 'id', description: 'The ID of the product' })
   @ApiBody({ type: UpdateProductDto })
-  @ApiResponse({ status: 200, description: 'Product updated successfully', type: Product })
+  @ApiResponse({
+    status: 200,
+    description: 'Product updated successfully',
+    type: Product,
+  })
   @ApiResponse({ status: 404, description: 'Product not found' })
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(id, updateProductDto);
@@ -64,40 +86,68 @@ export class ProductController {
     return this.productService.remove(id);
   }
 
-
-  @Post("item/create")
+  @Post('item/create')
   @UseGuards(JwtAdminAuthGuard)
   @ApiOperation({ summary: 'Create a new product' })
   @ApiBody({ type: CreateProductItemDto })
-  @ApiResponse({ status: 201, description: 'The product has been successfully created.', type: ProductItems })
+  @ApiResponse({
+    status: 201,
+    description: 'The product has been successfully created.',
+    type: ProductItems,
+  })
   createItem(@Body() createProductDto: CreateProductItemDto) {
     return this.productService.createProductItems(createProductDto);
   }
-  @Post("item/update/:id")
+  @Post('item/update/:id')
   @UseGuards(JwtAdminAuthGuard)
   @ApiOperation({ summary: 'Create a new product' })
   @ApiBody({ type: UpdateProductItemDto })
-  @ApiResponse({ status: 201, description: 'The product has been successfully created.', type:ProductItems  })
-  updateItem(@Param('id') id: string,@Body() updateProductDtoItemDto: UpdateProductItemDto) {
-    return this.productService.updateProductItems(id,updateProductDtoItemDto);
+  @ApiResponse({
+    status: 201,
+    description: 'The product has been successfully created.',
+    type: ProductItems,
+  })
+  updateItem(
+    @Param('id') id: string,
+    @Body() updateProductDtoItemDto: UpdateProductItemDto,
+  ) {
+    return this.productService.updateProductItems(id, updateProductDtoItemDto);
   }
 
-  @Get("item/remove/:id/:pid")
+  @Get('item/remove/:id/:pid')
   @UseGuards(JwtAdminAuthGuard)
   @ApiOperation({ summary: 'Create a new product' })
   @ApiBody({ type: UpdateProductItemDto })
-  @ApiResponse({ status: 201, description: 'The product has been successfully created.', type:ProductItems  })
-  removeItem(@Param('id') id: string,@Param('pid') productId: string) {
-    return this.productService.removeProductItems(id,productId);
+  @ApiResponse({
+    status: 201,
+    description: 'The product has been successfully created.',
+    type: ProductItems,
+  })
+  removeItem(@Param('id') id: string, @Param('pid') productId: string) {
+    return this.productService.removeProductItems(id, productId);
   }
-
 
   @Get('category/:categoryId')
   // @UseGuards(JwtAdminAuthGuard)
   @ApiOperation({ summary: 'get product based on category' })
-  async getProductBasedOnCategory(@Req() req : any , @Res() res : any , @Query() query:productListQueryDto, @Param('categoryId') categoryId : string){
-    return this.productService.getProductBasedOnCategory(categoryId, query)
+  async getProductBasedOnCategory(
+    @Req() req: any,
+    @Res() res: any,
+    @Query() query: productListQueryDto,
+    @Param('categoryId') categoryId: string,
+  ) {
+    return this.productService.getProductBasedOnCategory(categoryId, query);
   }
 
+  @Get('/filter-by-price')
+  filterByPrice(@Query() query: ProductFilterDto) {
+    return this.productService.filterProductsByPrice(query);
+  }
+
+
+  @Get('/topSelling')
+  filterTopSelling(@Query() query: productListQueryDto) {
+    this.productService.findAll(query)
+  }
 
 }

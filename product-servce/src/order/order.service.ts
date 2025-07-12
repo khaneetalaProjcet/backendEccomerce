@@ -285,8 +285,10 @@ export class OrderService {
       if (!order) {
         return {
           message: 'سفارش پیدا نشد',
-          statusCode: 400,
-          error: 'سفارش پیدا نشد',
+          statusCode: 200,
+          data: {
+            code: 0,
+          },
         };
       }
       if (+status == 1) {
@@ -297,11 +299,24 @@ export class OrderService {
             element.product._id,
           );
           if (!productItem) {
-            break;
+            return {
+              message: 'محصول یافت نشد',
+              statusCode: 200,
+              data: {
+                code: 2,
+              },
+            };
           }
+
           const remain = productItem.count - element.count;
-          if (remain > 0) {
-            break;
+          if (remain < 0) {
+            return {
+              message: 'موجودی کافی نیست',
+              statusCode: 200,
+              data: {
+                code: 2,
+              },
+            };
           }
 
           productItem.count = remain;
@@ -314,17 +329,21 @@ export class OrderService {
         let cart = await this.cartModel.findOne({ user: order.user });
         if (!cart) {
           return {
-            message: '',
-            statusCode: 400,
-            error: '',
+            message: 'سبد خرید یافت نشد',
+            statusCode: 200,
+            data: {
+              code: 2,
+            },
           };
         }
+
         let cartItems = cart.products;
         let history = cart.history;
         for (let index = 0; index < cartItems.length; index++) {
           const element = cartItems[index];
           history.push(element);
         }
+
         cart.products = [];
         cart.history = history;
         await cart.save();
@@ -337,7 +356,10 @@ export class OrderService {
       return {
         message: '',
         statusCode: 200,
-        data: order,
+        data: {
+          code: 1,
+          order: order,
+        },
       };
     } catch (err) {
       console.log('error');
@@ -345,6 +367,9 @@ export class OrderService {
         message: 'مشکل داخلی سیسنم',
         statusCode: 500,
         error: 'مشکل داخلی سیسنم',
+        data: {
+          code: 3,
+        },
       };
     }
   }
