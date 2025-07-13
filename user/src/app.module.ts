@@ -26,7 +26,7 @@ import { KafkaModule } from './kafka/kafka.module';
     MongooseModule.forFeature([{name : 'userM' , schema : UserSchema2}]),
     // UserModule,
     AuthModule,
-    KafkaModule
+    // KafkaModule
   ],
   controllers: [AppController],
   providers: [AppService , RabbitMqService, RedisServiceService, TokenizeService , JwtService, InterserviceService],
