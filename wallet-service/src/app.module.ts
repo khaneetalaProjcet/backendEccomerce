@@ -10,7 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { MongooseModule, Schema } from '@nestjs/mongoose';
 import { RedisOptions } from 'configs/redis.config';
 import { RabbitMqService } from './rabbit-mq/rabbit-mq.service';
-import { KafkaService } from './kafka/kafka.service';
+// import { KafkaService } from './kafka/kafka.service';
 import { InterserviceService } from './interservice/interservice.service';
 import { PaymentService } from './payment/payment.service';
 import { goldInvoice, goldInvoiceSchema } from './wallet/entities/goldBoxInvoice.entity';
@@ -28,7 +28,7 @@ import { wallet, walletSchema } from './wallet/entities/wallet.entity';
   ],
 
   controllers: [AppController],
-  providers: [AppService, AuthService, RedisServiceService, RabbitMqService, KafkaService, JwtService, InterserviceService, PaymentService],
+  providers: [AppService, AuthService, RedisServiceService, RabbitMqService, JwtService, InterserviceService, PaymentService],
 })
 
 
