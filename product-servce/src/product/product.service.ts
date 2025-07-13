@@ -76,9 +76,10 @@ export class ProductService {
     // }
 
     try {
-      const limit = Number(query.limit) || 10;
-      const page = Number(query.page) || 1;
-      const skip = page * limit;
+      const limit = Number(query.limit) || 12;
+      const page = Number(query.page) || 0;
+      const skip = page  * limit;
+
       const [products, total] = await Promise.all([
         this.productModel
           .find()
@@ -87,10 +88,12 @@ export class ProductService {
           .populate('midCategory')
           .populate('lastCategory')
           .skip(skip)
-          .limit(limit)
-          .exec(),
+          .limit(limit),
         this.productModel.countDocuments(),
       ]);
+
+      console.log(products);
+      console.log(total, '////////');
 
       // const array= products
       // for (let index = 0; index < array.length; index++) {
@@ -357,7 +360,7 @@ export class ProductService {
   ) {
     try {
       const limit = Number(query.limit) || 12;
-      const page = Number(query.page) || 1;
+      const page = Number(query.page) || 0;
       const skip = page * limit;
 
       const category = await this.categoryModel.findById(categoryId).populate({
@@ -393,6 +396,10 @@ export class ProductService {
         this.productModel.countDocuments(filter),
       ]);
 
+      console.log(products, '////// pppppproducts is here');
+
+      console.log(total, '////// total is here');
+
       return {
         message: 'موفق',
         statusCode: 200,
@@ -419,7 +426,6 @@ export class ProductService {
 
   async filterProductsByPrice(query: ProductFilterDto) {
     const { minPrice = 0, maxPrice = 0 } = query;
-
 
     const goldPrice = await this.goldPriceService.getGoldPrice();
 
