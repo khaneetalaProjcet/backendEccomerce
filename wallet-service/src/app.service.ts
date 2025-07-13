@@ -37,7 +37,7 @@ export class AppService {
       TerminalId: process.env.SEP_TERMINAL_ID,
       Amount: order.totalPrice,
       ResNum: await this.generator(),
-      RedirectUrl: 'https://ecom.finatic.ir',
+      RedirectUrl: 'https://ecommerce.khaneetala.ir',
       CellNumber: '09229055682',
     };
 
@@ -52,7 +52,7 @@ export class AppService {
       );
 
       const result = await response.json();
-      
+
       if (result.status === 1 && result.token) {
         console.log('token is' , result.token)
         // await this.walletInvoiceModel.create({
