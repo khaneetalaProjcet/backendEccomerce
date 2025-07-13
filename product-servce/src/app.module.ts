@@ -24,7 +24,7 @@ import { goldPriceService } from './goldPrice/goldPrice.service';
     MongooseModule.forRoot(process.env.MONGO_URI!),
     MongooseModule.forFeature([{ name: Category.name, schema: CategorySchema }]),
     CategoryModule,
-    KafkaModule,
+    // KafkaModule,
     ProductModule,
     CartModule,
     OrderModule
