@@ -37,7 +37,7 @@ export class AppService {
       TerminalId: process.env.SEP_TERMINAL_ID,
       Amount: order.totalPrice,
       ResNum: await this.generator(),
-      RedirectUrl: process.env.CALLBACK_URL,
+      RedirectUrl: 'https://ecommerce.khaneetala.ir',
       CellNumber: '09229055682',
     };
 
@@ -54,12 +54,13 @@ export class AppService {
       const result = await response.json();
 
       if (result.status === 1 && result.token) {
-        await this.walletInvoiceModel.create({
-          orderId: order.id,
-          amount: order.totalPrice,
-          status: 'pending',
-          state: 1,
-        });
+        console.log('token is' , result.token)
+        // await this.walletInvoiceModel.create({
+        //   orderId: order.id,
+        //   amount: order.totalPrice,
+        //   status: 'pending',
+        //   state: 1,
+        // });
 
         return {
           success: true,
