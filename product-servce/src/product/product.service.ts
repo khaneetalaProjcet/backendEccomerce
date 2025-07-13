@@ -18,7 +18,6 @@ import {
 import { productListQueryDto } from './dto/pagination.dto';
 import { ProductFilterDto } from './dto/productFilterdto';
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
-import { log } from 'node:console';
 
 @Injectable()
 export class ProductService {
@@ -148,8 +147,8 @@ export class ProductService {
         .populate('items')
         .populate('firstCategory')
         .populate('midCategory')
-        .populate('lastCategory')
-        .exec();
+        .populate('lastCategory');
+
       if (!product) {
         return {
           message: 'محصول پیدا نشد',
@@ -426,6 +425,23 @@ export class ProductService {
           .limit(limit),
         this.productModel.countDocuments(filter),
       ]);
+
+      const goldPrice = await this.goldPriceService.getGoldPrice();
+
+      products.map((product: any) => {
+        let price = 0;
+
+        for (const item of product.items) {
+          price += Number(item.weight || 0) * goldPrice;
+        }
+
+        const wageAmount = (price * product.wages) / 100;
+        const finalPrice = price + wageAmount;
+
+        const res = (product.price = finalPrice);
+
+        return res;
+      });
 
       console.log(products, '////// pppppproducts is here');
 
