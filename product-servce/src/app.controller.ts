@@ -1,10 +1,10 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import {KafkaProducerService} from "../src/kafka/kafka.producer"
+
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService , private readonly kafkaService:KafkaProducerService ) {}
+  constructor(private readonly appService: AppService ) {}
 
   // @EventPattern('order_created')
   // async handleOrderCreated(@Payload() message: any, @Ctx() context: KafkaContext) {
@@ -21,9 +21,9 @@ export class AppController {
     
     console.log("here");
 
-    const rrr=await this.kafkaService.sendMessage('order_created', { orderId: '123', status: 'new',value:"salllll" });
+    // const rrr=await this.kafkaService.sendMessage('order_created', { orderId: '123', status: 'new',value:"salllll" });
 
-    console.log("rrr",rrr);
+    // console.log("rrr",rrr);
     
     return{
       message : 'موفق' , 
