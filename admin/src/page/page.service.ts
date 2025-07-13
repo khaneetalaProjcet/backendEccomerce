@@ -11,15 +11,17 @@ export class PageService {
     @InjectModel(Page.name) private readonly pageModel: Model<pageDocument>,
   ) {}
 
-  async create(createDto: CreatePageDto) {
+  async create(createDto: any) {
     try {
-      const created = new this.pageModel(createDto);
-
-      const response = await created.save();
+      console.log(createDto)
+      for (let i of createDto){
+        const created = new this.pageModel(i);
+        const response = await created.save();
+      }
       return {
         message: 'done',
         statusCode: 200,
-        data: response,
+        data: 'done',
       };
     } catch (error) {
       console.log(error, 'error is here');

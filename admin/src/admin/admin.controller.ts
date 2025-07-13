@@ -123,6 +123,13 @@ export class AdminController {
 
     return await this.adminService.findById(req.user.userId);
   }
+  @Get('/access/:id')
+  async getAdminAccess(
+    @Param('id') id: string,
+  ){
+    return this.adminService.getAdminAccess(id)
+  }
+
 
   @Post('access/:id')
   @ApiOperation({ summary: 'Update admin access pages' })

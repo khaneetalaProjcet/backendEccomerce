@@ -153,6 +153,36 @@ export class AdminService {
     }
   }
 
+
+  async getAdminAccess(adminId : string){
+    let admin : any = await this.adminModel.findById(adminId).populate('accessPoint')
+    if (!admin){
+      return {
+        statusCode : 400,
+        message : 'ادمین یافت نشد',
+        error:'ادمین یافت نشد'
+      }
+    }
+    let allAccess = await this.pageModel.find()
+    let access :any = []
+    for (let i of allAccess){
+      let data = JSON.parse(JSON.stringify(i.toObject()))
+      if (admin.accessPoint.includes(data._id.toString())){
+          data['access'] = true
+          access.push(data)
+      }else{
+        data['access'] = true
+        access.push(data)
+      }
+    }
+    return {
+      message : 'سطح دسترسی' ,
+      statusCode : 200,
+      data : access
+    }
+  }
+
+
   async updateAdminAccess(adminId: string, pageIds: string[]) {
     const isLocked = await this.lockerService.check(
       `admin-access:${adminId}`,
