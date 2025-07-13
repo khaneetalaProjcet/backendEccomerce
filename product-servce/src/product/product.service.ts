@@ -92,6 +92,27 @@ export class ProductService {
         this.productModel.countDocuments(),
       ]);
 
+
+      const goldPrice = await this.goldPriceService.getGoldPrice()
+
+
+       products.map((product: any) => {
+        let price = 0;
+
+        for (const item of product.items) {
+          price += Number(item.weight || 0) * goldPrice;
+        }
+
+        const wageAmount = (price * product.wages) / 100;
+        const finalPrice = price + wageAmount;
+
+        const res = product.price = finalPrice
+        
+        return res
+
+      })
+
+
       console.log(products);
       console.log(total, '////////');
 
@@ -434,7 +455,6 @@ export class ProductService {
       model: 'ProductItems',
     });
 
-    console.log(products, '///products');
 
     const filteredProducts = products.filter((product: any) => {
       let price = 0;
@@ -443,14 +463,10 @@ export class ProductService {
         price += Number(item.weight || 0) * goldPrice;
       }
 
-      console.log(product.name, price);
-
       const wageAmount = (price * product.wages) / 100;
       const finalPrice = price + wageAmount;
 
       const result = finalPrice >= minPrice && finalPrice <= maxPrice;
-
-      console.log(result, '//// result');
 
       return result;
     });
