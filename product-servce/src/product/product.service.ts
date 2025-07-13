@@ -78,7 +78,7 @@ export class ProductService {
     try {
       const limit = Number(query.limit) || 12;
       const page = Number(query.page) || 0;
-      const skip = page  * limit;
+      const skip = page * limit;
 
       const [products, total] = await Promise.all([
         this.productModel
@@ -92,11 +92,9 @@ export class ProductService {
         this.productModel.countDocuments(),
       ]);
 
+      const goldPrice = await this.goldPriceService.getGoldPrice();
 
-      const goldPrice = await this.goldPriceService.getGoldPrice()
-
-
-       products.map((product: any) => {
+      products.map((product: any) => {
         let price = 0;
 
         for (const item of product.items) {
@@ -106,12 +104,10 @@ export class ProductService {
         const wageAmount = (price * product.wages) / 100;
         const finalPrice = price + wageAmount;
 
-        const res = product.price = finalPrice
-        
-        return res
+        const res = (product.price = finalPrice);
 
-      })
-
+        return res;
+      });
 
       console.log(products);
       console.log(total, '////////');
@@ -161,6 +157,20 @@ export class ProductService {
           error: 'محصول پیدا نشد',
         };
       }
+
+      const goldPrice = await this.goldPriceService.getGoldPrice();
+
+      let price = 0;
+
+      for (const item of product.items) {
+        price += Number(item.weight || 0) * goldPrice;
+      }
+
+      const wageAmount = (price * product.wages) / 100;
+      const finalPrice = price + wageAmount;
+
+      product.price = finalPrice;
+
       return {
         message: '',
         statusCode: 200,
@@ -454,7 +464,6 @@ export class ProductService {
       path: 'items',
       model: 'ProductItems',
     });
-
 
     const filteredProducts = products.filter((product: any) => {
       let price = 0;

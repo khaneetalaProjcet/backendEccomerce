@@ -11,6 +11,7 @@ export interface ProductDocumnet extends Document {
   wages: number;
   count: number;
   category: Types.ObjectId;
+  price: number
 }
 
 @Schema({ timestamps: true })
