@@ -86,7 +86,7 @@ export class CategoryService {
  }
 
  async updateCategory(id: string, updateDto: { name?: string , description?:string  }) {
-    try {
+  try{
       const category = await this.categoryModel.findById(id);
       if (!category) {
         return {

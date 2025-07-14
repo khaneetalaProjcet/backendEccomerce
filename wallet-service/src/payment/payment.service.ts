@@ -371,7 +371,7 @@ export class PaymentService {
       // gateway
      return this.appService.requestPayment(body)
     }
-    
+
     if (body.paymentMethod == 2) {
       // gateway and goldBox
       console.log('gateway and goldbox');
@@ -380,7 +380,7 @@ export class PaymentService {
     if (body.paymentMethod == 3) {
       // goldBox
 
-      this.payWithGoldBox(body);
+      return this.payWithGoldBox(body);
     }
   }
 }
