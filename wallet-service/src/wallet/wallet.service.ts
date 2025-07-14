@@ -386,7 +386,7 @@ export class WalletService {
 
   async redirectFromGateway(body : any){
     console.log( 'it comes in to the redirect', body)
-    let page;
+    let page = ''
     let walletInvoice = await this.walletInvoiceModel.findOne({
       ResNum: body.ResNum
     })
@@ -400,11 +400,12 @@ export class WalletService {
         walletInvoice.status = 'failed'
         await walletInvoice.save()
         page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'انصراف از درخواست')
-        return {
-          message: 'page',
-          statusCode: 301,
-          page
-        }
+      }
+      console.log('finallllll')
+      return {
+        message: 'page',
+        statusCode: 301,
+        page
       }
     }
   }
