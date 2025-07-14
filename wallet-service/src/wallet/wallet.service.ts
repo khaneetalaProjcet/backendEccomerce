@@ -383,7 +383,13 @@ export class WalletService {
 
   async redirectFromGateway(body : any){
     console.log( 'it comes in to the redirect', body)
-    let page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'انصراف از درخواست')
+    let page;
+    if (body.Status === 'CanceledByUser'){
+      page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'انصراف از درخواست')
+    }
+    if (){
+      
+    }
     // let page = await this.failedPage('https://ecommerce.khaneetala.ir/', 
     //   ')
     return {

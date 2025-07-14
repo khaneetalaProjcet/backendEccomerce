@@ -12,6 +12,7 @@ import {
 } from './wallet/entities/walletInvoice.entity';
 import { htmlPage } from './bah-pardakht/bah-pardakht';
 import * as soap from 'soap';
+import { wallet, walletDocument } from './wallet/entities/wallet.entity';
 
 @Injectable()
 export class AppService {
@@ -20,6 +21,8 @@ export class AppService {
   constructor(
     @InjectModel(WalletInvoice.name)
     private walletInvoiceModel: Model<WalletInvoiceInterface>,
+    @InjectModel(wallet.name)
+    private walletModel: Model<walletDocument>,
     @InjectModel(goldInvoice.name)
     private goldBoxInvoice: Model<goldInvoiceInterface>,
     private interservice: InterserviceService,
@@ -42,6 +45,7 @@ export class AppService {
     };
 
     try {
+      
       const response = await fetch(
         'https://sep.shaparak.ir/onlinepg/onlinepg',
         {
@@ -54,14 +58,26 @@ export class AppService {
       const result = await response.json();
 
       if (result.status === 1 && result.token) {
-        console.log('token is' , result.token)
-        // await this.walletInvoiceModel.create({
-        //   orderId: order.id,
-        //   amount: order.totalPrice,
-        //   status: 'pending',
-        //   state: 1,
-        // });
-        
+        let wallet = await this.walletModel.findOne({
+          owner : order.user
+        })
+        if (!wallet){
+          return {
+            message : 'سند مورد نظر معتبر نمی باشد',
+            statusCode : 400,
+            error : 'سند مورد نظر معتبر نمی باشد'
+          }
+        }
+        console.log('token is' , result)
+        let walletInvoice = await this.walletInvoiceModel.create({
+          orderId: order._id,
+          amount: order.totalPrice,
+          status: 'pending',
+          ResNum : data.ResNum,
+          state: 1,
+          wallet: wallet._id,
+          });
+          console.log('wallet invoice after creations' , walletInvoice )
         return {
           success: true,
           statusCode: 200,

@@ -4,7 +4,7 @@ export interface WalletInvoiceInterface extends Document {
   orderId: string;
   amount: number;
   token: string;
-  refNum?: string;
+  ResNum?: string;
   rrn?: string;
   traceNo?: string;
   affectiveAmount?: number;
@@ -29,8 +29,8 @@ export class WalletInvoice {
   token: string;
 
   @Prop({ type: String, default: '' })
-  refNum: string;
-
+  ResNum: string;
+  
   @Prop({ type: String, default: '' })
   rrn: string;
 
