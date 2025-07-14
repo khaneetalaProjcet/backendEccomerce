@@ -393,7 +393,7 @@ export class ProductService {
     try {
       const limit = Number(query.limit) || 12;
       const page = Number(query.page) || 0;
-      const skip = page * limit;
+      const skip = (page-1) * limit;
 
       const category = await this.categoryModel.findById(categoryId).populate({
         path: 'parent',
@@ -407,7 +407,7 @@ export class ProductService {
           error: 'دسته بندی انتخابی موجود نمی‌باشد',
         };
       }
-
+      
       const filter = {
         $or: [
           { firstCategory: categoryId },
@@ -436,7 +436,7 @@ export class ProductService {
         for (const item of product.items) {
           price += Number(item.weight || 0) * goldPrice;
         }
-
+        
         const wageAmount = (price * product.wages) / 100;
         const finalPrice = price + wageAmount;
 
