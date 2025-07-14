@@ -37,7 +37,7 @@ export class AppService {
       TerminalId: process.env.SEP_TERMINAL_ID,
       Amount: order.totalPrice,
       ResNum: await this.generator(),
-      RedirectUrl: 'https://shop.khaneetala.ir/v1/mainw/wallet/redirect',
+      RedirectUrl: 'https://ecommerce.khaneetala.ir/api/test',
       CellNumber: '09229055682',
     };
 
