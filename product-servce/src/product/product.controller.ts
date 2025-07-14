@@ -140,14 +140,35 @@ export class ProductController {
   }
 
   @Get('/filter-by-price')
+  @ApiOperation({ summary: 'Get products based on price' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of products base on price',
+    type: [Product],
+  })
   filterByPrice(@Query() query: ProductFilterDto) {
     return this.productService.filterProductsByPrice(query);
   }
 
-
   @Get('/topSelling')
+  @ApiOperation({ summary: 'Get top selling products' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of top selling products',
+    type: [Product],
+  })
   filterTopSelling(@Query() query: productListQueryDto) {
-    return this.productService.findAll(query)
+    return this.productService.findAll(query);
   }
 
+  @Get('/recommendations')
+  @ApiOperation({ summary: 'get recommending products' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of recommending products',
+    type: [Product],
+  })
+  recommending(@Query() query: productListQueryDto) {
+    return this.productService.findAll(query);
+  }
 }

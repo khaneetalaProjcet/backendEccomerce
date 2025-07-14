@@ -10,7 +10,6 @@ import {
   ProductItemsDocment,
 } from './entities/productItems.entity';
 import { UpdateProductItemDto } from './dto/update-productItem.dto';
-import e from 'express';
 import {
   Category,
   CategoryDocumnet,
@@ -18,7 +17,6 @@ import {
 import { productListQueryDto } from './dto/pagination.dto';
 import { ProductFilterDto } from './dto/productFilterdto';
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
-import { log } from 'winston';
 
 @Injectable()
 export class ProductService {
@@ -110,9 +108,6 @@ export class ProductService {
         return res;
       });
 
-      // console.log('its after sss' , dataAfterMap);
-      console.log(total, '////////');
-
       // const array= products
       // for (let index = 0; index < array.length; index++) {
       //   const element = array[index];
@@ -189,7 +184,6 @@ export class ProductService {
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     try {
-      console.log(updateProductDto);
       const product = await this.productModel
         .findByIdAndUpdate(id, updateProductDto)
         .exec();
@@ -247,7 +241,6 @@ export class ProductService {
 
   async createProductItems(dto: CreateProductItemDto) {
     try {
-      console.log('dtotototot', dto);
 
       const prodcutItem = await this.productItemModel.create({
         weight: dto.weight,
@@ -277,7 +270,7 @@ export class ProductService {
         data: prodcutItem,
       };
     } catch (error) {
-      console.log('error', error);
+      console.log('error', error);  
       return {
         message: 'مشکل داخلی سیسنم',
         statusCode: 500,
@@ -338,15 +331,9 @@ export class ProductService {
 
   async removeProductItems(id: string, productId: string) {
     try {
-      console.log('prodcutId', productId);
-      console.log('item', id);
       const prodcut = await this.productModel.findById(productId);
 
-      console.log(prodcut?.items);
-
       const prodcutItem = await this.productItemModel.findById(id);
-
-      console.log(prodcutItem);
 
       if (!prodcut) {
         return {
@@ -445,9 +432,6 @@ export class ProductService {
         return res;
       });
 
-      console.log(products, '////// pppppproducts is here');
-
-      console.log(total, '////// total is here');
 
       return {
         message: 'موفق',
@@ -495,7 +479,6 @@ export class ProductService {
 
       const result = finalPrice >= minPrice && finalPrice <= maxPrice;
 
-      console.log(result,"///////result");
       
 
       return result;
