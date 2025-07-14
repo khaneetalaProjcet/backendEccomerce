@@ -4,7 +4,7 @@ import { ResponseInterceptor } from './interceptors/interceptors.interceptor';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { kafkaConsumerConfig } from 'configs/kafka.config';
-
+ import * as express from 'express';
 
 
 async function bootstrap() {
@@ -51,7 +51,7 @@ async function bootstrap() {
 
   // app.connectMicroservice(kafkaConsumerConfig);
   //  await app.startAllMicroservices();
-  
+  app.use(express.urlencoded({ extended: true, limit: '10mb' }))
   await app.listen(process.env.PORT ?? 9011);
 }
 bootstrap();
