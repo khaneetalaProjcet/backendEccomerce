@@ -24,13 +24,13 @@ export class WalletInvoice {
 
   @Prop({ type: Number, required: true })
   amount: number;
-
+  
   @Prop({ type: String, required: true })
   token: string;
 
   @Prop({ type: String, default: '' })
   ResNum: string;
-  
+
   @Prop({ type: String, default: '' })
   rrn: string;
 

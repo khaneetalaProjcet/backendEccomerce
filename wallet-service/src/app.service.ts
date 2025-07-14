@@ -4,7 +4,7 @@ import {
   goldInvoiceInterface,
 } from './wallet/entities/goldBoxInvoice.entity';
 import { InterserviceService } from './interservice/interservice.service';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Body, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   WalletInvoice,
@@ -73,6 +73,7 @@ export class AppService {
           orderId: order._id,
           amount: order.totalPrice,
           status: 'pending',
+          token : result.token,
           ResNum : data.ResNum,
           state: 1,
           wallet: wallet._id,
