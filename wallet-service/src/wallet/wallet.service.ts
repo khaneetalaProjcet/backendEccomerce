@@ -8,12 +8,15 @@ import { responseInterface } from 'src/interfaces/interfaces.interface';
 import { InterserviceService } from 'src/interservice/interservice.service';
 import { PaymentService } from 'src/payment/payment.service';
 import { AppService } from 'src/app.service';
+import { WalletInvoice, WalletInvoiceInterface } from './entities/walletInvoice.entity';
 
 @Injectable()
 export class WalletService {
   constructor(
     @InjectModel('wallet') private walletModel: Model<walletDocument>,
     private interService: InterserviceService,
+    @InjectModel(WalletInvoice.name)
+        private walletInvoiceModel: Model<WalletInvoiceInterface>,
     private payments: AppService,
     
     private paymentHandler: PaymentService,
@@ -384,18 +387,25 @@ export class WalletService {
   async redirectFromGateway(body : any){
     console.log( 'it comes in to the redirect', body)
     let page;
-    if (body.Status === 'CanceledByUser'){
-      page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'انصراف از درخواست')
-    }
-    if (){
-      
-    }
-    // let page = await this.failedPage('https://ecommerce.khaneetala.ir/', 
-    //   ')
-    return {
-      message: 'page',
-      statusCode: 301,
-      page
+    let walletInvoice = await this.walletInvoiceModel.findOne({
+      ResNum: body.ResNum
+    })
+    if (!walletInvoice){
+      console.log('wallet invoice not exits')
+      page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا معتبر')
+    }else{
+      console.log('wallet invoice is >>>> ' , walletInvoice)
+      if (body.Status === 'CanceledByUser'){
+        console.log('the payment is canceled by user')
+        walletInvoice.status = 'failed'
+        await walletInvoice.save()
+        page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'انصراف از درخواست')
+      }
+      return {
+        message: 'page',
+        statusCode: 301,
+        page
+      }
     }
   }
 
