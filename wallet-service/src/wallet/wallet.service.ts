@@ -384,8 +384,8 @@ export class WalletService {
   async redirectFromGateway(body : any){
     console.log( 'it comes in to the redirect', body)
     let page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'انصراف از درخواست')
-    let page = await this.failedPage('https://ecommerce.khaneetala.ir/', 
-      ')
+    // let page = await this.failedPage('https://ecommerce.khaneetala.ir/', 
+    //   ')
     return {
       message: 'page',
       statusCode: 301,
