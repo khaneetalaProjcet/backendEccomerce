@@ -134,4 +134,10 @@ export class WalletController {
       return this.walletService.payOrder(orderId)
   }
 
+
+  @Post('/redirect')
+  async redirectFromGateway(@Req() req : any , @Res() res : any , @Body() body : any){
+      return this.walletService.redirectFromGateway(body)
+  }
+
 }

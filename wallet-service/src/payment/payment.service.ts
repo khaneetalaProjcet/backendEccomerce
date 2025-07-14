@@ -254,7 +254,7 @@ export class PaymentService {
     });
 
     const data = {
-      nationalCode: '2420685628',
+      nationalCode: body.user.nationalCode,
       order: newGoldInvoice.orderId,
       goldWeight: newGoldInvoice.goldWeight,
     };
@@ -287,7 +287,7 @@ export class PaymentService {
         newGoldInvoice._id,
         { state: 2, status: 'completed' },
       );
-
+      
       const updatedOrder = await this.interService.updateorder(
         body._id,
         newGoldInvoice,
@@ -375,10 +375,6 @@ export class PaymentService {
     if (body.paymentMethod == 2) {
       // gateway and goldBox
       console.log('gateway and goldbox');
-    }
-
-    if (body.paymentMethod == 3) {
-      // goldBox
       return this.payWithGoldBox(body);
     }
   }

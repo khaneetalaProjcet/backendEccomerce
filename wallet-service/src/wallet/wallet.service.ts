@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { walletDocument } from './entities/wallet.entity';
 import { Model, ClientSession } from 'mongoose';
 import { responseInterface } from 'src/interfaces/interfaces.interface';
-import { InterserviceService } from 'src/interservice/interservice.service';
+import { htmlPage, InterserviceService } from 'src/interservice/interservice.service';
 import { PaymentService } from 'src/payment/payment.service';
 import { AppService } from 'src/app.service';
 
@@ -149,4 +149,17 @@ export class WalletService {
      return this.paymentHandler.paymentHandler(order);
     }
   }
+
+
+  async redirectFromGateway(body : any){
+    console.log(body)
+    let page = new htmlPage().successPage('https://ecommerce.khaneetala.ir/')
+    return {
+      message : 'page',
+      statusCode : 301,
+      data : page
+    }
+  }
+
+
 }
