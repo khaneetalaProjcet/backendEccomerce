@@ -57,4 +57,5 @@ export class CreateOrderDto {
   @ApiProperty({ example: 4000000, description: 'cash money' })
   @IsNumber()
   cash: number;
+  
 }

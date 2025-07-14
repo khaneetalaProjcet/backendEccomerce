@@ -23,6 +23,8 @@ export class OrderService {
     @InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
     @InjectModel(Order.name) private orderModel: Model<OrderInterface>,
   ) {}
+
+
   async create(userId: string, body: any) {
     try {
       const cart = await this.cartModel
@@ -36,9 +38,10 @@ export class OrderService {
           message: 'سبد خرید شما خالی است',
         };
       }
-      const cash: number = body.cash;
+
+      const cash: number = +body.cash;
       const goldPrice = await this.goldPriceService.getGoldPrice();
-      const itemPrices = this.calculateCartItemPrices(
+      const itemPrices = await this.calculateCartItemPrices(
         cart.products as any,
         +goldPrice,
       );
@@ -53,13 +56,13 @@ export class OrderService {
 
       let goldBox = '0';
 
-      if (body.paymentMethod === 2) {
-        goldBox = await this.caculateNumberOfGoldBox(
-          ((totalPrice - cash) / +goldPrice).toString(),
-        );
-      }
+      // if (body.paymentMethod === 2) {
+      //   goldBox = await this.caculateNumberOfGoldBox(
+      //     ((totalPrice - cash) / +goldPrice).toString(),
+      //   );
+      // }
 
-      if (body.paymentMethod === 3) {
+      if (body.paymentMethod === 2) {
         goldBox = await this.caculateNumberOfGoldBox(
           (totalPrice / +goldPrice).toString(),
         );
@@ -385,21 +388,21 @@ export class OrderService {
     return calculatedGoldBox;
   }
 
-  private calculateCartItemPrices(
+  private async calculateCartItemPrices(
     cartProducts: {
       product: { weight: string | number };
       mainProduct: { wages: number };
       count: number;
     }[],
     goldPricePerGram: number,
-  ): {
+  ): Promise<{
     unitPrice: number; // قیمت یک عدد
     totalPrice: number; // قیمت کل × تعداد
     count: number;
     weight: number;
     wagePercent: number;
     totalWeight: number;
-  }[] {
+  }[]> {
     return cartProducts.map((item) => {
       const weight =
         typeof item.product.weight === 'string'
