@@ -51,7 +51,6 @@ async function bootstrap() {
 
   // app.connectMicroservice(kafkaConsumerConfig);
   //  await app.startAllMicroservices();
-  app.use(express.urlencoded({ extended: true, limit: '10mb' }))
   await app.listen(process.env.PORT ?? 9011);
 }
 bootstrap();
