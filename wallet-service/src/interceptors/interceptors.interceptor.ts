@@ -20,9 +20,6 @@ export class ResponseInterceptor implements NestInterceptor {
         const response = ctx.getResponse();
         const request = ctx.getRequest();
 
-    if (res.statusCode === 301){
-      return response.status(200).send(res.data)
-    }else{
       console.log('final test2')
       
       let newResponse = { success : (res.statusCode == 200) ? true : false ,  
@@ -33,5 +30,5 @@ export class ResponseInterceptor implements NestInterceptor {
       delete newResponse.statusCode
       return response.status(+res.statusCode).json(newResponse)
     }
-  }
+
 }

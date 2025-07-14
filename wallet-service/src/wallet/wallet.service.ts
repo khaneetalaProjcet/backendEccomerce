@@ -152,12 +152,12 @@ export class WalletService {
 
 
   async redirectFromGateway(body : any){
-    console.log(body)
+    console.log( 'it comes in to the redirect', body)
     let page = new htmlPage().successPage('https://ecommerce.khaneetala.ir/')
     return {
       message : 'page',
       statusCode : 301,
-      data : page
+      page
     }
   }
 
