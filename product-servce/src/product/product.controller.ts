@@ -147,7 +147,7 @@ export class ProductController {
 
   @Get('/topSelling')
   filterTopSelling(@Query() query: productListQueryDto) {
-    this.productService.findAll(query)
+    return this.productService.findAll(query)
   }
 
 }

@@ -74,9 +74,6 @@ export class CategoryService {
     };
   }
 
-<<<<<<< HEAD
-  async findOne(id: string) {
-=======
  async findOne(id:string){
   const category=await this.categoryModel.findById(id)
   
@@ -89,21 +86,6 @@ export class CategoryService {
  }
 
  async updateCategory(id: string, updateDto: { name?: string , description?:string  }) {
-  try{
->>>>>>> main
-    const category = await this.categoryModel.findById(id);
-
-    return {
-      message: '',
-      statusCode: 200,
-      data: category,
-    };
-  }
-
-  async updateCategory(
-    id: string,
-    updateDto: { name?: string; description?: string },
-  ) {
     try {
       const category = await this.categoryModel.findById(id);
       if (!category) {
