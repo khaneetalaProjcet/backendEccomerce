@@ -407,7 +407,7 @@ export class ProductService {
           error: 'دسته بندی انتخابی موجود نمی‌باشد',
         };
       }
-      
+
       const filter = {
         $or: [
           { firstCategory: categoryId },

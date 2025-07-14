@@ -11,7 +11,7 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post("create")
-  @UseGuards(JwtAdminAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBody({ type: CreateOrderDto })
   create(@Req() req : any , @Res() res : any,@Body() body:CreateOrderDto) {
     const userId=req.user.userId
