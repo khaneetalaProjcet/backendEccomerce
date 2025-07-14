@@ -400,11 +400,11 @@ export class WalletService {
         walletInvoice.status = 'failed'
         await walletInvoice.save()
         page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'انصراف از درخواست')
-      }
-      return {
-        message: 'page',
-        statusCode: 301,
-        page
+        return {
+          message: 'page',
+          statusCode: 301,
+          page
+        }
       }
     }
   }
