@@ -24,7 +24,7 @@ export class PaymentService {
     @InjectModel(wallet.name) private walletModel: Model<walletDocument>,
     private interService: InterserviceService,
 
-    private appService: AppService
+    private appService: AppService,
   ) {}
 
   private async generateInvoice() {
@@ -369,7 +369,7 @@ export class PaymentService {
   async paymentHandler(body: any) {
     if (body.paymentMethod == 1) {
       // gateway
-     return this.appService.requestPayment(body)
+      return this.appService.requestPayment(body);
     }
 
     if (body.paymentMethod == 2) {

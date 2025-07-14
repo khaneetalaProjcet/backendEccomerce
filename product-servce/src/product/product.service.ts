@@ -95,7 +95,6 @@ export class ProductService {
       products.map((product: any) => {
         let price = 0;
 
-
         for (const item of product.items) {
           price += Number(item.weight || 0) * goldPrice;
         }
@@ -241,7 +240,6 @@ export class ProductService {
 
   async createProductItems(dto: CreateProductItemDto) {
     try {
-
       const prodcutItem = await this.productItemModel.create({
         weight: dto.weight,
         size: dto.size,
@@ -270,7 +268,7 @@ export class ProductService {
         data: prodcutItem,
       };
     } catch (error) {
-      console.log('error', error);  
+      console.log('error', error);
       return {
         message: 'مشکل داخلی سیسنم',
         statusCode: 500,
@@ -432,7 +430,6 @@ export class ProductService {
         return res;
       });
 
-
       return {
         message: 'موفق',
         statusCode: 200,
@@ -469,7 +466,7 @@ export class ProductService {
 
     const filteredProducts = products.filter((product: any) => {
       let price = 0;
-      
+
       for (const item of product.items) {
         price += Number(item.weight || 0) * goldPrice;
       }
@@ -478,8 +475,6 @@ export class ProductService {
       const finalPrice = price + wageAmount;
 
       const result = finalPrice >= minPrice && finalPrice <= maxPrice;
-
-      
 
       return result;
     });
