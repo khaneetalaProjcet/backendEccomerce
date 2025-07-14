@@ -390,8 +390,7 @@ export class UserService {
     console.log('its here for delete address >>>> ', adressId, userId);
     const user = await this.userModel.findById(
       userId,
-      // { $pull: { addresses: { _id: adressId } } },
-      // { new: true },
+
     );
 
     if (!user) {

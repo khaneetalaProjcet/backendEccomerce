@@ -430,7 +430,7 @@ export class UserController {
     status: 200,
     description: 'get all ngo succeed',
     schema: {
-      example: {
+      example: {  
         success: true,
         message: 'get all ngo succeed',
         error: null,

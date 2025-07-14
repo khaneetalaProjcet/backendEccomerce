@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, ValidationPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+  Res,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
@@ -13,138 +24,153 @@ export class AuthController {
 
   @Post('/otp')
   @ApiOperation({ summary: 'sending otp code' })
-    @ApiResponse({
-      status: 200, description: 'the otp code sent successfully',
-      schema: {
-        example: {
-          success: true,
-          message: 'کد تایید موفق',
-          error: null,
-          data: null
-        }
+  @ApiResponse({
+    status: 200,
+    description: 'the otp code sent successfully',
+    schema: {
+      example: {
+        success: true,
+        message: 'کد تایید موفق',
+        error: null,
+        data: null,
       },
-    })
-    
-    @ApiResponse({
-      status: 409, description: 'duplicate data',
-      schema: {
-        example: {
-          success: false,
-          message: 'this code already sendt',
-          error: 'duplicate sent code',
-          data: null
-        }
+    },
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'duplicate data',
+    schema: {
+      example: {
+        success: false,
+        message: 'this code already sendt',
+        error: 'duplicate sent code',
+        data: null,
       },
-    })
-    @ApiResponse({
-      status: 500, description: 'internal service error',
-      schema: {
-        example: {
-          success: false,
-          message: 'internal error',
-          error: 'internal service error',
-          data: null
-        }
+    },
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'internal service error',
+    schema: {
+      example: {
+        success: false,
+        message: 'internal error',
+        error: 'internal service error',
+        data: null,
       },
-    })
-    @ApiBody({
-      type: sendOtpDto,
-      description: 'Json structure for project object',
-    })
-  sendOtp(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: sendOtpDto) {
-    return this.authService.sendOtp(req , res , body)
+    },
+  })
+  @ApiBody({
+    type: sendOtpDto,
+    description: 'Json structure for project object',
+  })
+  sendOtp(
+    @Req() req: any,
+    @Res() res: any,
+    @Body(new ValidationPipe()) body: sendOtpDto,
+  ) {
+    return this.authService.sendOtp(req, res, body);
   }
 
   @Post('/login')
   @ApiOperation({ summary: 'validate otp code' })
-    @ApiResponse({
-      status: 200, description: 'the otp code validate and user login successfully',
-      schema: {
-        example: {
-          success: true,
-          message: 'با موفقیت وارد شدید',
-          error: null,
-          data: null
-        }
+  @ApiResponse({
+    status: 200,
+    description: 'the otp code validate and user login successfully',
+    schema: {
+      example: {
+        success: true,
+        message: 'با موفقیت وارد شدید',
+        error: null,
+        data: null,
       },
-    })
-    
-    @ApiResponse({
-      status: 409, description: 'duplicate data',
-      schema: {
-        example: {
-          success: false,
-          message: 'this code already sendt',
-          error: 'duplicate sent code',
-          data: null
-        }
+    },
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'duplicate data',
+    schema: {
+      example: {
+        success: false,
+        message: 'this code already sendt',
+        error: 'duplicate sent code',
+        data: null,
       },
-    })
-    @ApiResponse({
-      status: 500, description: 'internal service error',
-      schema: {
-        example: {
-          success: false,
-          message: 'internal error',
-          error: 'internal service error',
-          data: null
-        }
+    },
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'internal service error',
+    schema: {
+      example: {
+        success: false,
+        message: 'internal error',
+        error: 'internal service error',
+        data: null,
       },
-    })
-    @ApiBody({
-      type: validateOtpDto,
-      description: 'Json structure for project object',
-    })
-  login(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: validateOtpDto) {
-    return this.authService.validateOtp( body)
+    },
+  })
+  @ApiBody({
+    type: validateOtpDto,
+    description: 'Json structure for project object',
+  })
+  login(
+    @Req() req: any,
+    @Res() res: any,
+    @Body(new ValidationPipe()) body: validateOtpDto,
+  ) {
+    return this.authService.validateOtp(body);
   }
-
 
   @Post('/refresh')
   @ApiOperation({ summary: 'get token ' })
-    @ApiResponse({
-      status: 200, description: 'token generated',
-      schema: {
-        example: {
-          success: true,
-          message: 'با موفقیت وارد شدید',
-          error: null,
-          data: null
-        }
+  @ApiResponse({
+    status: 200,
+    description: 'token generated',
+    schema: {
+      example: {
+        success: true,
+        message: 'با موفقیت وارد شدید',
+        error: null,
+        data: null,
       },
-    })
-    
-    @ApiResponse({
-      status: 409, description: 'duplicate data',
-      schema: {
-        example: {
-          success: false,
-          message: 'this code already sendt',
-          error: 'duplicate sent code',
-          data: null
-        }
+    },
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'duplicate data',
+    schema: {
+      example: {
+        success: false,
+        message: 'this code already sendt',
+        error: 'duplicate sent code',
+        data: null,
       },
-    })
-    @ApiResponse({
-      status: 500, description: 'internal service error',
-      schema: {
-        example: {
-          success: false,
-          message: 'internal error',
-          error: 'internal service error',
-          data: null
-        }
+    },
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'internal service error',
+    schema: {
+      example: {
+        success: false,
+        message: 'internal error',
+        error: 'internal service error',
+        data: null,
       },
-    })
-    @ApiBody({
-      type: refreshTokenDto,
-      description: 'Json structure for project object',
-    })
-  refreshToken(@Req() req : any , @Res() res : any , @Body(new ValidationPipe()) body: refreshTokenDto) {
-    return this.authService.refreshToken(body)
+    },
+  })
+  @ApiBody({
+    type: refreshTokenDto,
+    description: 'Json structure for project object',
+  })
+  refreshToken(
+    @Req() req: any,
+    @Res() res: any,
+    @Body(new ValidationPipe()) body: refreshTokenDto,
+  ) {
+    return this.authService.refreshToken(body);
   }
-
-
 
   // @Get()
   // findAll() {
