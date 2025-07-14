@@ -144,7 +144,7 @@ export class WalletService {
 
       // let { paymentMethod } = order.paymentMethod      // its the payment method
 
-      console.log('here' , order.paymentMethod);
+      console.log('here after getting from fucking order service' , order.paymentMethod);
 
      return this.paymentHandler.paymentHandler(order);
     }

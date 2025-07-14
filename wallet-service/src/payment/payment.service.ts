@@ -379,7 +379,6 @@ export class PaymentService {
 
     if (body.paymentMethod == 3) {
       // goldBox
-
       return this.payWithGoldBox(body);
     }
   }
