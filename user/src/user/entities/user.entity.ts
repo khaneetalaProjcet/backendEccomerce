@@ -26,6 +26,8 @@ export interface UserDocument extends Document {
     name: string,
     plate: number,
     unit: number
+    city: string,
+    province:string
   }[]
   identityStatus:number
 }

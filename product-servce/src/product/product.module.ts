@@ -6,16 +6,35 @@ import { JwtStrategy } from 'src/jwt/jwt.strategy';
 import { JwtAdminStrategy } from 'src/jwt/admin-jwt.strategy';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Product, ProductSchema } from './entities/product.entity';
-import { ProductItems,ProductItemSchema } from './entities/productItems.entity';
+import {
+  ProductItems,
+  ProductItemSchema,
+} from './entities/productItems.entity';
 import { LockerService } from 'src/locker/locker.service';
 import { RedisServiceService } from 'src/redis-service/redis-service.service';
-import { Category, CategorySchema } from 'src/category/entities/category.entity';
+import {
+  Category,
+  CategorySchema,
+} from 'src/category/entities/category.entity';
+import { goldPriceService } from 'src/goldPrice/goldPrice.service';
 
 @Module({
-  imports:[MongooseModule.forFeature([ { name: Product.name, schema: ProductSchema },
-    { name: Category.name, schema: CategorySchema }
-  ,{name:ProductItems.name,schema:ProductItemSchema}])],
+  imports: [
+    MongooseModule.forFeature([
+      { name: Product.name, schema: ProductSchema },
+      { name: Category.name, schema: CategorySchema },
+      { name: ProductItems.name, schema: ProductItemSchema },
+    ]),
+  ],
   controllers: [ProductController],
-  providers: [ProductService,JwtService,JwtStrategy,JwtAdminStrategy,LockerService,RedisServiceService],
+  providers: [
+    ProductService,
+    JwtService,
+    JwtStrategy,
+    JwtAdminStrategy,
+    LockerService,
+    RedisServiceService,
+    goldPriceService
+  ],
 })
 export class ProductModule {}

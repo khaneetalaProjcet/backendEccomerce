@@ -5,12 +5,13 @@ import { ProductItems } from './productItems.entity';
 export interface ProductDocumnet extends Document {
   _id: string;
   name: string;
-  items:any[],
-  images:[string],
-  description:string,
-  wages:number,
-  count:number,
-  category: Types.ObjectId
+  items: any[];
+  images: [string];
+  description: string;
+  wages: number;
+  count: number;
+  category: Types.ObjectId;
+  price: number
 }
 
 @Schema({ timestamps: true })
@@ -18,7 +19,7 @@ export class Product {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ type: [Types.ObjectId], ref: 'ProductItems',required:true})
+  @Prop({ type: [Types.ObjectId], ref: 'ProductItems', required: true })
   items: Types.ObjectId[];
 
   @Prop({ type: [String], default: [] })
@@ -33,7 +34,7 @@ export class Product {
   @Prop({ required: true })
   wages: number;
 
-  @Prop({ default:0 })
+  @Prop({ default: 0 })
   count: number;
 
   @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
@@ -45,7 +46,8 @@ export class Product {
   @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
   lastCategory: Types.ObjectId;
 
-
+  @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
+  price: Types.ObjectId;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

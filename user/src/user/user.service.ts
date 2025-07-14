@@ -314,6 +314,7 @@ export class UserService {
   async getSpecificAddress(req: any, res: any, adressId: string) {
     let userId = req.user.userId;
     let address = await this.userModel.findById(userId);
+    
 
     if (!address) {
       return {
@@ -389,8 +390,7 @@ export class UserService {
     console.log('its here for delete address >>>> ', adressId, userId);
     const user = await this.userModel.findById(
       userId,
-      // { $pull: { addresses: { _id: adressId } } },
-      // { new: true },
+
     );
 
     if (!user) {

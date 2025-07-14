@@ -16,6 +16,8 @@ import {
   CategoryDocumnet,
 } from 'src/category/entities/category.entity';
 import { productListQueryDto } from './dto/pagination.dto';
+import { ProductFilterDto } from './dto/productFilterdto';
+import { goldPriceService } from 'src/goldPrice/goldPrice.service';
 
 @Injectable()
 export class ProductService {
@@ -24,6 +26,7 @@ export class ProductService {
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocumnet>,
     @InjectModel(ProductItems.name)
     private productItemModel: Model<ProductItemsDocment>,
+    private goldPriceService: goldPriceService,
   ) {}
   async create(createProductDto: CreateProductDto) {
     try {
@@ -64,21 +67,49 @@ export class ProductService {
     }
   }
 
-  async findAll() {
+  async findAll(query: productListQueryDto) {
     //  const array= await this.productItemModel.find()
     // for (let index = 0; index < array.length; index++) {
     //   const element = array[index];
     //   await this.productItemModel.findByIdAndDelete(element._id)
-
     // }
+
     try {
-      const products = await this.productModel
-        .find()
-        .populate('items')
-        .populate('firstCategory')
-        .populate('midCategory')
-        .populate('lastCategory')
-        .exec();
+      const limit = Number(query.limit) || 12;
+      const page = Number(query.page) || 0;
+      const skip = page * limit;
+
+      const [products, total] = await Promise.all([
+        this.productModel
+          .find()
+          .populate('items')
+          .populate('firstCategory')
+          .populate('midCategory')
+          .populate('lastCategory')
+          .skip(skip)
+          .limit(limit),
+        this.productModel.countDocuments(),
+      ]);
+
+      const goldPrice = await this.goldPriceService.getGoldPrice();
+
+      products.map((product: any) => {
+        let price = 0;
+
+        for (const item of product.items) {
+          price += Number(item.weight || 0) * goldPrice;
+        }
+
+        const wageAmount = (price * product.wages) / 100;
+        const finalPrice = price + wageAmount;
+
+        const res = (product.price = finalPrice);
+
+        return res;
+      });
+
+      console.log(products);
+      console.log(total, '////////');
 
       // const array= products
       // for (let index = 0; index < array.length; index++) {
@@ -91,6 +122,12 @@ export class ProductService {
         message: '',
         statusCode: 200,
         data: products,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
       };
     } catch (error) {
       console.log(error);
@@ -110,8 +147,8 @@ export class ProductService {
         .populate('items')
         .populate('firstCategory')
         .populate('midCategory')
-        .populate('lastCategory')
-        .exec();
+        .populate('lastCategory');
+
       if (!product) {
         return {
           message: 'محصول پیدا نشد',
@@ -119,6 +156,20 @@ export class ProductService {
           error: 'محصول پیدا نشد',
         };
       }
+
+      const goldPrice = await this.goldPriceService.getGoldPrice();
+
+      let price = 0;
+
+      for (const item of product.items) {
+        price += Number(item.weight || 0) * goldPrice;
+      }
+
+      const wageAmount = (price * product.wages) / 100;
+      const finalPrice = price + wageAmount;
+
+      product.price = finalPrice;
+
       return {
         message: '',
         statusCode: 200,
@@ -334,70 +385,121 @@ export class ProductService {
   }
 
   async getProductBasedOnCategory(
-  categoryId: string,
-  query: productListQueryDto,
-) {
+    categoryId: string,
+    query: productListQueryDto,
+  ) {
+    try {
+      const limit = Number(query.limit) || 12;
+      const page = Number(query.page) || 0;
+      const skip = page * limit;
 
-  try {
-    const limit = Number(query.limit) || 10;
-    const page = Number(query.page) || 0;
-    const skip = (page-1) * limit;
+      const category = await this.categoryModel.findById(categoryId).populate({
+        path: 'parent',
+        populate: { path: 'parent' },
+      });
 
-    const category = await this.categoryModel.findById(categoryId).populate({
-      path: 'parent',
-      populate: { path: 'parent' },
-    });
+      if (!category) {
+        return {
+          message: 'دسته بندی انتخابی موجود نمی‌باشد',
+          statusCode: 400,
+          error: 'دسته بندی انتخابی موجود نمی‌باشد',
+        };
+      }
 
-    if (!category) {
+      const filter = {
+        $or: [
+          { firstCategory: categoryId },
+          { midCategory: categoryId },
+          { lastCategory: categoryId },
+        ],
+      };
+
+      const [products, total] = await Promise.all([
+        this.productModel
+          .find(filter)
+          .populate('items')
+          .populate('firstCategory')
+          .populate('midCategory')
+          .populate('lastCategory')
+          .skip(skip)
+          .limit(limit),
+        this.productModel.countDocuments(filter),
+      ]);
+
+      const goldPrice = await this.goldPriceService.getGoldPrice();
+
+      products.map((product: any) => {
+        let price = 0;
+
+        for (const item of product.items) {
+          price += Number(item.weight || 0) * goldPrice;
+        }
+
+        const wageAmount = (price * product.wages) / 100;
+        const finalPrice = price + wageAmount;
+
+        const res = (product.price = finalPrice);
+
+        return res;
+      });
+
+      console.log(products, '////// pppppproducts is here');
+
+      console.log(total, '////// total is here');
+
       return {
-        message: 'دسته بندی انتخابی موجود نمی‌باشد',
-        statusCode: 400,
-        error: 'دسته بندی انتخابی موجود نمی‌باشد',
+        message: 'موفق',
+        statusCode: 200,
+        data: {
+          products,
+          category,
+          pagination: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+          },
+        },
+      };
+    } catch (error) {
+      console.log('error in getting category products', error);
+      return {
+        message: 'ناموفق',
+        statusCode: 500,
+        error: 'خطای داخلی سرور',
       };
     }
+  }
 
-    const filter = {
-      $or: [
-        { firstCategory: categoryId },
-        { midCategory: categoryId },
-        { lastCategory: categoryId },
-      ],
-    };
+  async filterProductsByPrice(query: ProductFilterDto) {
+    const { minPrice = 0, maxPrice = 0 } = query;
 
-    const [products, total] = await Promise.all([
-      this.productModel
-        .find(filter)
-        .populate('items')
-        .populate('firstCategory')
-        .populate('midCategory')
-        .populate('lastCategory')
-        .skip(skip)
-        .limit(limit),
-      this.productModel.countDocuments(filter),
-    ]);
+    const goldPrice = await this.goldPriceService.getGoldPrice();
+
+    const products = await this.productModel.find().populate({
+      path: 'items',
+      model: 'ProductItems',
+    });
+
+    const filteredProducts = products.filter((product: any) => {
+      let price = 0;
+
+      for (const item of product.items) {
+        price += Number(item.weight || 0) * goldPrice;
+      }
+
+      const wageAmount = (price * product.wages) / 100;
+      const finalPrice = price + wageAmount;
+
+      const result = finalPrice >= minPrice && finalPrice <= maxPrice;
+
+      return result;
+    });
 
     return {
       message: 'موفق',
       statusCode: 200,
-      data: {
-        products,
-        category,
-        pagination: {
-          total,
-          page,
-          limit,
-          totalPages: Math.ceil(total / limit),
-        },
-      },
-    };
-  } catch (error) {
-    console.log('error in getting category products', error);
-    return {
-      message: 'ناموفق',
-      statusCode: 500,
-      error: 'خطای داخلی سرور',
+      data: filteredProducts,
     };
   }
-}
-
 }
