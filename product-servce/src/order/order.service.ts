@@ -88,6 +88,8 @@ export class OrderService {
         ...JSON.parse(JSON.stringify(p)),
         pricing: itemPrices[i],
       }));
+
+      console.log('its finishsed' , enrichedProducts)
       return {
         message: '',
         statusCode: 200,
