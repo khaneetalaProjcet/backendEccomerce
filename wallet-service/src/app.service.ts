@@ -94,7 +94,7 @@ export class AppService {
       TerminalId: process.env.SEP_TERMINAL_ID,
       Amount: 15000,
       ResNum: '@#cc##',
-      RedirectUrl: 'https://ecom.finatic.ir',
+      RedirectUrl: 'https://ecommerce.khaneetala.ir/',
       CellNumber: "09229055682"
     };
 
