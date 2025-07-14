@@ -14,6 +14,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { refreshTokenDto } from './dto/refreshTokenDto.dto';
 import * as bcrypt from 'bcrypt';
+import { SmsService } from 'src/utils/sms';
 
 @Injectable()
 export class AuthService {
@@ -29,32 +30,47 @@ export class AuthService {
     return Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
   }
 
-  async sendOtp(@Req() req: any, @Res() res: any, body: sendOtpDto) {
-    try {
-      let { phoneNumber } = body;
 
-      let otp = await this.otpGenerator();
-      let data = { otp: otp, date: new Date().getTime() };
 
-      await this.redisService.setOtp(
-        `otp-${phoneNumber}`,
-        JSON.stringify(data),
-      );
+async sendOtp(@Req() req: any, @Res() res: any, body: sendOtpDto) {
+  try {
+    const { phoneNumber } = body;
 
+    const otp = await this.otpGenerator();
+    const data = { otp: otp, date: new Date().getTime() };
+
+    await this.redisService.setOtp(
+      `otp-${phoneNumber}`,
+      JSON.stringify(data),
+    );
+
+    const smsService = new SmsService();
+    const smsResponse: any = await smsService.sendOtpMessage(
+      phoneNumber,
+      otp.toString(),
+    );
+
+    if (!smsResponse.success) {
       return {
-        message: 'ارسال کد تایید موفق',
-        statusCode: 200,
-        data: otp,
-      };
-    } catch (error) {
-      console.log('error is sending otp', error);
-      return {
-        message: 'ارسال کد تایید ناموفق',
+        message: smsResponse.msg || 'ارسال کد تایید ناموفق',
         statusCode: 500,
-        error: 'خطای داخلی سیستم',
       };
     }
+
+    return {
+      message: 'ارسال کد تایید موفق',
+      statusCode: 200,
+      data: null,
+    };
+  } catch (error) {
+    console.log('error in sending otp:', error);
+    return {
+      message: 'ارسال کد تایید ناموفق',
+      statusCode: 500,
+      error: 'خطای داخلی سیستم',
+    };
   }
+}
 
   async validateOtp(body: validateOtpDto) {
     try {
