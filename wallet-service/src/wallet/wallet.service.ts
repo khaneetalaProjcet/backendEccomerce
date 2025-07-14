@@ -395,7 +395,7 @@ export class WalletService {
       page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا معتبر')
     }else{
       console.log('wallet invoice is >>>> ' , walletInvoice)
-      if (body.Status === 'CanceledByUser'){
+      if (body.State === 'CanceledByUser'){
         console.log('the payment is canceled by user')
         walletInvoice.status = 'failed'
         await walletInvoice.save()
