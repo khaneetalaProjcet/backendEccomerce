@@ -61,7 +61,7 @@ export class WalletController {
     type: CreateWalletDto,
     description: 'Json structure for project object',
   })
-
+  
   @Post()
   // @UseGuards(JwtAuthGuard)
   create(@Body() createWalletDto: CreateWalletDto) {

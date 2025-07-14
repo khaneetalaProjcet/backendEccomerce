@@ -15,6 +15,7 @@ export class WalletService {
     @InjectModel('wallet') private walletModel: Model<walletDocument>,
     private interService: InterserviceService,
     private payments: AppService,
+    private pageGenerator = new htmlPage(),
     private paymentHandler: PaymentService,
 
   ) {}
@@ -153,11 +154,11 @@ export class WalletService {
 
   async redirectFromGateway(body : any){
     console.log( 'it comes in to the redirect', body)
-    let page = new htmlPage().successPage('https://ecommerce.khaneetala.ir/')
+    let page = await this.pageGenerator.failedPage('https://ecommerce.khaneetala.ir/' , 'انصراف از درخواست')
     return {
       message : 'page',
       statusCode : 301,
-      page
+    page
     }
   }
 
