@@ -18,6 +18,7 @@ import {
 import { productListQueryDto } from './dto/pagination.dto';
 import { ProductFilterDto } from './dto/productFilterdto';
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
+import { log } from 'winston';
 
 @Injectable()
 export class ProductService {
@@ -96,6 +97,7 @@ export class ProductService {
       products.map((product: any) => {
         let price = 0;
 
+
         for (const item of product.items) {
           price += Number(item.weight || 0) * goldPrice;
         }
@@ -108,7 +110,7 @@ export class ProductService {
         return res;
       });
 
-      console.log(products);
+      // console.log('its after sss' , dataAfterMap);
       console.log(total, '////////');
 
       // const array= products
@@ -483,7 +485,7 @@ export class ProductService {
 
     const filteredProducts = products.filter((product: any) => {
       let price = 0;
-
+      
       for (const item of product.items) {
         price += Number(item.weight || 0) * goldPrice;
       }
@@ -492,6 +494,9 @@ export class ProductService {
       const finalPrice = price + wageAmount;
 
       const result = finalPrice >= minPrice && finalPrice <= maxPrice;
+
+      console.log(result,"///////result");
+      
 
       return result;
     });
