@@ -60,7 +60,7 @@ export class OrderController {
    update(@Param('id') id: string,@Param('status') status: string,@Body() body:any) {
     return this.orderService.updateOrder(id,status,body);
   }
-  @Post("internal/payment/:id/:status")
+  @Post("internal/update/payment/:id/:status")
    payment(@Param('id') id: string,@Param('status') status: string,@Body() body:any) {
     return this.orderService.updateAfterPayment(id,+status,body);
   }
