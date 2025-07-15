@@ -1,73 +1,96 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
-import {JwtAdminAuthGuard} from '../jwt/admin-jwt-auth.guard'
+import { JwtAdminAuthGuard } from '../jwt/admin-jwt-auth.guard';
 import { ApiBody } from '@nestjs/swagger';
 
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
-  @Post("create")
+  @Post('create')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: CreateOrderDto })
-  create(@Req() req : any , @Res() res : any,@Body() body:CreateOrderDto) {
-    const userId=req.user.userId
-    return this.orderService.create(userId,body);
+  create(@Req() req: any, @Res() res: any, @Body() body: CreateOrderDto) {
+    const userId = req.user.userId;
+    return this.orderService.create(userId, body);
   }
-  @Get("admin/orders")
+  @Get('admin/orders')
   @UseGuards(JwtAdminAuthGuard)
-  findAllOrderAdmin(@Req() req : any , @Res() res : any) {
+  findAllOrderAdmin(@Req() req: any, @Res() res: any) {
     return this.orderService.getAllOrder();
   }
 
-  @Get("user")
+  @Get('user')
   @UseGuards(JwtAuthGuard)
-  findAll(@Req() req : any , @Res() res : any) {
-    const userId=req.user.userId
+  findAll(@Req() req: any, @Res() res: any) {
+    const userId = req.user.userId;
     return this.orderService.findAllForUser(userId);
   }
 
-  @Get("waiting")
+  @Get('waiting')
   @UseGuards(JwtAdminAuthGuard)
-  allWaiting(@Req() req : any , @Res() res : any) {
+  allWaiting(@Req() req: any, @Res() res: any) {
     return this.orderService.allWaiting();
   }
 
-  @Get("price")
-  goldPrice(@Req() req : any , @Res() res : any) {
+  @Get('price')
+  goldPrice(@Req() req: any, @Res() res: any) {
     return this.orderService.getGoldPrice();
   }
 
-  @Get("internal/findone/:id")
+  @Get('internal/findone/:id')
   findOne(@Param('id') id: string) {
     return this.orderService.findOneById(id);
   }
 
-
-  @Post("internal/identity")
-  identity(@Body() body:any){
-    return this.orderService.identityOrder(body)
+  @Post('internal/identity')
+  identity(@Body() body: any) {
+    return this.orderService.identityOrder(body);
   }
 
-   @Get("internal/afterpay/:id")
-   updateAfterPayment(@Param('id') id: string) {
+  @Get('internal/afterpay/:id')
+  updateAfterPayment(@Param('id') id: string) {
     return this.orderService.updateOrderAfterPayment(id);
   }
-  @Post("internal/update/:id/:status")
-   update(@Param('id') id: string,@Param('status') status: string,@Body() body:any) {
-    return this.orderService.updateOrder(id,status,body);
+  @Post('internal/update/:id/:status')
+  update(
+    @Param('id') id: string,
+    @Param('status') status: string,
+    @Body() body: any,
+  ) {
+    return this.orderService.updateOrder(id, status, body);
   }
-  @Post("internal/update/payment/:id/:status")
-   payment(@Param('id') id: string,@Param('status') status: string,@Body() body:any) {
-    return this.orderService.updateAfterPayment(id,+status,body);
+  @Post('internal/update/payment/:id/:status')
+  payment(
+    @Param('id') id: string,
+    @Param('status') status: string,
+    @Body() body: any,
+  ) {
+    return this.orderService.updateAfterPayment(id, +status, body);
   }
 
+  @Patch('update/:id')
+  @UseGuards(JwtAdminAuthGuard)
+  updateDelivery(@Param('id') id: string) {
+    return this.orderService.updateDelivery(id);
+  }
 
-  @Get("delall")
-   delAll() {
+  @Get('delall')
+  delAll() {
     return this.orderService.deletAll();
   }
 

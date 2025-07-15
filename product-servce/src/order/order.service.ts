@@ -24,7 +24,6 @@ export class OrderService {
     @InjectModel(Order.name) private orderModel: Model<OrderInterface>,
   ) {}
 
-
   async create(userId: string, body: any) {
     try {
       const cart = await this.cartModel
@@ -76,10 +75,10 @@ export class OrderService {
           count: p.count,
         })),
         totalPrice,
-        cart : cart._id.toString(),
+        cart: cart._id.toString(),
         date,
         time,
-        invoiceId : new Date().getTime().toString(),
+        invoiceId: new Date().getTime().toString(),
         goldPrice,
         address: body.address,
         paymentMethod: body.paymentMethod,
@@ -93,7 +92,7 @@ export class OrderService {
         pricing: itemPrices[i],
       }));
 
-      console.log('its finishsed' , enrichedProducts)
+      console.log('its finishsed', enrichedProducts);
       return {
         message: '',
         statusCode: 200,
@@ -111,30 +110,44 @@ export class OrderService {
 
   async findAllForUser(userId: string) {
     try {
-      const orders = await this.orderModel.find({
+      const orders = await this.orderModel
+        .find({
           user: userId,
-        }).populate('products.product').populate('products.mainProduct');
+        })
+        .populate('products.product')
+        .populate('products.mainProduct');
 
-      const waitForPay = await this.orderModel.find({
-        user : userId,
-        status : 2
-      }).populate('products.product').populate('products.mainProduct');
-      
-      const sent  = await this.orderModel.find({
-        user : userId,
-        status : 1,
-      }).populate('products.product').populate('products.mainProduct');
-      
-      const canceled = await this.orderModel.find({
-        user : userId,
-        status : 5,
-      }).populate('products.product').populate('products.mainProduct');
-      
-      const recived = await this.orderModel.find({
-        user : userId,
-        status : 4,
-      }).populate('products.product').populate('products.mainProduct');
-      
+      const waitForPay = await this.orderModel
+        .find({
+          user: userId,
+          status: 2,
+        })
+        .populate('products.product')
+        .populate('products.mainProduct');
+
+      const sent = await this.orderModel
+        .find({
+          user: userId,
+          status: 1,
+        })
+        .populate('products.product')
+        .populate('products.mainProduct');
+
+      const canceled = await this.orderModel
+        .find({
+          user: userId,
+          status: 5,
+        })
+        .populate('products.product')
+        .populate('products.mainProduct');
+
+      const recived = await this.orderModel
+        .find({
+          user: userId,
+          status: 4,
+        })
+        .populate('products.product')
+        .populate('products.mainProduct');
 
       let data = {
         orders,
@@ -142,7 +155,7 @@ export class OrderService {
         sent,
         canceled,
         recived,
-      }
+      };
 
       return {
         message: '',
@@ -159,14 +172,14 @@ export class OrderService {
     }
   }
 
-
-
-  
   async allWaiting() {
     try {
-      const sent  = await this.orderModel.find({
-        status : 1,
-      }).populate('products.product').populate('products.mainProduct');
+      const sent = await this.orderModel
+        .find({
+          status: 1,
+        })
+        .populate('products.product')
+        .populate('products.mainProduct');
 
       return {
         message: '',
@@ -434,99 +447,134 @@ export class OrderService {
     }
   }
 
-
-
-  async updateAfterPayment(id : string , status : number , body : any){
+  async updateAfterPayment(id: string, status: number, body: any) {
     try {
+      console.log('id >>>> ', id, status, body);
 
-      console.log('id >>>> ' , id , status , body)
+      let order = await this.orderModel.findById(id);
 
-      let order = await this.orderModel.findById(id)
-      
-      let cart  = await this.cartModel.findOne({user : order?.user}).populate('products')
-      if (cart){
-        
-        for (let i of cart.products){
-          let product = await this.productModel.findById(i.mainProduct)
-          if (product){
-            let count = product.count - i.count
-            await product.updateOne({count : count})
+      let cart = await this.cartModel
+        .findOne({ user: order?.user })
+        .populate('products');
+      if (cart) {
+        for (let i of cart.products) {
+          let product = await this.productModel.findById(i.mainProduct);
+          if (product) {
+            let count = product.count - i.count;
+            await product.updateOne({ count: count });
           }
         }
-        
-        let product = cart.products
-        cart.history = product
-        cart.products = []
-        await cart.save()
+
+        let product = cart.products;
+        cart.history = product;
+        cart.products = [];
+        await cart.save();
       }
 
       if (!order) {
         return {
           message: 'notFound',
           statusCode: 400,
-        }
+        };
       }
 
       if (order.status != 2) {
         return {
           message: 'duplicateRequest',
           statusCode: 429,
-        }
+        };
       }
 
-      if (status == 0) {               // it means the payment failed
+      if (status == 0) {
+        // it means the payment failed
         if (order.paymentMethod == 1) {
-          order.status = 5
-          order.cashInvoiceId = body._id.toString()
-          await order.save()
+          order.status = 5;
+          order.cashInvoiceId = body._id.toString();
+          await order.save();
           return {
             message: 'done',
             statusCode: 200,
-          }
+          };
         }
 
         if (order.paymentMethod == 2) {
           order.cashPay = 0;
-          order.cashInvoiceId = body._id.toString()
-          await order.save()
+          order.cashInvoiceId = body._id.toString();
+          await order.save();
           return {
             message: 'done',
             statusCode: 200,
-          }
+          };
         }
       }
 
-      if (status == 1) {              // it means the payment successfully done
-        if (order.paymentMethod == 1) {       // just cash
+      if (status == 1) {
+        // it means the payment successfully done
+        if (order.paymentMethod == 1) {
+          // just cash
           order.status = 1;
-          order.cashInvoiceId = body._id.toString()
+          order.cashInvoiceId = body._id.toString();
           order.cashPay = 1;
-          await order.save()
+          await order.save();
           return {
             message: 'done',
             statusCode: 200,
-          }
+          };
         }
 
-        if (order.paymentMethod == 2) {           // cash and goldBox
+        if (order.paymentMethod == 2) {
+          // cash and goldBox
           order.cashPay = 1;
-          order.cashInvoiceId = body._id.toString()
-          await order.save()
+          order.cashInvoiceId = body._id.toString();
+          await order.save();
           return {
             message: 'done',
             statusCode: 200,
-          }
+          };
         }
       }
     } catch (error) {
-      console.log('error occured in updating the order >>>> ' , error)
+      console.log('error occured in updating the order >>>> ', error);
       return {
         message: 'internal',
         statusCode: 500,
-      }
+      };
     }
   }
 
+  async updateDelivery(id: string) {
+    try {
+      const thisOrder = await this.orderModel.findById({ id });
+
+      if (!thisOrder) {
+        return {
+          message: 'notFound',
+          statusCode: 400,
+        };
+      }
+      if (thisOrder?.status !== 1) {
+        return {
+          message: 'erorr',
+          statusCode: 400,
+        };
+      } else {
+        thisOrder.status = 4
+      }
+
+
+      if(thisOrder.status == 2)
+
+     await thisOrder.save();
+
+      return { message: 'done', statusCode: 200, data: thisOrder };
+    } catch (error) {
+      console.log('error occured in updating the order >>>> ', error);
+      return {
+        message: 'internal',
+        statusCode: 500,
+      };
+    }
+  }
 
   private async caculateNumberOfGoldBox(goldBox: string) {
     let seperator = goldBox.split('');
@@ -546,14 +594,16 @@ export class OrderService {
       count: number;
     }[],
     goldPricePerGram: number,
-  ): Promise<{
-    unitPrice: number; // قیمت یک عدد
-    totalPrice: number; // قیمت کل × تعداد
-    count: number;
-    weight: number;
-    wagePercent: number;
-    totalWeight: number;
-  }[]> {
+  ): Promise<
+    {
+      unitPrice: number; // قیمت یک عدد
+      totalPrice: number; // قیمت کل × تعداد
+      count: number;
+      weight: number;
+      wagePercent: number;
+      totalWeight: number;
+    }[]
+  > {
     return cartProducts.map((item) => {
       const weight =
         typeof item.product.weight === 'string'
@@ -578,13 +628,11 @@ export class OrderService {
     });
   }
 
-  async deletAll(){
-      let all = await this.orderModel.deleteMany({})
-      return {
-        message : '',
-        statusCode : 200,
-      }
+  async deletAll() {
+    let all = await this.orderModel.deleteMany({});
+    return {
+      message: '',
+      statusCode: 200,
+    };
   }
-
-
 }
