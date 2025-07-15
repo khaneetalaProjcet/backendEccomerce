@@ -387,25 +387,53 @@ export class WalletService {
   async redirectFromGateway(body : any){
     console.log( 'it comes in to the redirect', body)
     let page = ''
-    let walletInvoice = await this.walletInvoiceModel.findOne({
+    let walletInvoice : any = await this.walletInvoiceModel.findOne({
       ResNum: body.ResNum
     })
-    if (!walletInvoice){
+    if (!walletInvoice) {
       console.log('wallet invoice not exits')
       page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا معتبر')
-    }else{
-      console.log('wallet invoice is >>>> ' , walletInvoice)
-      if (body.State === 'CanceledByUser'){
+    } else {
+      console.log('wallet invoice is >>>> ', walletInvoice)
+      if (body.State === 'CanceledByUser') {
         console.log('the payment is canceled by user')
         walletInvoice.status = 'failed'
         await walletInvoice.save()
         page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'انصراف از درخواست')
-      }
-      console.log('finallllll')
-      return {
-        message: 'page',
-        statusCode: 301,
-        page
+      } else if (body.State === 'OK') {
+        console.log('ok the transActions')
+        walletInvoice.status = 'completed'
+        let orderUpdated = await this.interService.aprovePey(walletInvoice._id.toString() , 1 , walletInvoice)
+        
+        if (orderUpdated === 1){
+          walletInvoice.state = 3
+        }else{
+          walletInvoice.state = 2
+        }
+        await walletInvoice.save()
+        page = await this.successPage('https://ecommerce.khaneetala.ir/')
+      } else if (body.State === 'Failed') {
+        console.log('the payment is canceled by user')
+        walletInvoice.status = 'failed'
+        await walletInvoice.save()
+        page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.')
+        console.log('finallllll')
+        return {
+          message: 'page',
+          statusCode: 301,
+          page
+        }
+      } else {
+        console.log('the payment is canceled by user')
+        walletInvoice.status = 'failed'
+        await walletInvoice.save()
+        page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.')
+        console.log('finallllll')
+        return {
+          message: 'page',
+          statusCode: 301,
+          page
+        }
       }
     }
   }

@@ -82,6 +82,8 @@ export class OrderService {
         address: body.address,
         paymentMethod: body.paymentMethod,
         goldBox,
+        goldBoxPay: 0,
+        cashPay: 0,
       });
 
       const enrichedProducts = cart.products.map((p, i) => ({
@@ -378,6 +380,80 @@ export class OrderService {
       };
     }
   }
+
+
+
+  async updateAfterPayment(id : string , status : number , body : any){
+    try {
+      let order = await this.orderModel.findById(id)
+      if (!order) {
+        return {
+          message: 'notFound',
+          statusCode: 400,
+        }
+      }
+
+      if (order.status != 2) {
+        return {
+          message: 'duplicateRequest',
+          statusCode: 429,
+        }
+      }
+
+
+      if (status == 0) {               // it means the payment failed
+        if (order.paymentMethod == 1) {
+          order.status = 5
+          order.cashInvoiceId = body._id.toString
+          await order.save()
+          return {
+            message: 'done',
+            statusCode: 200,
+          }
+        }
+
+        if (order.paymentMethod == 2) {
+          order.cashPay = 0;
+          order.cashInvoiceId = body._id.toString;
+          await order.save()
+          return {
+            message: 'done',
+            statusCode: 200,
+          }
+        }
+      }
+
+      if (status == 1) {              // it means the payment successfully done
+        if (order.paymentMethod == 1) {       // just cash
+          order.status = 1;
+          order.cashInvoiceId = body._id.toString;
+          order.cashPay = 1;
+          await order.save()
+          return {
+            message: 'done',
+            statusCode: 200,
+          }
+        }
+
+        if (order.paymentMethod == 2) {           // cash and goldBox
+          order.cashPay = 1;
+          order.cashInvoiceId = body._id.toString;
+          await order.save()
+          return {
+            message: 'done',
+            statusCode: 200,
+          }
+        }
+      }
+    } catch (error) {
+      console.log('error occured in updating the order >>>> ')
+      return {
+        message: 'internal',
+        statusCode: 200,
+      }
+    }
+    }
+
 
   private async caculateNumberOfGoldBox(goldBox: string) {
     let seperator = goldBox.split('');

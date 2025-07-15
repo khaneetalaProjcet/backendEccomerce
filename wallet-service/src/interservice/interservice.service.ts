@@ -98,4 +98,44 @@ export class InterserviceService {
       return { success: false };
     }
     }    
+
+  async aprovePey(orderId: string, state: number , payment : any) {
+    try {
+      let rawResponse = await fetch(
+        `http://localhost:9014/order/internal/update/payment/${orderId}/${state}`
+        ,{
+          method: 'POST',
+          body: JSON.stringify(payment),
+        },
+      );
+
+
+      if (!rawResponse) {
+        return 0; // no connection exist
+      }
+      let response = await rawResponse.json();
+
+      // console.log("order",response.order);
+      console.log('response', response.data);
+
+      if (!response) {
+        return 0; // no connection exist
+      }
+      if (response.success) {
+        return response.data;
+      } else if (response.message == 'notFound') {
+        return 0;
+      } else if (response.message == 'duplicateRequest') {
+        return 3;
+      }else if (response.message == 'internal') {
+        return 2;
+      } else {
+        return 1;
+      }
+    } catch (error) {
+      console.log('error occured while trying to update goldBox in khanetala');
+      return 2;
+    }
+
+  }
 }
