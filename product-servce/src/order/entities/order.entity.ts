@@ -1,6 +1,7 @@
 
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose from "mongoose";
+import { Cart } from "src/cart/entities/cart.entity";
 import { Product } from "src/product/entities/product.entity";
 import { ProductItems } from "src/product/entities/productItems.entity";
 
@@ -59,6 +60,13 @@ export class Order {
         }]
     })
     products: { product: mongoose.Types.ObjectId, mainProduct: mongoose.Types.ObjectId, count: number }[]
+
+
+    @Prop({
+        type: mongoose.Schema.Types.ObjectId,
+        ref : Cart.name
+    })
+    cart: mongoose.Types.ObjectId
 
     @Prop({ type: Number, default: 0 })
     totalPrice: number

@@ -35,7 +35,7 @@ export class Cart {
         }]
     })
     products: { product: mongoose.Types.ObjectId, mainProduct: mongoose.Types.ObjectId ,count: number }[]
-
+    
     @Prop({
         type: [{
             product: { type: mongoose.Schema.Types.ObjectId, ref: ProductItems.name },

@@ -76,6 +76,7 @@ export class OrderService {
           count: p.count,
         })),
         totalPrice,
+        cart : cart._id.toString(),
         date,
         time,
         goldPrice,
@@ -440,6 +441,23 @@ export class OrderService {
       console.log('id >>>> ' , id , status , body)
 
       let order = await this.orderModel.findById(id)
+      
+      let cart  = await this.cartModel.findOne({user : order?.user}).populate('products')
+      if (cart){
+        
+        for (let i of cart.products){
+          let product = await this.productModel.findById(i.mainProduct)
+          if (product){
+            product.count -= i.count
+            await product.save()
+          }
+        }
+        
+        let product = cart.products
+        cart.history = product
+        cart.products = []
+        await cart.save()
+      }
 
       if (!order) {
         return {
@@ -454,7 +472,6 @@ export class OrderService {
           statusCode: 429,
         }
       }
-
 
       if (status == 0) {               // it means the payment failed
         if (order.paymentMethod == 1) {
