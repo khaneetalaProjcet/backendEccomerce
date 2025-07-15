@@ -45,7 +45,7 @@ async login(phoneNumber: string, password: string) {
     const token = await this.tokenize.tokenize(
       { _id: admin._id, phoneNumber: admin.phoneNumber },
       '1H',
-      0,
+      2,
     );
 
     const adminData = { ...admin.toObject(), token };

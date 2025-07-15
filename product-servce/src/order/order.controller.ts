@@ -54,6 +54,10 @@ export class OrderController {
    update(@Param('id') id: string,@Param('status') status: string,@Body() body:any) {
     return this.orderService.updateOrder(id,status,body);
   }
+  @Post("internal/payment/:id/:status")
+   payment(@Param('id') id: string,@Param('status') status: string,@Body() body:any) {
+    return this.orderService.updateAfterPayment(id,+status,body);
+  }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {

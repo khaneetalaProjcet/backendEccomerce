@@ -26,6 +26,9 @@ export interface OrderInterface extends Document {
 
     goldBox: string
 
+    goldBoxPay: number
+
+    cashPay: number
 
     address: {
         addressId: string,
@@ -35,6 +38,10 @@ export interface OrderInterface extends Document {
         plate: number,
         unit: number
     }
+
+    goldBoxInvoiceId: string
+
+    cashInvoiceId : string
 
 }
 
@@ -86,15 +93,28 @@ export class Order {
         plate: number,
         unit: number
     }
+
     @Prop({ type: Number, required: false, default: 1 })
     paymentMethod: number
 
-    @Prop({ type: Number, default: 1 })
-    status: number    //? 1 init //? 2 success //?failed
+    @Prop({ type: Number, default: 2 })
+    status: number    //? 0 init //? 1 success //2 pending for pay  //3 : approvePay  // 4 : recieved   // 5 failed
 
     @Prop({ type: Number, required: false })
     goldPrice: number
 
+    @Prop({ type: Number, required: true , default : 0 })
+    goldBoxPay: number
+    
+    @Prop({ type: Number, required: true , default : 0 })
+    cashPay: number
+
+    @Prop({ type: String , default : '' })
+    goldBoxInvoiceId: string
+
+    @Prop({ type: String , default : ''})
+    cashInvoiceId: string
+    
 }
 
 
