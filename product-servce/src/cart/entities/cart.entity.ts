@@ -35,7 +35,7 @@ export class Cart {
         }]
     })
     products: { product: mongoose.Types.ObjectId, mainProduct: mongoose.Types.ObjectId ,count: number }[]
-    
+
     @Prop({
         type: [{
             product: { type: mongoose.Schema.Types.ObjectId, ref: ProductItems.name },
@@ -47,7 +47,7 @@ export class Cart {
 
     @Prop({type : Number , default : 0})
     count : number
-
+    
     @Prop({type : Number , default : 0})
     totalPrice : number
 

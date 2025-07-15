@@ -448,8 +448,8 @@ export class OrderService {
         for (let i of cart.products){
           let product = await this.productModel.findById(i.mainProduct)
           if (product){
-            product.count -= i.count
-            await product.save()
+            let count = product.count - i.count
+            await product.updateOne({count : count})
           }
         }
         
