@@ -8,7 +8,11 @@ import { responseInterface } from 'src/interfaces/interfaces.interface';
 import { InterserviceService } from 'src/interservice/interservice.service';
 import { PaymentService } from 'src/payment/payment.service';
 import { AppService } from 'src/app.service';
-import { WalletInvoice, WalletInvoiceInterface } from './entities/walletInvoice.entity';
+import {
+  WalletInvoice,
+  WalletInvoiceInterface,
+} from './entities/walletInvoice.entity';
+import { goldInvoice,goldInvoiceInterface } from './entities/goldBoxInvoice.entity';
 
 @Injectable()
 export class WalletService {
@@ -16,11 +20,12 @@ export class WalletService {
     @InjectModel('wallet') private walletModel: Model<walletDocument>,
     private interService: InterserviceService,
     @InjectModel(WalletInvoice.name)
-        private walletInvoiceModel: Model<WalletInvoiceInterface>,
+    private walletInvoiceModel: Model<WalletInvoiceInterface>,
+        @InjectModel(goldInvoice.name)
+    private golldBoxModel: Model<goldInvoiceInterface>,
     private payments: AppService,
-    
-    private paymentHandler: PaymentService,
 
+    private paymentHandler: PaymentService,
   ) {}
 
   private async successPage(backUrl: string) {
@@ -130,7 +135,7 @@ export class WalletService {
     `;
   }
 
- private async failedPage(backUrl: string, reason: string) {
+  private async failedPage(backUrl: string, reason: string) {
     return `
     <!DOCTYPE html>
 <html lang="fa" dir="rtl">
@@ -251,7 +256,6 @@ export class WalletService {
     `;
   }
 
-
   async create(createWalletDto: CreateWalletDto) {
     // const array= await this.walletModel.find()
     // for (let index = 0; index < array.length; index++) {
@@ -321,6 +325,78 @@ export class WalletService {
     return `This action returns all wallet`;
   }
 
+
+async findGolBoxInvoice(query: any) {
+  try {
+    const limit = Number(query.limit) || 12;
+    const page = Number(query.page) || 0;
+    const skip = page * limit;
+
+    const [invoices, total] = await Promise.all([
+      this.golldBoxModel
+        .find()
+        .skip(skip)
+        .limit(limit),
+      this.golldBoxModel.countDocuments(),
+    ]);
+
+    return {
+      message: '',
+      statusCode: 200,
+      data: invoices,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      message: 'مشکل داخلی سیستم',
+      statusCode: 500,
+      error: 'مشکل داخلی سیستم',
+    };
+  }
+}
+
+async findWalletInvoice(query: any) {
+  try {
+    const limit = Number(query.limit) || 12;
+    const page = Number(query.page) || 0;
+    const skip = page * limit;
+
+    const [invoices, total] = await Promise.all([
+      this.walletInvoiceModel
+        .find()
+        .skip(skip)
+        .limit(limit),
+      this.walletInvoiceModel.countDocuments(),
+    ]);
+
+    return {
+      message: '',
+      statusCode: 200,
+      data: invoices,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      message: 'مشکل داخلی سیستم',
+      statusCode: 500,
+      error: 'مشکل داخلی سیستم',
+    };
+  }
+}
+
+
   async findOne(owner: string) {
     const wallet = await this.walletModel.findOne({ owner });
     return {
@@ -342,7 +418,7 @@ export class WalletService {
     console.log('order id', orderId);
 
     let order = await this.interService.getOrder(orderId);
-    
+
     if (order == 0) {
       console.log('internal services error , not connected to order service');
       return {
@@ -377,38 +453,44 @@ export class WalletService {
 
       // let { paymentMethod } = order.paymentMethod      // its the payment method
 
-      console.log('here after getting from fucking order service' , order.paymentMethod);
+      console.log(
+        'here after getting from fucking order service',
+        order.paymentMethod,
+      );
 
-     return this.paymentHandler.paymentHandler(order);
+      return this.paymentHandler.paymentHandler(order);
     }
   }
 
-
-  async redirectFromGateway(body : any){
-    console.log( 'it comes in to the redirect', body)
-    let page = ''
+  async redirectFromGateway(body: any) {
+    console.log('it comes in to the redirect', body);
+    let page = '';
     let walletInvoice = await this.walletInvoiceModel.findOne({
-      ResNum: body.ResNum
-    })
-    if (!walletInvoice){
-      console.log('wallet invoice not exits')
-      page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا معتبر')
-    }else{
-      console.log('wallet invoice is >>>> ' , walletInvoice)
-      if (body.State === 'CanceledByUser'){
-        console.log('the payment is canceled by user')
-        walletInvoice.status = 'failed'
-        await walletInvoice.save()
-        page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'انصراف از درخواست')
+      ResNum: body.ResNum,
+    });
+    if (!walletInvoice) {
+      console.log('wallet invoice not exits');
+      page = await this.failedPage(
+        'https://ecommerce.khaneetala.ir/',
+        'تراکنش نا معتبر',
+      );
+    } else {
+      console.log('wallet invoice is >>>> ', walletInvoice);
+      if (body.State === 'CanceledByUser') {
+        console.log('the payment is canceled by user');
+        walletInvoice.status = 'failed';
+        await walletInvoice.save();
+        page = await this.failedPage(
+          'https://ecommerce.khaneetala.ir/',
+          'انصراف از درخواست',
+        );
       }
-      console.log('finallllll')
+      console.log('finallllll');
       return {
         message: 'page',
         statusCode: 301,
-        page
-      }
+        page,
+      };
     }
   }
-
-
 }
