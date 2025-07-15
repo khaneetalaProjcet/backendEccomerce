@@ -489,7 +489,7 @@ async findWalletInvoice(query: any) {
         console.log('ok the transActions')
         
         let responseOfVerification = await this.interService.verifyTransAction(body.RefNum)
-
+        
         if (responseOfVerification && responseOfVerification.success) {     // of the transAction was success
           console.log('transAction succeeded')
           walletInvoice.payment = responseOfVerification.TransactionDetail;

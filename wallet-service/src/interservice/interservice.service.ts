@@ -155,8 +155,8 @@ export class InterserviceService {
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' },
     })
-
     let mainResponse = await response.json()
+    console.log('response of verify' , mainResponse)
     return mainResponse
 
 
