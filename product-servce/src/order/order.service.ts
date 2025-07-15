@@ -440,7 +440,7 @@ export class OrderService {
       console.log('id >>>> ' , id , status , body)
 
       let order = await this.orderModel.findById(id)
-      
+
       if (!order) {
         return {
           message: 'notFound',
@@ -501,7 +501,7 @@ export class OrderService {
         }
       }
     } catch (error) {
-      console.log('error occured in updating the order >>>> ')
+      console.log('error occured in updating the order >>>> ' , error)
       return {
         message: 'internal',
         statusCode: 500,

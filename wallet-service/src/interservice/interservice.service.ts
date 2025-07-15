@@ -1,4 +1,4 @@
-import { Body, Injectable } from '@nestjs/common';
+import { Body, Header, Injectable } from '@nestjs/common';
 
 import fetch from 'node-fetch';
 
@@ -108,6 +108,9 @@ export class InterserviceService {
         `http://localhost:9014/order/internal/update/payment/${orderId}/${state}`
         ,{
           method: 'POST',
+          headers : {
+            "Content-Type" : "application/json"
+          },
           body: JSON.stringify(payment),
         },
       );
