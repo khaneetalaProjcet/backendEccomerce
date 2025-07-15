@@ -469,7 +469,8 @@ async findWalletInvoice(query: any) {
     let walletInvoice : any = await this.walletInvoiceModel.findOne({
       ResNum: body.ResNum
     })
-    if (!walletInvoice) {
+    try {
+      if (!walletInvoice) {
       console.log('wallet invoice not exits')
       page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا معتبر')
     } else {
@@ -513,6 +514,15 @@ async findWalletInvoice(query: any) {
           statusCode: 301,
           page
         }
+      }
+    }
+    } catch (error) {
+      console.log('error in redirect to api', error)
+      page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.')
+      return {
+        message: 'page',
+        statusCode: 400,
+        page
       }
     }
   }

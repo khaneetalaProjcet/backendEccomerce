@@ -449,7 +449,7 @@ export class OrderService {
       console.log('error occured in updating the order >>>> ')
       return {
         message: 'internal',
-        statusCode: 200,
+        statusCode: 500,
       }
     }
     }
