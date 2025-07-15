@@ -485,7 +485,7 @@ async findWalletInvoice(query: any) {
           statusCode: 301,
           page
         }
-      } else if (body.State === 'OK') {     // ok state 2
+      } else if (body.State === 'OK') {     // ok state 2 here we should double check the transActions
         console.log('ok the transActions')
         walletInvoice.status = 'completed'
         let orderUpdated = await this.interService.aprovePey(walletInvoice._id.toString() , 1 , walletInvoice)

@@ -98,7 +98,7 @@ export class Order {
     paymentMethod: number
 
     @Prop({ type: Number, default: 2 })
-    status: number    //? 0 init //? 1 success //2 pending for pay  //3 : approvePay  // 4 : recieved   // 5 failed
+    status: number    //? 0 init //? 1 approvePay //2 pending for pay  // 4 : recieved  // 5 failed
 
     @Prop({ type: Number, required: false })
     goldPrice: number
@@ -114,7 +114,7 @@ export class Order {
 
     @Prop({ type: String , default : ''})
     cashInvoiceId: string
-    
+
 }
 
 

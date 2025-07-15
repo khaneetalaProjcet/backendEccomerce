@@ -109,16 +109,43 @@ export class OrderService {
 
   async findAllForUser(userId: string) {
     try {
-      const orders = await this.orderModel
-        .find({
+      const orders = await this.orderModel.find({
           user: userId,
-        })
-        .populate('products.product')
-        .populate('products.mainProduct');
+        }).populate('products.product').populate('products.mainProduct');
+
+      const waitForPay = await this.orderModel.find({
+        user : userId,
+        status : 2
+      }).populate('products.product').populate('products.mainProduct');
+      
+      const sent  = await this.orderModel.find({
+        user : userId,
+        status : 1,
+      }).populate('products.product').populate('products.mainProduct');
+      
+      const canceled = await this.orderModel.find({
+        user : userId,
+        status : 5,
+      }).populate('products.product').populate('products.mainProduct');
+      
+      const recived = await this.orderModel.find({
+        user : userId,
+        status : 4,
+      }).populate('products.product').populate('products.mainProduct');
+      
+
+      let data = {
+        orders,
+        waitForPay,
+        sent,
+        canceled,
+        recived,
+      }
+
       return {
         message: '',
         statusCode: 200,
-        data: orders,
+        data: data,
       };
     } catch (error) {
       console.log(error);
@@ -404,7 +431,7 @@ export class OrderService {
       if (status == 0) {               // it means the payment failed
         if (order.paymentMethod == 1) {
           order.status = 5
-          order.cashInvoiceId = body._id.toString
+          order.cashInvoiceId = body._id.toString()
           await order.save()
           return {
             message: 'done',
@@ -414,7 +441,7 @@ export class OrderService {
 
         if (order.paymentMethod == 2) {
           order.cashPay = 0;
-          order.cashInvoiceId = body._id.toString;
+          order.cashInvoiceId = body._id.toString()
           await order.save()
           return {
             message: 'done',
@@ -426,7 +453,7 @@ export class OrderService {
       if (status == 1) {              // it means the payment successfully done
         if (order.paymentMethod == 1) {       // just cash
           order.status = 1;
-          order.cashInvoiceId = body._id.toString;
+          order.cashInvoiceId = body._id.toString()
           order.cashPay = 1;
           await order.save()
           return {
@@ -437,7 +464,7 @@ export class OrderService {
 
         if (order.paymentMethod == 2) {           // cash and goldBox
           order.cashPay = 1;
-          order.cashInvoiceId = body._id.toString;
+          order.cashInvoiceId = body._id.toString()
           await order.save()
           return {
             message: 'done',
