@@ -475,16 +475,20 @@ async findWalletInvoice(query: any) {
       page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا معتبر')
     } else {
       console.log('wallet invoice is >>>> ', walletInvoice)
-      if (body.State === 'CanceledByUser') {
+      if (body.State === 'CanceledByUser') {   // canceled by user stat 1
         console.log('the payment is canceled by user')
         walletInvoice.status = 'failed'
         await walletInvoice.save()
         page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'انصراف از درخواست')
-      } else if (body.State === 'OK') {
+        return {
+          message: 'page',
+          statusCode: 301,
+          page
+        }
+      } else if (body.State === 'OK') {     // ok state 2
         console.log('ok the transActions')
         walletInvoice.status = 'completed'
         let orderUpdated = await this.interService.aprovePey(walletInvoice._id.toString() , 1 , walletInvoice)
-        
         if (orderUpdated === 1){
           walletInvoice.state = 3
         }else{
@@ -492,7 +496,12 @@ async findWalletInvoice(query: any) {
         }
         await walletInvoice.save()
         page = await this.successPage('https://ecommerce.khaneetala.ir/')
-      } else if (body.State === 'Failed') {
+        return {
+          message: 'page',
+          statusCode: 301,
+          page
+        }
+      } else if (body.State === 'Failed') {      // failed state 3
         console.log('the payment is canceled by user')
         walletInvoice.status = 'failed'
         await walletInvoice.save()
@@ -503,7 +512,7 @@ async findWalletInvoice(query: any) {
           statusCode: 301,
           page
         }
-      } else {
+      } else {      // everything else state 4
         console.log('the payment is canceled by user')
         walletInvoice.status = 'failed'
         await walletInvoice.save()
