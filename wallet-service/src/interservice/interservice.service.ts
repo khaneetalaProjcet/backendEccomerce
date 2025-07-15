@@ -109,12 +109,11 @@ export class InterserviceService {
         },
       );
 
-
       if (!rawResponse) {
         return 0; // no connection exist
       }
       let response = await rawResponse.json();
-      
+
       // console.log("order",response.order);
       console.log('response', response);
 
@@ -122,7 +121,7 @@ export class InterserviceService {
         return 0; // no connection exist
       }
       if (response.success) {
-        return response.data;
+        return 1;
       } else if (response.message == 'notFound') {
         return 0;
       } else if (response.message == 'duplicateRequest') {
@@ -130,7 +129,7 @@ export class InterserviceService {
       }else if (response.message == 'internal') {
         return 2;
       } else {
-        return 1;
+        return 3;
       }
     } catch (error) {
       console.log('error occured while trying to update goldBox in khanetala');
