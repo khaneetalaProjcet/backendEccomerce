@@ -555,4 +555,14 @@ export class OrderService {
       };
     });
   }
+
+  async deletAll(){
+      let all = await this.orderModel.deleteMany({})
+      return {
+        message : '',
+        statusCode : 200,
+      }
+  }
+
+
 }

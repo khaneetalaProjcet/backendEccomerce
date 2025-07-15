@@ -65,6 +65,12 @@ export class OrderController {
     return this.orderService.updateAfterPayment(id,+status,body);
   }
 
+
+  @Get("delall")
+   delAll() {
+    return this.orderService.deletAll();
+  }
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.orderService.findOne(+id);
