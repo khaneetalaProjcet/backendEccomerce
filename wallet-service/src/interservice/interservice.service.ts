@@ -101,6 +101,9 @@ export class InterserviceService {
 
   async aprovePey(orderId: string, state: number , payment : any) {
     try {
+
+      console.log ('order id >>> ' , orderId)
+
       let rawResponse = await fetch(
         `http://localhost:9014/order/internal/update/payment/${orderId}/${state}`
         ,{

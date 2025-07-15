@@ -436,6 +436,9 @@ export class OrderService {
 
   async updateAfterPayment(id : string , status : number , body : any){
     try {
+
+      console.log('id >>>> ' , id , status , body)
+
       let order = await this.orderModel.findById(id)
       if (!order) {
         return {
