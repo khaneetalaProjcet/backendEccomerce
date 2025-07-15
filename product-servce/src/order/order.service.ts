@@ -157,6 +157,30 @@ export class OrderService {
     }
   }
 
+
+
+  
+  async allWaiting() {
+    try {
+      const sent  = await this.orderModel.find({
+        status : 1,
+      }).populate('products.product').populate('products.mainProduct');
+
+      return {
+        message: '',
+        statusCode: 200,
+        data: sent,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        message: 'مشکل داخلی سیسنم',
+        statusCode: 500,
+        error: 'مشکل داخلی سیسنم',
+      };
+    }
+  }
+
   async findOneById(orderId: string) {
     try {
       const order = await this.orderModel.findById(orderId);

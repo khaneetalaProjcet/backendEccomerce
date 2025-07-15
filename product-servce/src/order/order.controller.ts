@@ -30,6 +30,12 @@ export class OrderController {
     return this.orderService.findAllForUser(userId);
   }
 
+  @Get("waiting")
+  @UseGuards(JwtAdminAuthGuard)
+  allWaiting(@Req() req : any , @Res() res : any) {
+    return this.orderService.allWaiting();
+  }
+
   @Get("price")
   goldPrice(@Req() req : any , @Res() res : any) {
     return this.orderService.getGoldPrice();
