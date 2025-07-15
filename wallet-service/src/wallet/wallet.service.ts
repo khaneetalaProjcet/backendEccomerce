@@ -490,7 +490,7 @@ async findWalletInvoice(query: any) {
         walletInvoice.status = 'completed'
         walletInvoice.RefNum = body.RefNum;
         walletInvoice.traceNo = body.TraceNo
-        let orderUpdated = await this.interService.aprovePey(walletInvoice._id.toString() , 1 , walletInvoice)
+        let orderUpdated = await this.interService.aprovePey(walletInvoice.orderId.toString() , 1 , walletInvoice)
         if (orderUpdated === 1){
           walletInvoice.state = 3
         }else{
