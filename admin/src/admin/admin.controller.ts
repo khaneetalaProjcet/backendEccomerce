@@ -161,7 +161,7 @@ export class AdminController {
     );
   }
 
-  @Get()
+  @Get('/')
   @ApiOperation({ summary: 'List all admins' })
   @ApiResponse({
     status: 200,

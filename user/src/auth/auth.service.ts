@@ -74,6 +74,7 @@ async sendOtp(@Req() req: any, @Res() res: any, body: sendOtpDto) {
 
   async validateOtp(body: validateOtpDto) {
     try {
+      
       //  const array=await this.userModel.find()
 
       //  for (let index = 0; index < array.length; index++) {
