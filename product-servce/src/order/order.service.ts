@@ -452,7 +452,7 @@ export class OrderService {
         statusCode: 500,
       }
     }
-    }
+  }
 
 
   private async caculateNumberOfGoldBox(goldBox: string) {
