@@ -38,7 +38,7 @@ export class AppService {
     const data = {
       action: 'token',
       TerminalId: process.env.SEP_TERMINAL_ID,
-      Amount: (order.totalPrice*10),
+      Amount: 10000,
       ResNum: await this.generator(),
       RedirectUrl: 'https://ecommerce.khaneetala.ir/api/redirect',
       CellNumber: '09229055682',

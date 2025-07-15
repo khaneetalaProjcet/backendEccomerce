@@ -76,8 +76,10 @@ export class OrderService {
           count: p.count,
         })),
         totalPrice,
+        cart : cart._id.toString(),
         date,
         time,
+        invoiceId : new Date().getTime().toString(),
         goldPrice,
         address: body.address,
         paymentMethod: body.paymentMethod,
@@ -109,16 +111,67 @@ export class OrderService {
 
   async findAllForUser(userId: string) {
     try {
-      const orders = await this.orderModel
-        .find({
+      const orders = await this.orderModel.find({
           user: userId,
-        })
-        .populate('products.product')
-        .populate('products.mainProduct');
+        }).populate('products.product').populate('products.mainProduct');
+
+      const waitForPay = await this.orderModel.find({
+        user : userId,
+        status : 2
+      }).populate('products.product').populate('products.mainProduct');
+      
+      const sent  = await this.orderModel.find({
+        user : userId,
+        status : 1,
+      }).populate('products.product').populate('products.mainProduct');
+      
+      const canceled = await this.orderModel.find({
+        user : userId,
+        status : 5,
+      }).populate('products.product').populate('products.mainProduct');
+      
+      const recived = await this.orderModel.find({
+        user : userId,
+        status : 4,
+      }).populate('products.product').populate('products.mainProduct');
+      
+
+      let data = {
+        orders,
+        waitForPay,
+        sent,
+        canceled,
+        recived,
+      }
+
       return {
         message: '',
         statusCode: 200,
-        data: orders,
+        data: data,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        message: 'مشکل داخلی سیسنم',
+        statusCode: 500,
+        error: 'مشکل داخلی سیسنم',
+      };
+    }
+  }
+
+
+
+  
+  async allWaiting() {
+    try {
+      const sent  = await this.orderModel.find({
+        status : 1,
+      }).populate('products.product').populate('products.mainProduct');
+
+      return {
+        message: '',
+        statusCode: 200,
+        data: sent,
       };
     } catch (error) {
       console.log(error);
@@ -385,7 +438,28 @@ export class OrderService {
 
   async updateAfterPayment(id : string , status : number , body : any){
     try {
+
+      console.log('id >>>> ' , id , status , body)
+
       let order = await this.orderModel.findById(id)
+      
+      let cart  = await this.cartModel.findOne({user : order?.user}).populate('products')
+      if (cart){
+        
+        for (let i of cart.products){
+          let product = await this.productModel.findById(i.mainProduct)
+          if (product){
+            let count = product.count - i.count
+            await product.updateOne({count : count})
+          }
+        }
+        
+        let product = cart.products
+        cart.history = product
+        cart.products = []
+        await cart.save()
+      }
+
       if (!order) {
         return {
           message: 'notFound',
@@ -400,11 +474,10 @@ export class OrderService {
         }
       }
 
-
       if (status == 0) {               // it means the payment failed
         if (order.paymentMethod == 1) {
           order.status = 5
-          order.cashInvoiceId = body._id.toString
+          order.cashInvoiceId = body._id.toString()
           await order.save()
           return {
             message: 'done',
@@ -414,7 +487,7 @@ export class OrderService {
 
         if (order.paymentMethod == 2) {
           order.cashPay = 0;
-          order.cashInvoiceId = body._id.toString;
+          order.cashInvoiceId = body._id.toString()
           await order.save()
           return {
             message: 'done',
@@ -426,7 +499,7 @@ export class OrderService {
       if (status == 1) {              // it means the payment successfully done
         if (order.paymentMethod == 1) {       // just cash
           order.status = 1;
-          order.cashInvoiceId = body._id.toString;
+          order.cashInvoiceId = body._id.toString()
           order.cashPay = 1;
           await order.save()
           return {
@@ -437,7 +510,7 @@ export class OrderService {
 
         if (order.paymentMethod == 2) {           // cash and goldBox
           order.cashPay = 1;
-          order.cashInvoiceId = body._id.toString;
+          order.cashInvoiceId = body._id.toString()
           await order.save()
           return {
             message: 'done',
@@ -446,7 +519,7 @@ export class OrderService {
         }
       }
     } catch (error) {
-      console.log('error occured in updating the order >>>> ')
+      console.log('error occured in updating the order >>>> ' , error)
       return {
         message: 'internal',
         statusCode: 500,
@@ -504,4 +577,14 @@ export class OrderService {
       };
     });
   }
+
+  async deletAll(){
+      let all = await this.orderModel.deleteMany({})
+      return {
+        message : '',
+        statusCode : 200,
+      }
+  }
+
+
 }

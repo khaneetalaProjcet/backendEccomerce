@@ -30,6 +30,12 @@ export class OrderController {
     return this.orderService.findAllForUser(userId);
   }
 
+  @Get("waiting")
+  @UseGuards(JwtAdminAuthGuard)
+  allWaiting(@Req() req : any , @Res() res : any) {
+    return this.orderService.allWaiting();
+  }
+
   @Get("price")
   goldPrice(@Req() req : any , @Res() res : any) {
     return this.orderService.getGoldPrice();
@@ -54,9 +60,15 @@ export class OrderController {
    update(@Param('id') id: string,@Param('status') status: string,@Body() body:any) {
     return this.orderService.updateOrder(id,status,body);
   }
-  @Post("internal/payment/:id/:status")
+  @Post("internal/update/payment/:id/:status")
    payment(@Param('id') id: string,@Param('status') status: string,@Body() body:any) {
     return this.orderService.updateAfterPayment(id,+status,body);
+  }
+
+
+  @Get("delall")
+   delAll() {
+    return this.orderService.deletAll();
   }
 
   // @Get(':id')

@@ -1,4 +1,4 @@
-import { Body, Injectable } from '@nestjs/common';
+import { Body, Header, Injectable } from '@nestjs/common';
 
 import fetch from 'node-fetch';
 
@@ -101,14 +101,19 @@ export class InterserviceService {
 
   async aprovePey(orderId: string, state: number , payment : any) {
     try {
+
+      console.log ('order id >>> ' , orderId)
+
       let rawResponse = await fetch(
         `http://localhost:9014/order/internal/update/payment/${orderId}/${state}`
         ,{
           method: 'POST',
+          headers : {
+            "Content-Type" : "application/json"
+          },
           body: JSON.stringify(payment),
         },
       );
-
 
       if (!rawResponse) {
         return 0; // no connection exist
@@ -116,13 +121,13 @@ export class InterserviceService {
       let response = await rawResponse.json();
 
       // console.log("order",response.order);
-      console.log('response', response.data);
+      console.log('response', response);
 
       if (!response) {
         return 0; // no connection exist
       }
       if (response.success) {
-        return response.data;
+        return 1;
       } else if (response.message == 'notFound') {
         return 0;
       } else if (response.message == 'duplicateRequest') {
@@ -130,7 +135,7 @@ export class InterserviceService {
       }else if (response.message == 'internal') {
         return 2;
       } else {
-        return 1;
+        return 3;
       }
     } catch (error) {
       console.log('error occured while trying to update goldBox in khanetala');

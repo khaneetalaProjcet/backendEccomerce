@@ -47,7 +47,7 @@ export class Cart {
 
     @Prop({type : Number , default : 0})
     count : number
-
+    
     @Prop({type : Number , default : 0})
     totalPrice : number
 
