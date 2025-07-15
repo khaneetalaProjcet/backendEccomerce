@@ -143,4 +143,25 @@ export class InterserviceService {
     }
 
   }
+
+  async verifyTransAction(RefNum){
+    let body = {
+      RefNum : RefNum,
+      TerminalNumber : process.env.SEP_TERMINAL_ID
+    }
+
+    let response = await fetch('https://sep.shaparak.ir/verifyTxnRandomSessionkey/ipg/VerifyTransaction' , {
+      method : 'POST',
+      body: JSON.stringify(body),
+      headers: { 'Content-Type': 'application/json' },
+    })
+
+    let mainResponse = await response.json()
+    return mainResponse
+
+
+  }
+
+
+
 }
