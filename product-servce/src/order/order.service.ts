@@ -79,6 +79,7 @@ export class OrderService {
         cart : cart._id.toString(),
         date,
         time,
+        invoiceId : new Date().getTime().toString(),
         goldPrice,
         address: body.address,
         paymentMethod: body.paymentMethod,
