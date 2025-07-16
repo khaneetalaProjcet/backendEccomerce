@@ -142,7 +142,11 @@ export class ProductService {
         .populate('items')
         .populate('firstCategory')
         .populate('midCategory')
-        .populate('lastCategory');
+        .populate('lastCategory')
+        .populate({
+          path: 'suggestedProducts',
+          populate: ['items', 'firstCategory', 'midCategory', 'lastCategory'],
+        });
 
       if (!product) {
         return {
@@ -154,6 +158,28 @@ export class ProductService {
 
       const goldPrice = await this.goldPriceService.getGoldPrice();
 
+      const allOtherProducts = await this.productModel
+        .find({ _id: { $ne: product._id } })
+        .populate('items')
+        .populate('firstCategory')
+        .populate('midCategory')
+        .populate('lastCategory');
+
+      for (const suggested of allOtherProducts) {
+        let suggestedTotal = 0;
+        for (const item of suggested.items) {
+          const weight = Number(item.weight || 0);
+          const basePrice = weight * goldPrice;
+          const wageAmount = (basePrice * suggested.wages) / 100;
+          const itemFinalPrice = basePrice + wageAmount;
+          item.price = itemFinalPrice;
+          suggestedTotal += itemFinalPrice;
+        }
+        const suggestedWageAmount = (suggestedTotal * suggested.wages) / 100;
+        suggested.price = suggestedTotal + suggestedWageAmount;
+      }
+
+      product.suggestedProducts = allOtherProducts ;
       let totalPrice = 0;
 
       for (const item of product.items) {
@@ -174,7 +200,10 @@ export class ProductService {
       return {
         message: '',
         statusCode: 200,
-        data: product,
+        data: {
+          ...product.toObject(),
+          suggestedProducts: allOtherProducts,
+        },
       };
     } catch (error) {
       console.log(error);

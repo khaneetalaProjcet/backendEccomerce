@@ -11,7 +11,8 @@ export interface ProductDocumnet extends Document {
   wages: number;
   count: number;
   category: Types.ObjectId;
-  price: number
+  suggestedProducts: any[];
+  price: number;
 }
 
 @Schema({ timestamps: true })
@@ -45,6 +46,9 @@ export class Product {
 
   @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
   lastCategory: Types.ObjectId;
+
+  @Prop({ type: [Types.ObjectId], ref: 'Product', default: [] })
+  suggestedProducts: Types.ObjectId[];
 
   @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
   price: Types.ObjectId;
