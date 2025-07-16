@@ -63,7 +63,7 @@ export class OrderService {
 
       if (body.paymentMethod === 2) {
         goldBox = await this.caculateNumberOfGoldBox(
-          (totalPrice / +goldPrice).toString(),
+          ( +(totalPrice-cash) / +goldPrice).toString(),
         );
       }
 
@@ -74,7 +74,7 @@ export class OrderService {
           mainProduct: p.mainProduct._id,
           count: p.count,
         })),
-        totalPrice,
+        totalPrice : cash,
         cart: cart._id.toString(),
         date,
         time,
