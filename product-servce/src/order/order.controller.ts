@@ -83,10 +83,10 @@ export class OrderController {
     return this.orderService.updateAfterPayment(id, +status, body);
   }
 
-  @Patch('update/:id')
+  @Patch('confirm-delivery/:id')
   @UseGuards(JwtAdminAuthGuard)
-  updateDelivery(@Param('id') id: string) {
-    return this.orderService.updateDelivery(id);
+  confirmDelivery(@Param('id') id: string) {
+    return this.orderService.confirmDelivery(id);
   }
 
   @Get('delall')

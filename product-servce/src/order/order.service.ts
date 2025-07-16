@@ -542,39 +542,41 @@ export class OrderService {
     }
   }
 
-  async updateDelivery(id: string) {
-    try {
-      const thisOrder = await this.orderModel.findById({ id });
+ async confirmDelivery(id: string) {
+  try {
+    const thisOrder = await this.orderModel.findById(id); 
 
-      if (!thisOrder) {
-        return {
-          message: 'notFound',
-          statusCode: 400,
-        };
-      }
-      if (thisOrder?.status !== 1) {
-        return {
-          message: 'erorr',
-          statusCode: 400,
-        };
-      } else {
-        thisOrder.status = 4
-      }
-
-
-      if(thisOrder.status == 2)
-
-     await thisOrder.save();
-
-      return { message: 'done', statusCode: 200, data: thisOrder };
-    } catch (error) {
-      console.log('error occured in updating the order >>>> ', error);
+    if (!thisOrder) {
       return {
-        message: 'internal',
-        statusCode: 500,
+        message: 'notFound',
+        statusCode: 404,
       };
     }
+
+    if (thisOrder.status !== 1) {
+      return {
+        message: 'Order status must be ',
+        statusCode: 400,
+      };
+    }
+
+    thisOrder.status = 4; 
+
+    await thisOrder.save();
+
+    return {
+      message: 'Order status updated to "received"',
+      statusCode: 200,
+      data: thisOrder,
+    };
+  } catch (error) {
+    console.error('Error updating delivery status:', error);
+    return {
+      message: 'internalError',
+      statusCode: 500,
+    };
   }
+}
 
   private async caculateNumberOfGoldBox(goldBox: string) {
     let seperator = goldBox.split('');
