@@ -555,7 +555,7 @@ export class OrderService {
 
     if (thisOrder.status !== 1) {
       return {
-        message: 'Order status must be status 1 : approvePay ',
+        message: 'Order status must be status 1 : approvePay',
         statusCode: 400,
       };
     }

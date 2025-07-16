@@ -7,7 +7,7 @@ export interface ProductItemsDocment extends Document {
   weight: string;
   color: string;
   count: number;
-  price: number
+  price: number;
 }
 
 @Schema()
@@ -23,6 +23,9 @@ export class ProductItems {
 
   @Prop()
   count: number;
+
+  @Prop()
+  price: number;
 }
 
 export const ProductItemSchema = SchemaFactory.createForClass(ProductItems);

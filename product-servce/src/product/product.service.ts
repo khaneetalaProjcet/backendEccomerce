@@ -135,51 +135,53 @@ export class ProductService {
       };
     }
   }
+async findOne(id: string) {
+  try {
+    const product = await this.productModel
+      .findById(id)
+      .populate('items')
+      .populate('firstCategory')
+      .populate('midCategory')
+      .populate('lastCategory');
 
-  async findOne(id: string) {
-    try {
-      const product = await this.productModel
-        .findById(id)
-        .populate('items')
-        .populate('firstCategory')
-        .populate('midCategory')
-        .populate('lastCategory');
-
-      if (!product) {
-        return {
-          message: 'محصول پیدا نشد',
-          statusCode: 400,
-          error: 'محصول پیدا نشد',
-        };
-      }
-
-      const goldPrice = await this.goldPriceService.getGoldPrice();
-
-      let price = 0;
-
-      for (const item of product.items) {
-        price += Number(item.weight || 0) * goldPrice;
-      }
-
-      const wageAmount = (price * product.wages) / 100;
-      const finalPrice = price + wageAmount;
-
-      product.price = finalPrice;
-
+    if (!product) {
       return {
-        message: '',
-        statusCode: 200,
-        data: product,
-      };
-    } catch (error) {
-      console.log(error);
-      return {
-        message: 'مشکل داخلی سیسنم',
-        statusCode: 500,
-        error: 'مشکل داخلی سیسنم',
+        message: 'محصول پیدا نشد',
+        statusCode: 400,
+        error: 'محصول پیدا نشد',
       };
     }
+
+    const goldPrice = await this.goldPriceService.getGoldPrice();
+
+    let totalPrice = 0;
+
+    for (const item of product.items) {
+      const itemPrice = Number(item.weight || 0) * goldPrice;
+      item.price = itemPrice;
+      totalPrice += itemPrice;
+    }
+
+    const wageAmount = (totalPrice * product.wages) / 100;
+    const finalPrice = totalPrice + wageAmount;
+
+    product.price = finalPrice;
+
+    return {
+      message: '',
+      statusCode: 200,
+      data: product,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      message: 'مشکل داخلی سیسنم',
+      statusCode: 500,
+      error: 'مشکل داخلی سیسنم',
+    };
   }
+}
+
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     try {
