@@ -135,53 +135,56 @@ export class ProductService {
       };
     }
   }
-async findOne(id: string) {
-  try {
-    const product = await this.productModel
-      .findById(id)
-      .populate('items')
-      .populate('firstCategory')
-      .populate('midCategory')
-      .populate('lastCategory');
+  async findOne(id: string) {
+    try {
+      const product = await this.productModel
+        .findById(id)
+        .populate('items')
+        .populate('firstCategory')
+        .populate('midCategory')
+        .populate('lastCategory');
 
-    if (!product) {
+      if (!product) {
+        return {
+          message: 'محصول پیدا نشد',
+          statusCode: 400,
+          error: 'محصول پیدا نشد',
+        };
+      }
+
+      const goldPrice = await this.goldPriceService.getGoldPrice();
+
+      let totalPrice = 0;
+
+      for (const item of product.items) {
+        const weight = Number(item.weight || 0);
+        const basePrice = weight * goldPrice;
+        const wageAmount = (basePrice * product.wages) / 100;
+        const itemFinalPrice = basePrice + wageAmount;
+
+        item.price = itemFinalPrice;
+        totalPrice += itemFinalPrice;
+      }
+
+      const wageAmount = (totalPrice * product.wages) / 100;
+      const finalPrice = totalPrice + wageAmount;
+
+      product.price = finalPrice;
+
       return {
-        message: 'محصول پیدا نشد',
-        statusCode: 400,
-        error: 'محصول پیدا نشد',
+        message: '',
+        statusCode: 200,
+        data: product,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        message: 'مشکل داخلی سیسنم',
+        statusCode: 500,
+        error: 'مشکل داخلی سیسنم',
       };
     }
-
-    const goldPrice = await this.goldPriceService.getGoldPrice();
-
-    let totalPrice = 0;
-
-    for (const item of product.items) {
-      const itemPrice = Number(item.weight || 0) * goldPrice;
-      item.price = itemPrice;
-      totalPrice += itemPrice;
-    }
-
-    const wageAmount = (totalPrice * product.wages) / 100;
-    const finalPrice = totalPrice + wageAmount;
-
-    product.price = finalPrice;
-
-    return {
-      message: '',
-      statusCode: 200,
-      data: product,
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      message: 'مشکل داخلی سیسنم',
-      statusCode: 500,
-      error: 'مشکل داخلی سیسنم',
-    };
   }
-}
-
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     try {
@@ -380,7 +383,7 @@ async findOne(id: string) {
     try {
       const limit = Number(query.limit) || 12;
       const page = Number(query.page) || 0;
-      const skip = (page-1) * limit;
+      const skip = (page - 1) * limit;
 
       const category = await this.categoryModel.findById(categoryId).populate({
         path: 'parent',
@@ -423,7 +426,7 @@ async findOne(id: string) {
         for (const item of product.items) {
           price += Number(item.weight || 0) * goldPrice;
         }
-        
+
         const wageAmount = (price * product.wages) / 100;
         const finalPrice = price + wageAmount;
 
