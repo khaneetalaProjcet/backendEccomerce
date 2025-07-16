@@ -9,13 +9,14 @@ import {
   Req,
   Res,
   UseGuards,
+  
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
 import { JwtAdminAuthGuard } from '../jwt/admin-jwt-auth.guard';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiOperation, ApiParam,ApiTags } from '@nestjs/swagger';
 
 @Controller('order')
 export class OrderController {
@@ -83,7 +84,39 @@ export class OrderController {
     return this.orderService.updateAfterPayment(id, +status, body);
   }
 
-  
+  @ApiTags('Order')
+  @Patch('confirm-delivery/:id')
+  @UseGuards(JwtAdminAuthGuard)
+  @ApiOperation({
+    summary: 'Confirm delivery of an order',
+    description:
+      'Changes the order status from "pending for payment" (status = 2) to "received" (status = 4). Only works if current status is 2.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'order id ',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Order status successfully updated to received.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid order status or order not found.',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal service error',
+    schema: {
+      example: {
+        success: false,
+        message: 'internal error',
+        error: 'internal service error',
+        data: null,
+      },
+    },
+  })
   @Patch('confirm-delivery/:id')
   @UseGuards(JwtAdminAuthGuard)
   confirmDelivery(@Param('id') id: string) {
