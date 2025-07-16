@@ -32,20 +32,35 @@ export class PageService {
     try {
       const page = await this.pageModel.find().exec();
 
-        return {
+      return {
         message: 'done',
         statusCode: 200,
         data: page,
       };
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
   async findOne(id: string) {
-    const page = await this.pageModel.findById(id).exec();
-    if (!page) throw new NotFoundException(`Page with id ${id} not found`);
-    return page;
+    try {
+      const page = await this.pageModel.findById(id).exec();
+      if (!page) {
+        return {
+          message: 'there is no page with this id',
+          statusCode: 400,
+          data: null,
+        };
+      }
+      return {
+        message: 'done',
+        statusCode: 200,
+        data: page,
+      };
+      
+    } catch (error) {
+      console.log(error ,"error is here")
+    }
   }
 
   async update(id: string, updateDto: UpdatePageDto) {
@@ -66,22 +81,22 @@ export class PageService {
     }
   }
   async remove(id: string) {
-  try {
-    const deleted = await this.pageModel.findByIdAndDelete(id).exec();
+    try {
+      const deleted = await this.pageModel.findByIdAndDelete(id).exec();
 
-    if (!deleted) {
-      throw new NotFoundException(`Page with id ${id} not found`);
+      if (!deleted) {
+        throw new NotFoundException(`Page with id ${id} not found`);
+      }
+
+      console.log(deleted, 'deleted document');
+
+      return {
+        message: 'Page successfully deleted',
+        statusCode: 200,
+        data: deleted,
+      };
+    } catch (error) {
+      console.error('Error deleting page:', error);
     }
-
-    console.log(deleted, 'deleted document');
-
-    return {
-      message: 'Page successfully deleted',
-      statusCode: 200,
-      data: deleted,
-    };
-  } catch (error) {
-    console.error('Error deleting page:', error);
   }
-}
 }

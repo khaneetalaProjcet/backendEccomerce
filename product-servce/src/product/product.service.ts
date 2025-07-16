@@ -135,7 +135,6 @@ export class ProductService {
       };
     }
   }
-
   async findOne(id: string) {
     try {
       const product = await this.productModel
@@ -155,14 +154,20 @@ export class ProductService {
 
       const goldPrice = await this.goldPriceService.getGoldPrice();
 
-      let price = 0;
+      let totalPrice = 0;
 
       for (const item of product.items) {
-        price += Number(item.weight || 0) * goldPrice;
+        const weight = Number(item.weight || 0);
+        const basePrice = weight * goldPrice;
+        const wageAmount = (basePrice * product.wages) / 100;
+        const itemFinalPrice = basePrice + wageAmount;
+
+        item.price = itemFinalPrice;
+        totalPrice += itemFinalPrice;
       }
 
-      const wageAmount = (price * product.wages) / 100;
-      const finalPrice = price + wageAmount;
+      const wageAmount = (totalPrice * product.wages) / 100;
+      const finalPrice = totalPrice + wageAmount;
 
       product.price = finalPrice;
 
@@ -378,7 +383,7 @@ export class ProductService {
     try {
       const limit = Number(query.limit) || 12;
       const page = Number(query.page) || 0;
-      const skip = (page-1) * limit;
+      const skip = (page - 1) * limit;
 
       const category = await this.categoryModel.findById(categoryId).populate({
         path: 'parent',
@@ -421,7 +426,7 @@ export class ProductService {
         for (const item of product.items) {
           price += Number(item.weight || 0) * goldPrice;
         }
-        
+
         const wageAmount = (price * product.wages) / 100;
         const finalPrice = price + wageAmount;
 
