@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Interval } from '@nestjs/schedule';
+
 
 
 @Injectable()
 export class CrobJobService {
 
-    @Cron('45 * * * * *')
+    @Interval('goldBox', 10000)
     handleCronEveryMinute() {
         console.log('test pass')
     }
