@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AppService } from 'src/app.service';
-import { BahPardakht } from 'src/bah-pardakht/bah-pardakht';
 import { InterserviceService } from 'src/interservice/interservice.service';
 import {
   goldInvoice,

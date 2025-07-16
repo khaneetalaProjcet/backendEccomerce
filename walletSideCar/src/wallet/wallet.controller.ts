@@ -16,7 +16,6 @@ import { WalletService } from './wallet.service';
 import { CreateWalletDto } from './dto/create-wallet.dto';
 import { UpdateWalletDto } from './dto/update-wallet.dto';
 import { ApiBody, ApiHeader, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../jwt/jwt-auth.guard';
 import { walletListQueryDto } from './dto/pagination.dto';
 
 @Controller('wallet')
@@ -71,7 +70,6 @@ export class WalletController {
   }
 
   @Get('/find')
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'get wallet for user' })
   @ApiResponse({
     status: 200,
@@ -158,7 +156,6 @@ export class WalletController {
   }
 
   @Get('/goldboxInvoices')
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Retrieve gold box invoices' })
   @ApiResponse({
     status: 200,
@@ -173,7 +170,6 @@ export class WalletController {
   }
 
   @Get('/walletInvoices')
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Retrieve wallet payment invoices' })
   @ApiResponse({
     status: 200,

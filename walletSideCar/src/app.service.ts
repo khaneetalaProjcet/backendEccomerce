@@ -10,13 +10,11 @@ import {
   WalletInvoice,
   WalletInvoiceInterface,
 } from './wallet/entities/walletInvoice.entity';
-import { htmlPage } from './bah-pardakht/bah-pardakht';
 import * as soap from 'soap';
 import { wallet, walletDocument } from './wallet/entities/wallet.entity';
 
 @Injectable()
 export class AppService {
-  private htmlPageService = new htmlPage();
 
   constructor(
     @InjectModel(WalletInvoice.name)

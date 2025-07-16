@@ -104,7 +104,7 @@ export class Order {
 
     @Prop({ type: Number, required: false, default: 1 })
     paymentMethod: number
-
+    
     @Prop({ type: Number, default: 2 })
     status: number    //? 0 init //? 1 approvePay //2 pending for pay  // 4 : recieved  // 5 failed
 
