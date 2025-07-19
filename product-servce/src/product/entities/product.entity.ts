@@ -54,4 +54,21 @@ export class Product {
   price: Types.ObjectId;
 }
 
+
+
+// schema.pre('save', function(next) {
+//   const err = new Error('something went wrong');
+//   // If you call `next()` with an argument, that argument is assumed to be
+//   // an error.
+//   next(err);
+// });
+
+
+
 export const ProductSchema = SchemaFactory.createForClass(Product);
+
+ProductSchema.methods = {
+  _calculateDiscount: async function () {
+    
+ }
+}

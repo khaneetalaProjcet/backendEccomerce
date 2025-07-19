@@ -100,11 +100,11 @@ export class ProductController {
   }
   @Post('item/update/:id')
   @UseGuards(JwtAdminAuthGuard)
-  @ApiOperation({ summary: 'Create a new product' })
+  @ApiOperation({ summary: 'updating each items of the product' })
   @ApiBody({ type: UpdateProductItemDto })
   @ApiResponse({
     status: 201,
-    description: 'The product has been successfully created.',
+    description: 'The items of the product successfully updated',
     type: ProductItems,
   })
   updateItem(
@@ -160,6 +160,25 @@ export class ProductController {
   filterTopSelling(@Query() query: productListQueryDto) {
     return this.productService.findAll(query);
   }
+
+  // @Patch('/discount/:id')
+  // @ApiOperation({ summary: 'add discount percent to the product' })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'successsfully added',
+  //   type: [Product],
+  // })
+  // @ApiResponse({
+  //   status: 500,
+  //   description: 'internal error',
+  //   type: [Product],
+  // })
+  // addDiscount(
+  //   @Param() productId: string,
+  //   @Query() query: UpdateProductItemDto,
+  // ) {
+  //   return this.productService.addDiscount(productId, query);
+  // }
 
   @Get('/recommendations')
   @ApiOperation({ summary: 'get recommending products' })
