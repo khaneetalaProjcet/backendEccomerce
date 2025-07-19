@@ -73,7 +73,7 @@ export class Order {
 
     @Prop({ type: String, default: "0" })
     goldBox: string
-
+    
     @Prop({ type: String })
     time: string
 

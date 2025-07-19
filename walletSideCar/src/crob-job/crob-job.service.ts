@@ -1,13 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { InjectModel } from '@nestjs/mongoose';
+import { Interval } from '@nestjs/schedule';
+import { Model } from 'mongoose';
+import { goldInvoice, goldInvoiceInterface } from 'src/wallet/entities/goldBoxInvoice.entity';
+
 
 
 @Injectable()
 export class CrobJobService {
 
-    @Cron(CronExpression.EVERY_5_SECONDS) // Runs every minute
-    handleCronEveryMinute() {
-        console.log('test pass')
+    constructor(@InjectModel(goldInvoice.name) private goldInvoiceModel : Model<goldInvoiceInterface>){}
+
+
+    @Interval('goldBox', 10000)
+    async handleCronEveryMinute() {
+
+        let pendings = await this.goldInvoiceModel.find({
+            status : 'pending',
+            state : 1,
+        })
+
+        console.log('pendings list is>>>>>' , pendings)
     }
 
 
