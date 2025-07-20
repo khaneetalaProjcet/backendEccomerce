@@ -12,7 +12,7 @@ const Redlock = RedlockModule.default || RedlockModule;
 
 const redlock = new Redlock([redis]);
 
-const job = cron.schedule('20* * * * *', async () => {
+const job = cron.schedule('* * * * *', async () => {
   const lag = monitor();
   if (lag > 200) {
     logger.warn(`Skipping cron – event loop lag detected: ${lag}ms`);
