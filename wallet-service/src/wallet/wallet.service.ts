@@ -418,7 +418,7 @@ async findWalletInvoice(query: any) {
     console.log('order id', orderId);
     
     let order = await this.interService.getOrder(orderId);
-    
+
     if (order == 0) {
       console.log('internal services error , not connected to order service');
       return {
@@ -553,7 +553,6 @@ async findWalletInvoice(query: any) {
       }
     }
   }
-
 
 
   /**
