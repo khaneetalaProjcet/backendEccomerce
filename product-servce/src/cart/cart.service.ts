@@ -91,11 +91,14 @@ export class CartService {
       }
 
       await addCart.save();
-
+      let secondAdd = await this.cartModel
+        .findOne({ user: userid })
+        .populate('products.product')
+        .populate('products.mainProduct');
       return {
         message: 'موفق',
         statusCode: 200,
-        data: addCart,
+        data: secondAdd,
       };
     } catch (error) {
       console.log('error occured >>> ', error);
