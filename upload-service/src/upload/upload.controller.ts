@@ -86,7 +86,7 @@ export class UploadController {
       },
     }),
   )
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  async uploadFile(@UploadedFile() file: any) {
     return this.uploadService.handleFileUpload(file);
   }
   @Post('multiple')
