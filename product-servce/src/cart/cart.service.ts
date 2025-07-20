@@ -108,6 +108,7 @@ export class CartService {
   }
 
   async updateCart(userId: string, body: UpdateItemCount) {
+    console.log('its hereeeeee')
     try {
       let item = await this.productItemsModel.findById(body.item);
       if (!item) {
@@ -140,7 +141,7 @@ export class CartService {
       let addCart = await this.cartModel
         .findOne({ user: userId })
         .populate('products.product')
-      .populate('products.mainProduct');
+        .populate('products.mainProduct');
       if (!addCart) {
         return {
           message: '',
@@ -177,7 +178,7 @@ export class CartService {
       addCart.count = totalCount;
 
       await addCart.save();
-
+      console.log('acrt updated')
       return {
         message: 'سبد خرید بروزرسانی شد',
         statusCode: 200,
