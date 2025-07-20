@@ -176,7 +176,7 @@ export class CartService {
     addCart.count = totalCount;
 
     await addCart.save()
-
+      let updated = await this.cartModel.findOne({ user: userId }).populate('products')
     return {
       message: 'سبد خرید بروزرسانی شد',
       statusCode: 200,

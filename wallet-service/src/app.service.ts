@@ -128,7 +128,7 @@ export class AppService {
           headers: { 'Content-Type': 'application/json' },
         },
       );
-
+      
       const result = await response.json();
 
       if (result.status === 1 && result.token) {
