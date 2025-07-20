@@ -89,6 +89,9 @@ export class UploadController {
   async uploadFile(@UploadedFile() file: any) {
     return this.uploadService.handleFileUpload(file);
   }
+
+
+
   @Post('multiple')
   @UseGuards(JwtAdminAuthGuard)
   @ApiBearerAuth()
@@ -131,24 +134,24 @@ export class UploadController {
         fileSize: parseInt(process.env.MAX_FILE_SIZE || '20971520'),
       },
       fileFilter: (req, file, cb) => {
-        const allowedTypes = (process.env.ALLOWED_TYPES || '')
-          .split(',')
-          .map((t) => t.trim());
+        // const allowedTypes = (process.env.ALLOWED_TYPES || '')
+        //   .split(',')
+        //   .map((t) => t.trim());
 
-        const forbiddenExts = (process.env.FORBIDDEN_EXTENSIONS || '')
-          .split(',')
-          .map((ext) => ext.trim());
+        // const forbiddenExts = (process.env.FORBIDDEN_EXTENSIONS || '')
+        //   .split(',')
+        //   .map((ext) => ext.trim());
 
         const ext = extname(file.originalname).toLowerCase();
         const mime = file.mimetype;
 
-        if (forbiddenExts.includes(ext)) {
-          return cb(new BadRequestException('Forbidden file extension'), false);
-        }
+        // if (forbiddenExts.includes(ext)) {
+        //   return cb(new BadRequestException('Forbidden file extension'), false);
+        // }
 
-        if (!allowedTypes.includes(mime)) {
-          return cb(new BadRequestException('Unsupported file type'), false);
-        }
+        // if (!allowedTypes.includes(mime)) {
+        //   return cb(new BadRequestException('Unsupported file type'), false);
+        // }
 
         cb(null, true);
       },
