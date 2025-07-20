@@ -108,7 +108,7 @@ export class CartService {
   }
 
   async updateCart(userId: string, body: UpdateItemCount) {
-    console.log('its hereeeeee')
+    console.log('its hereeeeee' , body)
     try {
       let item = await this.productItemsModel.findById(body.item);
       if (!item) {
@@ -142,6 +142,8 @@ export class CartService {
         .findOne({ user: userId })
         .populate('products.product')
         .populate('products.mainProduct');
+
+
       if (!addCart) {
         return {
           message: '',
