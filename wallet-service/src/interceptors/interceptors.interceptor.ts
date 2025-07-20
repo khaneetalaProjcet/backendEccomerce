@@ -22,6 +22,10 @@ export class ResponseInterceptor implements NestInterceptor {
 
       console.log('final test2')
       
+      if (res.statusCode === 301){
+        return response.status(200).json(res.page)
+      }
+
       let newResponse = { success : (res.statusCode == 200) ? true : false ,  
         ...res , 
         error : (res.error) ? res.error : null ,

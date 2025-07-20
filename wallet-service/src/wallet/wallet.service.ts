@@ -464,7 +464,7 @@ async findWalletInvoice(query: any) {
 
 
   async redirectFromGateway(body : any){
-    // console.log( 'it comes in to the redirect', body)
+    console.log( 'it comes in to the redirect', body)
     // let page = ''
     // let walletInvoice : any = await this.walletInvoiceModel.findOne({
     //   ResNum: body.ResNum
@@ -554,7 +554,7 @@ async findWalletInvoice(query: any) {
     // }
      return {
         message: 'page',
-        statusCode: 400,
+        statusCode: 301,
         page
       }
   }
