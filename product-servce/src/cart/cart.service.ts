@@ -144,6 +144,7 @@ export class CartService {
         .populate('products.mainProduct');
 
       console.log('cart founded >>>> ' , addCart)
+      
       if (!addCart) {
         return {
           message: '',
@@ -153,7 +154,7 @@ export class CartService {
       }
 
       const productIndex = addCart.products.findIndex(
-        (p) => p.product.toString() === item._id.toString(),
+        (p) => p.product._id.toString() === item._id.toString(),
       );
 
       if (productIndex === -1) {
