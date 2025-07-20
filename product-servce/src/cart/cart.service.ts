@@ -139,7 +139,8 @@ export class CartService {
 
       let addCart = await this.cartModel
         .findOne({ user: userId })
-        .populate('products')
+        .populate('products.product')
+      .populate('products.mainProduct');
       if (!addCart) {
         return {
           message: '',
