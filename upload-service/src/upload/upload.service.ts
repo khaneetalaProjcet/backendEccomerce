@@ -27,7 +27,7 @@ export class UploadService {
      return {
         message: '',  
         statusCode: 200,
-        data: files.map(file => `${process.env.UPLOAD_BASE_URL}/uploads/${file.filename}`)
+        data: files.map(file => `${process.env.UPLOAD_BASE_URL}/${file.filename}`)
       }
   }
 
