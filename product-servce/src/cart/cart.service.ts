@@ -143,7 +143,7 @@ export class CartService {
         .populate('products.product')
         .populate('products.mainProduct');
 
-
+      console.log('cart founded >>>> ' , addCart)
       if (!addCart) {
         return {
           message: '',
