@@ -21,9 +21,7 @@ export class UploadService {
         data:`${process.env.UPLOAD_BASE_URL}/${file.filename}`
       }
   }
-    async handleMultipleFilesUpload(files: Express.Multer.File[]): Promise<any> {
-     
-      
+    async handleMultipleFilesUpload(files: Express.Multer.File[]): Promise<any> { 
      return {
         message: '',  
         statusCode: 200,
