@@ -17,6 +17,7 @@ import {
 import { productListQueryDto } from './dto/pagination.dto';
 import { ProductFilterDto } from './dto/productFilterdto';
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
+import { log } from 'winston';
 
 @Injectable()
 export class ProductService {
@@ -142,7 +143,11 @@ export class ProductService {
         .populate('items')
         .populate('firstCategory')
         .populate('midCategory')
-        .populate('lastCategory');
+        .populate('lastCategory')
+        .populate({
+          path: 'suggestedProducts',
+          populate: ['items', 'firstCategory', 'midCategory', 'lastCategory'],
+        });
 
       if (!product) {
         return {
@@ -154,6 +159,28 @@ export class ProductService {
 
       const goldPrice = await this.goldPriceService.getGoldPrice();
 
+      const allOtherProducts = await this.productModel
+        .find({ _id: { $ne: product._id } })
+        .populate('items')
+        .populate('firstCategory')
+        .populate('midCategory')
+        .populate('lastCategory');
+
+      for (const suggested of allOtherProducts) {
+        let suggestedTotal = 0;
+        for (const item of suggested.items) {
+          const weight = Number(item.weight || 0);
+          const basePrice = weight * goldPrice;
+          const wageAmount = (basePrice * suggested.wages) / 100;
+          const itemFinalPrice = basePrice + wageAmount;
+          item.price = itemFinalPrice;
+          suggestedTotal += itemFinalPrice;
+        }
+        const suggestedWageAmount = (suggestedTotal * suggested.wages) / 100;
+        suggested.price = suggestedTotal + suggestedWageAmount;
+      }
+
+      product.suggestedProducts = allOtherProducts;
       let totalPrice = 0;
 
       for (const item of product.items) {
@@ -174,7 +201,10 @@ export class ProductService {
       return {
         message: '',
         statusCode: 200,
-        data: product,
+        data: {
+          ...product.toObject(),
+          suggestedProducts: allOtherProducts,
+        },
       };
     } catch (error) {
       console.log(error);
@@ -289,6 +319,7 @@ export class ProductService {
         color: dto.color,
         size: dto.size,
         weight: dto.weight,
+        discountPercent: dto.discountPercent,
       });
       if (!prodcutItem) {
         return {
@@ -489,5 +520,186 @@ export class ProductService {
       statusCode: 200,
       data: filteredProducts,
     };
+  }
+
+  // async addDiscount(productId: string, dto: UpdateProductItemDto) {
+  //   try {
+  //     const discountPercent = dto.discountPercent;
+
+  //     const updatedProductItem = await this.productItemModel.findByIdAndUpdate(
+  //       productId,
+  //       {
+  //         discountPercent: discountPercent,
+  //       },
+  //     );
+
+  //     if (!updatedProductItem) {
+  //       return {
+  //         message: 'محصول مورد نظر یافت نشد',
+  //         statusCode: 400,
+  //         data: null,
+  //       };
+  //     }
+
+  //     return {
+  //       message: 'موفق',
+  //       statusCode: 200,
+  //       data: updatedProductItem,
+  //     };
+  //   } catch (error) {
+  //     return {
+  //       message: 'internal server error',
+  //       statusCode: 500,
+  //       data: null,
+  //     };
+  //   }
+  // }
+
+  async recommandation(query: productListQueryDto) {
+    try {
+      const limit = Number(query.limit) || 12;
+      const page = Number(query.page) || 0;
+      const skip = page * limit;
+
+      const goldPrice = await this.goldPriceService.getGoldPrice();
+
+      const allProducts = await this.productModel
+        .find()
+        .populate('items')
+        .populate('firstCategory')
+        .populate('midCategory')
+        .populate('lastCategory');
+
+      const discountedProducts = [] as any;
+
+      for (const product of allProducts) {
+        let hasDiscount = false;
+
+        for (const item of product.items) {
+          if (item.discountPercent > 0) {
+            hasDiscount = true;
+          }
+        }
+
+        if (hasDiscount) {
+          let totalPrice = 0;
+
+          product.items = product.items.map((item: any) => {
+            const basePrice = Number(item.weight || 0) * goldPrice;
+            const discountPercent = item.discountPercent || 0;
+
+            const wage = (basePrice * product.wages) / 100;
+            const priceWithWage = basePrice + wage;
+
+            const discountAmount = (priceWithWage * discountPercent) / 100;
+            const priceAfterDiscount = priceWithWage - discountAmount;
+
+            item.price = priceWithWage;
+            item.priceAfterDiscount = priceAfterDiscount;
+
+            totalPrice += priceAfterDiscount;
+            return item;
+          });
+
+          product.price = totalPrice;
+          discountedProducts.push(product);
+        }
+      }
+
+      const total = discountedProducts.length;
+      const paginatedProducts = discountedProducts.slice(skip, skip + limit);
+
+      return {
+        message: '',
+        statusCode: 200,
+        data: paginatedProducts,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        message: 'مشکل داخلی سیستم',
+        statusCode: 500,
+        error: 'مشکل داخلی سیستم',
+      };
+    }
+  } 
+
+  async filterProductsByAttributes(query: ProductFilterDto) {
+    try {
+      const limit = Number(query.limit) || 12;
+      const page = Number(query.page) || 0;
+      const skip = page * limit;
+      const {
+        minPrice = 0,
+        maxPrice = 0,
+        color,
+        size,
+        minWeight = 0,
+        maxWeight = 0,
+      } = query;
+
+      const products = await this.productModel
+        .find()
+        .populate('items')
+        .populate('firstCategory')
+        .populate('midCategory')
+        .populate('lastCategory');
+
+      const goldPrice = await this.goldPriceService.getGoldPrice();
+
+      const filteredProducts = products.filter((product: any) => {
+        let totalPrice = 0;
+        let hasMatchingItem = false;
+
+        for (const item of product.item) {
+          const itemWeight = Number(item.weight || 0);
+          const basePrice = itemWeight * goldPrice;
+          const wageAmount = (basePrice * product.wages) / 100;
+          const finalPrice = basePrice + wageAmount;
+
+          const inPriceRange = finalPrice >= minPrice && finalPrice <= maxPrice;
+          const inWeightRange =
+            itemWeight >= minWeight && itemWeight <= maxWeight;
+          const matchesColor = item.color === color;
+          const matchesSize = item.size === size;
+          const isMatch =
+            inPriceRange && inWeightRange && matchesColor && matchesSize;
+
+          if (isMatch) {
+            hasMatchingItem = true;
+            totalPrice += finalPrice;
+          }
+
+          return hasMatchingItem;
+        }
+
+        const total = filteredProducts.length;
+        const paginatedProducts = filteredProducts.slice(skip, skip + limit);
+
+        return {
+          message: 'فیلتر با موفقیت انجام شد',
+          statusCode: 200,
+          data: paginatedProducts,
+          pagination: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+          },
+        };
+      });
+    } catch (error) {
+      return {
+        message: 'internal server error',
+        statusCode: 500,
+        data: null,
+      };
+    }
   }
 }

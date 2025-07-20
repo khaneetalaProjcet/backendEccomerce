@@ -34,7 +34,8 @@ export class UpdateProductDto {
   @ApiProperty({ example: '60f7a1b3b5d4b32f884d8a5e', description: 'ID of the product category' })
   @IsMongoId()
   lastCategory?: string;
-  
 
+
+  
 
 }
