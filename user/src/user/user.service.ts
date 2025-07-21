@@ -308,7 +308,7 @@ export class UserService {
       message: '',
       statusCode: 200,
       data: user.adresses,
-    };
+    };  
   }
 
   async getSpecificAddress(req: any, res: any, adressId: string) {

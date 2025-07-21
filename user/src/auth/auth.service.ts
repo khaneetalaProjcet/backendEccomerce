@@ -86,10 +86,14 @@ async sendOtp(@Req() req: any, @Res() res: any, body: sendOtpDto) {
 
       const phoneNumber = body.phoneNumber;
 
+      
+
       let findedOtp = await this.redisService.get(`otp-${body.phoneNumber}`);
 
+      console.log(findedOtp,"///// findotp");
+      
+
       findedOtp = JSON.parse(findedOtp);
-      console.log(findedOtp);
       const date = new Date().getTime();
       if (!findedOtp) {
         return {
@@ -97,7 +101,7 @@ async sendOtp(@Req() req: any, @Res() res: any, body: sendOtpDto) {
           statusCode: 400,
           error: 'شماره تلفن پیدا نشد',
         };
-      }
+      } 
       console.log('date', date - findedOtp.date);
 
       if (date - findedOtp.date > 120000) {
