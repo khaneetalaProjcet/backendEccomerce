@@ -11,6 +11,7 @@ import {
 } from 'src/product/entities/productItems.entity';
 import { Product, ProductDocumnet } from 'src/product/entities/product.entity';
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
+import { log } from 'winston';
 
 @Injectable()
 export class CartService {
@@ -120,6 +121,8 @@ export class CartService {
       let product = await this.productModel.findOne({
         items: { $in: item._id },
       });
+
+
       console.log('22222', product);
       if (!product) {
         return {
@@ -149,9 +152,15 @@ export class CartService {
         };
       }
 
+      // console.log(addCart , "////////");
+      
+
       const productIndex = addCart.products.findIndex(
         (p) => p.product.toString() === item._id.toString(),
       );
+
+      console.log(productIndex,"////// product index");
+      
 
       if (productIndex === -1) {
         return {
