@@ -154,7 +154,7 @@ export class WalletController {
     @Res() res: any,
     @Body() body: any,
   ) {
-    return this.walletService.redirectFromGateway(body);
+    return this.walletService.secondRedirectFromGateway(body);
   }
 
   @Get('/goldboxInvoices')
