@@ -45,7 +45,6 @@ export class AppService {
     };
 
     try {
-      
       const response = await fetch(
         'https://sep.shaparak.ir/onlinepg/onlinepg',
         {
