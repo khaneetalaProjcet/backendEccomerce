@@ -40,7 +40,7 @@ export class AppService {
       TerminalId: process.env.SEP_TERMINAL_ID,
       Amount: 10000,
       ResNum: await this.generator(),
-      RedirectUrl: 'https://ecommerce.khaneetala.ir/api/redirect',
+      RedirectUrl: 'https://ecommerce.khaneetala.ir/v1/mainw/wallet/redirect',
       CellNumber: '09229055682',
     };
 
@@ -114,7 +114,7 @@ export class AppService {
       TerminalId: process.env.SEP_TERMINAL_ID,
       Amount: 10000,
       ResNum: await this.generator(),
-      RedirectUrl: 'https://ecommerce.khaneetala.ir/api/paytwo/redirect',
+      RedirectUrl: 'https://ecommerce.khaneetala.ir/test/redirect',
       CellNumber: '09229055682',
     };
 
@@ -128,7 +128,7 @@ export class AppService {
           headers: { 'Content-Type': 'application/json' },
         },
       );
-
+      
       const result = await response.json();
 
       if (result.status === 1 && result.token) {

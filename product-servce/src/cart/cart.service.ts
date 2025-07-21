@@ -92,11 +92,14 @@ export class CartService {
       }
 
       await addCart.save();
-
+      let secondAdd = await this.cartModel
+        .findOne({ user: userid })
+        .populate('products.product')
+        .populate('products.mainProduct');
       return {
         message: 'موفق',
         statusCode: 200,
-        data: addCart,
+        data: secondAdd,
       };
     } catch (error) {
       console.log('error occured >>> ', error);
@@ -109,6 +112,7 @@ export class CartService {
   }
 
   async updateCart(userId: string, body: UpdateItemCount) {
+    console.log('its hereeeeee' , body)
     try {
       let item = await this.productItemsModel.findById(body.item);
       if (!item) {
@@ -144,6 +148,9 @@ export class CartService {
         .findOne({ user: userId })
         .populate('products.product')
         .populate('products.mainProduct');
+
+      console.log('cart founded >>>> ' , addCart)
+      
       if (!addCart) {
         return {
           message: '',
@@ -156,7 +163,7 @@ export class CartService {
       
 
       const productIndex = addCart.products.findIndex(
-        (p) => p.product.toString() === item._id.toString(),
+        (p) => p.product._id.toString() === item._id.toString(),
       );
 
       console.log(productIndex,"////// product index");
@@ -186,7 +193,7 @@ export class CartService {
       addCart.count = totalCount;
 
       await addCart.save();
-
+      console.log('acrt updated')
       return {
         message: 'سبد خرید بروزرسانی شد',
         statusCode: 200,
