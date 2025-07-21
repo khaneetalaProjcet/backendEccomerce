@@ -277,7 +277,7 @@ export class PaymentService {
       time: new Date().toLocaleString('fa-IR').split(',')[1],
       state: 0,
     })
-
+    console.log('after creation gold box invoice' , goldBoxInvoice)
     return this.appService.requestPaymentForPayment2(body)
     
   }
