@@ -188,6 +188,6 @@ export class ProductController {
     type: [Product],
   })
   recommending(@Query() query: productListQueryDto) {
-    return this.productService.findAll(query);
+    return this.productService.recommandation(query);
   }
 }
