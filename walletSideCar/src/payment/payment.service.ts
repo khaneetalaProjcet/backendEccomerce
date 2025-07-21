@@ -278,7 +278,7 @@ export class PaymentService {
     })
 
     console.log('after creation the fucking goldBox invoice' , goldBoxInvoice)
-
+    
     return this.appService.requestPaymentForPayment2(body)
     
   }

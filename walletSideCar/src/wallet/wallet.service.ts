@@ -578,6 +578,9 @@ async findWalletInvoice(query: any) {
         console.log('goldBoxInvoice was not exists')
         page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا معتبر')
       }
+
+      console.log('after getting goldBox invoice' , goldBoxInvoice)
+
       if (!walletInvoice) {              // check for existing wallet invoice
         console.log('wallet invoice not exits')
         page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا معتبر')
