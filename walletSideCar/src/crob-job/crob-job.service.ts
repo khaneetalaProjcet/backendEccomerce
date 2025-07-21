@@ -21,6 +21,10 @@ export class CrobJobService {
             {state : 1}
         ]})
 
+        let all = await this.goldInvoiceModel.find()
+        console.log('all issss' , all)
+
+
         console.log('pendings list is>>>>>' , pendings)
     }
 
