@@ -11,14 +11,15 @@ export class CrobJobService {
 
     constructor(@InjectModel(goldInvoice.name) private goldInvoiceModel : Model<goldInvoiceInterface>){}
 
-    
+
     @Interval('goldBox', 10000)
     async handleCronEveryMinute() {
 
-        let pendings = await this.goldInvoiceModel.find({
-            status : 'pending',
-            state : 1,
-        })
+        let pendings = await this.goldInvoiceModel.find({$and:[{ status : 'pending',
+            }
+            ,
+            {state : 1}
+        ]})
 
         console.log('pendings list is>>>>>' , pendings)
     }
