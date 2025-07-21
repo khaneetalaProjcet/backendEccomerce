@@ -2,10 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 
-
-
 // export type UserDocument = User & Document;
-
 
 export interface UserDocument extends Document {
   _id: string;
@@ -15,24 +12,22 @@ export interface UserDocument extends Document {
   email: string;
   password: string;
   pictureProfile: string;
-  nationalCode: string
-  birthDate:string
-  authStatus: number   //? 0 just init - 1 compelteProfile - 2 exist in old service
+  nationalCode: string;
+  birthDate: string;
+  authStatus: number; //? 0 just init - 1 compelteProfile - 2 exist in old service
   isActive: boolean;
   adresses: {
-    _id: string
-    adress: string,
-    postCode: string,
-    name: string,
-    plate: number,
-    unit: number
-    city: string,
-    province:string
-  }[]
-  identityStatus:number
+    _id: string;
+    adress: string;
+    postCode: string;
+    name: string;
+    plate: number;
+    unit: number;
+    city: string;
+    province: string;
+  }[];
+  identityStatus: number;
 }
-
-
 
 @Schema({ timestamps: true })
 export class User2 {
@@ -52,7 +47,7 @@ export class User2 {
   email: string;
 
   @Prop({ type: mongoose.Schema.Types.String })
-  fatherName: string
+  fatherName: string;
 
   @Prop({ type: mongoose.Schema.Types.String })
   password: string;
@@ -61,30 +56,42 @@ export class User2 {
   pictureProfile: string;
 
   @Prop({ type: mongoose.Schema.Types.String })
-  nationalCode: string
+  nationalCode: string;
 
   @Prop({ type: mongoose.Schema.Types.String })
-  birthDate:string
+  birthDate: string;
 
-
-  @Prop({ type: [{ adress: { type: String }, postCode: { type: String }, name: { type: String }, plate: { type: Number }, unit: { type: Number } }] })
+  @Prop({
+    type: [
+      {
+        adress: { type: String },
+        postCode: { type: String },
+        name: { type: String },
+        plate: { type: Number },
+        unit: { type: Number },
+        province: { type: String },
+        city: { type: String },
+      },
+    ],
+  })
   adresses: {
-    adress: string,
-    postCode: string,
-    name: string,
-    plate: number,
-    unit: number
-  }[]
+    adress: string;
+    postCode: string;
+    name: string;
+    plate: number;
+    unit: number;
+    city: string;
+    province: string;
+  }[];
 
   @Prop({ type: mongoose.Schema.Types.Number })
-  authStatus: number   //? 1 just init - 2 compelteProfile - 3 exist in old service 
- 
-  @Prop({type:mongoose.Schema.Types.Number , default : 0 }) //? 0 false   1->true  2-->pending
-  identityStatus:number
+  authStatus: number; //? 1 just init - 2 compelteProfile - 3 exist in old service
+
+  @Prop({ type: mongoose.Schema.Types.Number, default: 0 }) //? 0 false   1->true  2-->pending
+  identityStatus: number;
 
   @Prop({ default: true })
   isActive: boolean;
-
 }
 
 export const UserSchema2 = SchemaFactory.createForClass(User2);

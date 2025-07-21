@@ -40,6 +40,7 @@ export class CartController {
     @Body(new ValidationPipe()) body: UpdateItemCount,
   ) {
     let userId = req.user.userId;
+    console.log(userId,"///// userId")
     return this.cartService.updateCart(userId, body);
   }
 
