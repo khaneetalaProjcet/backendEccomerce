@@ -105,8 +105,6 @@ export class AppService {
   }
 
 
-
-  
   async requestPaymentForPayment2(order: any) {
     const data = {
       action: 'token',

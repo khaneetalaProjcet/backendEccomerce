@@ -11,7 +11,7 @@ export class CrobJobService {
 
     constructor(@InjectModel(goldInvoice.name) private goldInvoiceModel : Model<goldInvoiceInterface>){}
 
-
+    
     @Interval('goldBox', 10000)
     async handleCronEveryMinute() {
 

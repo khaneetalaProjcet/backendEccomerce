@@ -611,7 +611,7 @@ async findWalletInvoice(query: any) {
             walletInvoice.state = 2        // when the order did not updated after approve the transAction
           }
           goldBoxInvoice.state = 1;
-          console.log('response of order updated', orderUpdated)
+          console.log('response of order updated', goldBoxInvoice)
           await walletInvoice.save();
           await goldBoxInvoice.save();
           page = await this.successPage('https://ecommerce.khaneetala.ir/')           // generate the failed page
