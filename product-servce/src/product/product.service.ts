@@ -460,15 +460,15 @@ export class ProductService {
 async getProductBasedOnCategory(categoryId: string, query: ProductFilterDto) {
   try {
     const limit = Number(query.limit) || 12;
-    const page =  Number(query.page) || 1;
+    const page =  (!isNaN(Number(query.page)) && Number(query.page)) || 1;
     const skip = (page - 1) * limit;
 
 
-    const minPrice =  query.minPrice ? Number(query.minPrice) : 0;
-    const maxPrice = query.maxPrice ? Number(query.maxPrice) : 0;
-    const minWeight = query.minWeight ? Number(query.minWeight) : 0;
-    const maxWeight = query.maxWeight ? Number(query.maxWeight) : 0;
-    const color = query.color ? query.color.trim() : null;
+    const minPrice = (!isNaN(Number(query.minPrice)) && Number(query.minPrice)) ? Number(query.minPrice) : 0;
+    const maxPrice = (!isNaN(Number(query.maxPrice)) && Number(query.maxPrice)) ? Number(query.maxPrice) : 0;
+    const minWeight = (!isNaN(Number(query.minWeight)) && Number(query.minWeight)) ? Number(query.minWeight) : 0;
+    const maxWeight = (!isNaN(Number(query.maxWeight)) && Number(query.maxWeight)) ? Number(query.maxWeight) : 0;
+    const color = (query.color && query.color !== 'undefined') ? query.color.trim() : null;
 
 
     console.log(query.minPrice ,typeof(query.minPrice),"queryyyyyyyyttt");
