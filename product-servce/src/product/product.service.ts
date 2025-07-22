@@ -460,11 +460,11 @@ export class ProductService {
 async getProductBasedOnCategory(categoryId: string, query: ProductFilterDto) {
   try {
     const limit = Number(query.limit) || 12;
-    const page = Number(query.page) || 1;
+    const page =  Number(query.page) || 1;
     const skip = (page - 1) * limit;
 
 
-    const minPrice = query.minPrice ? Number(query.minPrice) : 0;
+    const minPrice =  query.minPrice ? Number(query.minPrice) : 0;
     const maxPrice = query.maxPrice ? Number(query.maxPrice) : 0;
     const minWeight = query.minWeight ? Number(query.minWeight) : 0;
     const maxWeight = query.maxWeight ? Number(query.maxWeight) : 0;
