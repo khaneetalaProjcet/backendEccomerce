@@ -459,18 +459,20 @@ export class ProductService {
 
   async getProductBasedOnCategory(categoryId: string, query: ProductFilterDto) {
     try {
+    
+
       const limit = Number(query.limit) || 12;
       const page = Number(query.page) || 1;
       const skip = (page - 1) * limit;
 
-      const {
-        minPrice = 0,
-        maxPrice = 0,
-        color,
-        size,
-        minWeight = 0,
-        maxWeight = 0,
-      } = query;
+      const minPrice = query.minPrice || 0;
+      const maxPrice = query.maxPrice || 0;
+      const minWeight = query.minWeight || 0;
+      const maxWeight = query.maxWeight || 0;
+
+
+      const color = query.color || null;
+      const size = query.size || null;
 
       const category = await this.categoryModel.findById(categoryId).populate({
         path: 'parent',
@@ -513,15 +515,14 @@ export class ProductService {
 
           item.price = finalPrice;
         }
-
       }
 
       const filteredProducts = products.filter((product: any) => {
         let hasMatchingItem = false;
 
-        for (const item of product.items ) {
+        for (const item of product.items) {
           const itemWeight = Number(item.weight);
-          const finalPrice = item.price ;
+          const finalPrice = item.price;
 
           console.log(finalPrice, '/////');
 
