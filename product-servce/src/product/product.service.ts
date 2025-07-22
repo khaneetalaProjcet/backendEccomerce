@@ -471,7 +471,11 @@ async getProductBasedOnCategory(categoryId: string, query: ProductFilterDto) {
     const color = query.color ? query.color.trim() : null;
 
 
-    console.log(query,"queryyyyyyyyttt");
+    console.log(query.minPrice ,typeof(query.minPrice),"queryyyyyyyyttt");
+    console.log(query.maxPrice,typeof(query.maxPrice),"queryyyyyyyyttt");
+    console.log(query.minWeight,typeof(query.minWeight),"queryyyyyyyyttt");
+    console.log(query.maxWeight,typeof(query.maxWeight),"queryyyyyyyyttt");
+    console.log(query.color,typeof(query.color) , "queryyyyyyyyttt");
     
 
     const category = await this.categoryModel.findById(categoryId).populate({
