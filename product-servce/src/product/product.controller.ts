@@ -48,7 +48,7 @@ export class ProductController {
     description: 'List of products',
     type: [Product],
   })
-  findAll(@Query() query: productListQueryDto) {
+  findAll(@Query() query: ProductFilterDto) {
     return this.productService.findAll(query);
   }
 
@@ -133,7 +133,7 @@ export class ProductController {
   async getProductBasedOnCategory(
     @Req() req: any,
     @Res() res: any,
-    @Query() query: productListQueryDto,
+    @Query() query: ProductFilterDto,
     @Param('categoryId') categoryId: string,
   ) {
     return this.productService.getProductBasedOnCategory(categoryId, query);
@@ -150,6 +150,18 @@ export class ProductController {
     return this.productService.filterProductsByPrice(query);
   }
 
+  @Get('/filterByAttributes')
+  @ApiOperation({ summary: 'Get products based on attributes' })
+  @ApiBody({ type: ProductFilterDto })
+  @ApiResponse({
+    status: 200,
+    description: 'List of products base on price weight color and size ',
+    type: [Product],
+  })
+  filteredProduct(@Query() query: ProductFilterDto) {
+    return this.productService.filterProductsByAttributes(query);
+  }
+
   @Get('/topSelling')
   @ApiOperation({ summary: 'Get top selling products' })
   @ApiResponse({
@@ -157,9 +169,11 @@ export class ProductController {
     description: 'List of top selling products',
     type: [Product],
   })
-  filterTopSelling(@Query() query: productListQueryDto) {
+  filterTopSelling(@Query() query: ProductFilterDto) {
     return this.productService.findAll(query);
   }
+
+
 
   // @Patch('/discount/:id')
   // @ApiOperation({ summary: 'add discount percent to the product' })

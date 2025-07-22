@@ -67,58 +67,108 @@ export class ProductService {
     }
   }
 
-  async findAll(query: productListQueryDto) {
-    //  const array= await this.productItemModel.find()
-    // for (let index = 0; index < array.length; index++) {
-    //   const element = array[index];
-    //   await this.productItemModel.findByIdAndDelete(element._id)
-    // }
-
+  async findAll(query: ProductFilterDto) {
     try {
       const limit = Number(query.limit) || 12;
       const page = Number(query.page) || 0;
       const skip = page * limit;
 
-      const [products, total] = await Promise.all([
-        this.productModel
-          .find()
-          .populate('items')
-          .populate('firstCategory')
-          .populate('midCategory')
-          .populate('lastCategory')
-          .skip(skip)
-          .limit(limit),
-        this.productModel.countDocuments(),
-      ]);
+      const {
+        minPrice = 0,
+        maxPrice = 0,
+        color,
+        size,
+        minWeight = 0,
+        maxWeight = 0,
+      } = query;
+
+      const hasAnyFilter =
+        !color ||
+        !size ||
+        minPrice > 0 ||
+        maxPrice > 0 ||
+        minWeight > 0 ||
+        maxWeight > 0;
+
+      const products = await this.productModel
+        .find()
+        .populate('items')
+        .populate('firstCategory')
+        .populate('midCategory')
+        .populate('lastCategory');
 
       const goldPrice = await this.goldPriceService.getGoldPrice();
 
-      products.map((product: any) => {
-        let price = 0;
+      const filteredProducts = products.filter((product: any) => {
+        let hasMatchingItem = false;
 
-        for (const item of product.items) {
-          price += Number(item.weight || 0) * goldPrice;
+        for (const product of products) {
+          for (const item of product.items) {
+            const itemWeight = Number(item.weight || 0);
+            const basePrice = itemWeight * goldPrice;
+            const wageAmount = (basePrice * product.wages) / 100;
+            const finalPrice = basePrice + wageAmount;
+
+            item.price = finalPrice;
+          }
+
+          let total = 0;
+          for (const item of product.items) {
+            total += item.price || 0;
+          }
+          product.price = total;
         }
 
-        const wageAmount = (price * product.wages) / 100;
-        const finalPrice = price + wageAmount;
+        for (const item of product.items) {
+          const itemWeight = Number(item.weight || 0);
+          const basePrice = itemWeight * goldPrice;
+          const wageAmount = (basePrice * product.wages) / 100;
+          const finalPrice = basePrice + wageAmount;
 
-        const res = (product.price = finalPrice);
+          item.price = finalPrice;
 
-        return res;
+          const inPriceRange =
+            minPrice === 0 && maxPrice === 0
+              ? true
+              : finalPrice >= minPrice && finalPrice <= maxPrice;
+
+          const inWeightRange =
+            minWeight === 0 && maxWeight === 0
+              ? true
+              : itemWeight >= minWeight && itemWeight <= maxWeight;
+
+          const matchesColor = !color || item.color === color;
+          const matchesSize = !size || item.size === size;
+
+          const isMatch =
+            !hasAnyFilter ||
+            (inPriceRange && inWeightRange && matchesColor && matchesSize);
+
+          if (isMatch) {
+            hasMatchingItem = true;
+            break;
+          }
+        }
+
+        if (hasMatchingItem || !hasAnyFilter) {
+          let total = 0;
+          for (const item of product.items) {
+            total += Number(item.weight || 0) * goldPrice;
+          }
+          const wage = (total * product.wages) / 100;
+          product.price = total + wage;
+        }
+
+        return hasMatchingItem || !hasAnyFilter;
       });
 
-      // const array= products
-      // for (let index = 0; index < array.length; index++) {
-      //   const element = array[index];
-      //   await this.productModel.findByIdAndDelete(element._id)
-
-      // }
+      const total = filteredProducts.length;
+      const paginatedProducts = filteredProducts.slice(skip, skip + limit);
 
       return {
-        message: '',
+        message: 'دریافت محصولات با موفقیت انجام شد',
         statusCode: 200,
-        data: products,
+        data: paginatedProducts,
         pagination: {
           total,
           page,
@@ -128,14 +178,14 @@ export class ProductService {
       };
     } catch (error) {
       console.log(error);
-
       return {
-        message: 'مشکل داخلی سیسنم',
+        message: 'مشکل داخلی سیستم',
         statusCode: 500,
-        error: 'مشکل داخلی سیسنم',
+        error: 'مشکل داخلی سیستم',
       };
     }
   }
+
   async findOne(id: string) {
     try {
       const product = await this.productModel
@@ -407,14 +457,20 @@ export class ProductService {
     }
   }
 
-  async getProductBasedOnCategory(
-    categoryId: string,
-    query: productListQueryDto,
-  ) {
+  async getProductBasedOnCategory(categoryId: string, query: ProductFilterDto) {
     try {
       const limit = Number(query.limit) || 12;
-      const page = Number(query.page) || 0;
+      const page = Number(query.page) || 1;
       const skip = (page - 1) * limit;
+
+      const {
+        minPrice = 0,
+        maxPrice = 0,
+        color,
+        size,
+        minWeight = 0,
+        maxWeight = 0,
+      } = query;
 
       const category = await this.categoryModel.findById(categoryId).populate({
         path: 'parent',
@@ -437,40 +493,79 @@ export class ProductService {
         ],
       };
 
-      const [products, total] = await Promise.all([
-        this.productModel
-          .find(filter)
-          .populate('items')
-          .populate('firstCategory')
-          .populate('midCategory')
-          .populate('lastCategory')
-          .skip(skip)
-          .limit(limit),
-        this.productModel.countDocuments(filter),
-      ]);
+      const products = await this.productModel
+        .find(filter)
+        .populate('items')
+        .populate('firstCategory')
+        .populate('midCategory')
+        .populate('lastCategory');
 
       const goldPrice = await this.goldPriceService.getGoldPrice();
 
-      products.map((product: any) => {
-        let price = 0;
-
+      for (const product of products) {
         for (const item of product.items) {
-          price += Number(item.weight || 0) * goldPrice;
+          const itemWeight = Number(item.weight || 0);
+          const basePrice = itemWeight * goldPrice;
+          const wageAmount = (basePrice * product.wages) / 100;
+          const finalPrice = basePrice + wageAmount;
+
+          console.log(product, 'product is here ');
+
+          item.price = finalPrice;
         }
 
-        const wageAmount = (price * product.wages) / 100;
-        const finalPrice = price + wageAmount;
+      }
 
-        const res = (product.price = finalPrice);
+      const filteredProducts = products.filter((product: any) => {
+        let hasMatchingItem = false;
 
-        return res;
+        for (const item of product.items ) {
+          const itemWeight = Number(item.weight);
+          const finalPrice = item.price ;
+
+          console.log(finalPrice, '/////');
+
+          const inPriceRange =
+            minPrice === 0 && maxPrice === 0
+              ? true
+              : finalPrice >= minPrice && finalPrice <= maxPrice;
+
+          const inWeightRange =
+            minWeight === 0 && maxWeight === 0
+              ? true
+              : itemWeight >= minWeight && itemWeight <= maxWeight;
+
+          const matchesColor = !color || item.color === color;
+          const matchesSize = !size || item.size === size;
+
+          const isMatch =
+            inPriceRange && inWeightRange && matchesColor && matchesSize;
+
+          if (isMatch) {
+            hasMatchingItem = true;
+            break;
+          }
+        }
+
+        return (
+          hasMatchingItem ||
+          (!color &&
+            !size &&
+            minPrice === 0 &&
+            maxPrice === 0 &&
+            minWeight === 0 &&
+            maxWeight === 0)
+        );
       });
+
+      const total = filteredProducts.length;
+      const paginatedProducts = filteredProducts.slice(skip, skip + limit);
 
       return {
         message: 'موفق',
         statusCode: 200,
         data: {
-          products,
+          products: paginatedProducts,
           category,
           pagination: {
             total,
@@ -628,13 +723,14 @@ export class ProductService {
         error: 'مشکل داخلی سیستم',
       };
     }
-  } 
+  }
 
   async filterProductsByAttributes(query: ProductFilterDto) {
     try {
       const limit = Number(query.limit) || 12;
       const page = Number(query.page) || 0;
       const skip = page * limit;
+
       const {
         minPrice = 0,
         maxPrice = 0,
@@ -654,10 +750,9 @@ export class ProductService {
       const goldPrice = await this.goldPriceService.getGoldPrice();
 
       const filteredProducts = products.filter((product: any) => {
-        let totalPrice = 0;
         let hasMatchingItem = false;
 
-        for (const item of product.item) {
+        for (const item of product.items) {
           const itemWeight = Number(item.weight || 0);
           const basePrice = itemWeight * goldPrice;
           const wageAmount = (basePrice * product.wages) / 100;
@@ -666,34 +761,35 @@ export class ProductService {
           const inPriceRange = finalPrice >= minPrice && finalPrice <= maxPrice;
           const inWeightRange =
             itemWeight >= minWeight && itemWeight <= maxWeight;
-          const matchesColor = item.color === color;
-          const matchesSize = item.size === size;
+          const matchesColor = !color || item.color === color;
+          const matchesSize = !size || item.size === size;
+
           const isMatch =
             inPriceRange && inWeightRange && matchesColor && matchesSize;
 
           if (isMatch) {
             hasMatchingItem = true;
-            totalPrice += finalPrice;
+            break;
           }
-
-          return hasMatchingItem;
         }
 
-        const total = filteredProducts.length;
-        const paginatedProducts = filteredProducts.slice(skip, skip + limit);
-
-        return {
-          message: 'فیلتر با موفقیت انجام شد',
-          statusCode: 200,
-          data: paginatedProducts,
-          pagination: {
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit),
-          },
-        };
+        return hasMatchingItem;
       });
+
+      const total = filteredProducts.length;
+      const paginatedProducts = filteredProducts.slice(skip, skip + limit);
+
+      return {
+        message: 'فیلتر با موفقیت انجام شد',
+        statusCode: 200,
+        data: paginatedProducts,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      };
     } catch (error) {
       return {
         message: 'internal server error',

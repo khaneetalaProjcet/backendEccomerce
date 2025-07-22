@@ -4,7 +4,7 @@ import { IsOptional } from 'class-validator';
 export class ProductFilterDto {
   minPrice?: number;
   maxPrice?: number;
-  color: number;
+  color: string;
   size: number;
   minWeight: number;
   maxWeight: number;

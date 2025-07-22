@@ -26,13 +26,6 @@ export class ProductItems {
 
   @Prop()
   price: number;
-
-  @Prop({ type: Number, default: 0 })
-  discountPercent: number;
-
-  @Prop({ type: Number, default: 0 })
-  priceAfterDiscount: number;
 }
 
 export const ProductItemSchema = SchemaFactory.createForClass(ProductItems);
-
