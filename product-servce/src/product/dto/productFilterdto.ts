@@ -2,16 +2,16 @@ import { Transform } from 'class-transformer';
 import { IsOptional } from 'class-validator';
 
 export class ProductFilterDto {
-  minPrice?: number;
-  maxPrice?: number;
-  color: string;
-  size: number;
-  minWeight: number;
-  maxWeight: number;
+  minPrice?: number | undefined;
+  maxPrice?: number |undefined;
+  color: string | undefined;
+  size: number | undefined;
+  minWeight: number | undefined;
+  maxWeight: number | undefined;
 
   @Transform(({ value }) => parseInt(value))
   @IsOptional()
-  page: number;
+  page: number | undefined;
 
   @Transform(({ value }) => {
     const x = parseInt(value);
@@ -20,5 +20,5 @@ export class ProductFilterDto {
     return x;
   })
   @IsOptional()
-  limit: number;
+  limit: number | undefined;
 }
