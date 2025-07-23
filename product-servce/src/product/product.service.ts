@@ -73,18 +73,36 @@ export class ProductService {
       const page = Number(query.page) || 0;
       const skip = page * limit;
 
-      const {
-        minPrice = 0,
-        maxPrice = 0,
-        color,
-        size,
-        minWeight = 0,
-        maxWeight = 0,
-      } = query;
+      const minPrice =
+        !isNaN(Number(query.minPrice)) && Number(query.minPrice)
+          ? Number(query.minPrice)
+          : 0;
+      const maxPrice =
+        !isNaN(Number(query.maxPrice)) && Number(query.maxPrice)
+          ? Number(query.maxPrice)
+          : 0;
+      const minWeight =
+        !isNaN(Number(query.minWeight)) && Number(query.minWeight)
+          ? Number(query.minWeight)
+          : 0;
+      const maxWeight =
+        !isNaN(Number(query.maxWeight)) && Number(query.maxWeight)
+          ? Number(query.maxWeight)
+          : 0;
+      const color =
+        query.color && query.color !== 'undefined' ? query.color.trim() : null;
+
+      // const {
+      //   minPrice = 0,
+      //   maxPrice = 0,
+      //   color,
+      //   size,
+      //   minWeight = 0,
+      //   maxWeight = 0,
+      // } = query;
 
       const hasAnyFilter =
         !color ||
-        !size ||
         minPrice > 0 ||
         maxPrice > 0 ||
         minWeight > 0 ||
@@ -138,11 +156,10 @@ export class ProductService {
               : itemWeight >= minWeight && itemWeight <= maxWeight;
 
           const matchesColor = !color || item.color === color;
-          const matchesSize = !size || item.size === size;
 
           const isMatch =
             !hasAnyFilter ||
-            (inPriceRange && inWeightRange && matchesColor && matchesSize);
+            (inPriceRange && inWeightRange && matchesColor);
 
           if (isMatch) {
             hasMatchingItem = true;
@@ -457,26 +474,17 @@ export class ProductService {
     }
   }
 
-async getProductBasedOnCategory(categoryId: string, query: ProductFilterDto) {
+ async getProductBasedOnCategory(categoryId: string, query: ProductFilterDto) {
   try {
     const limit = Number(query.limit) || 12;
-    const page =  (!isNaN(Number(query.page)) && Number(query.page)) || 1;
+    const page = (!isNaN(Number(query.page)) && Number(query.page)) || 1;
     const skip = (page - 1) * limit;
 
-
-    const minPrice = (!isNaN(Number(query.minPrice)) && Number(query.minPrice)) ? Number(query.minPrice) : 0;
-    const maxPrice = (!isNaN(Number(query.maxPrice)) && Number(query.maxPrice)) ? Number(query.maxPrice) : 0;
-    const minWeight = (!isNaN(Number(query.minWeight)) && Number(query.minWeight)) ? Number(query.minWeight) : 0;
-    const maxWeight = (!isNaN(Number(query.maxWeight)) && Number(query.maxWeight)) ? Number(query.maxWeight) : 0;
-    const color = (query.color && query.color !== 'undefined') ? query.color.trim() : null;
-
-
-    console.log(query.minPrice ,typeof(query.minPrice),"queryyyyyyyyttt");
-    console.log(query.maxPrice,typeof(query.maxPrice),"queryyyyyyyyttt");
-    console.log(query.minWeight,typeof(query.minWeight),"queryyyyyyyyttt");
-    console.log(query.maxWeight,typeof(query.maxWeight),"queryyyyyyyyttt");
-    console.log(query.color,typeof(query.color) , "queryyyyyyyyttt");
-    
+    const minPrice = !isNaN(Number(query.minPrice)) ? Number(query.minPrice) : 0;
+    const maxPrice = !isNaN(Number(query.maxPrice)) ? Number(query.maxPrice) : 0;
+    const minWeight = !isNaN(Number(query.minWeight)) ? Number(query.minWeight) : 0;
+    const maxWeight = !isNaN(Number(query.maxWeight)) ? Number(query.maxWeight) : 0;
+    const color = query.color && query.color !== 'undefined' ? query.color.trim() : null;
 
     const category = await this.categoryModel.findById(categoryId).populate({
       path: 'parent',
@@ -518,6 +526,25 @@ async getProductBasedOnCategory(categoryId: string, query: ProductFilterDto) {
     }
 
     const filteredProducts = products
+      .filter((product: any) => {
+        return product.items.some((item: any) => {
+          const weight = Number(item.weight || 0);
+          const price = Number(item.price || 0);
+          const itemColor = item.color?.trim();
+
+          const inPriceRange =
+            (minPrice === 0 && maxPrice === 0) ||
+            (price >= minPrice && price <= maxPrice);
+
+          const inWeightRange =
+            (minWeight === 0 && maxWeight === 0) ||
+            (weight >= minWeight && weight <= maxWeight);
+
+          const matchesColor = !color || itemColor === color;
+
+          return inPriceRange && inWeightRange && matchesColor;
+        });
+      })
       .map((product: any) => {
         const filteredItems = product.items.filter((item: any) => {
           const weight = Number(item.weight || 0);
@@ -525,27 +552,23 @@ async getProductBasedOnCategory(categoryId: string, query: ProductFilterDto) {
           const itemColor = item.color?.trim();
 
           const inPriceRange =
-            (minPrice === 0 && maxPrice === 0) || (price >= minPrice && price <= maxPrice);
+            (minPrice === 0 && maxPrice === 0) ||
+            (price >= minPrice && price <= maxPrice);
 
           const inWeightRange =
-            (minWeight === 0 && maxWeight === 0) || (weight >= minWeight && weight <= maxWeight);
+            (minWeight === 0 && maxWeight === 0) ||
+            (weight >= minWeight && weight <= maxWeight);
 
           const matchesColor = !color || itemColor === color;
-
 
           return inPriceRange && inWeightRange && matchesColor;
         });
 
-        if (filteredItems.length > 0) {
-          return {
-            ...product.toObject ?? product,
-            items: filteredItems,
-          };
-        }
-
-        return null;
-      })
-      .filter((product) => product !== null);
+        return {
+          ...(product.toObject?.() ?? product),
+          items: filteredItems,
+        };
+      });
 
     const total = filteredProducts.length;
     const paginatedProducts = filteredProducts.slice(skip, skip + limit);
@@ -573,9 +596,6 @@ async getProductBasedOnCategory(categoryId: string, query: ProductFilterDto) {
     };
   }
 }
-
-
-
   async filterProductsByPrice(query: ProductFilterDto) {
     const { minPrice = 0, maxPrice = 0 } = query;
 
