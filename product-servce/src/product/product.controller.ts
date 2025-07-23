@@ -195,13 +195,13 @@ export class ProductController {
   // }
 
   @Get('/recommendations')
-  @ApiOperation({ summary: 'get recommending products' })
+  @ApiOperation({ summary: 'get recommending products'})
   @ApiResponse({
     status: 200,
     description: 'List of recommending products',
     type: [Product],
   })
-  recommending(@Query() query: productListQueryDto) {
-    return this.productService.recommandation(query);
+  recommending(@Query() query: ProductFilterDto) {
+    return this.productService.findAll(query);
   }
 }
