@@ -77,7 +77,9 @@ export class AdminService {
   }
 
   async findByPhoneNumber(phoneNumber: string) {
-    const admin = await  this.adminModel.findOne({ phoneNumber }).select('+password');
+    const admin = await this.adminModel
+      .findOne({ phoneNumber })
+      .select('+password');
     if (!admin) {
       return null;
     }
@@ -153,35 +155,42 @@ export class AdminService {
     }
   }
 
-
-  async getAdminAccess(adminId : string){
-    let admin : any = await this.adminModel.findById(adminId).populate('accessPoint')
-    if (!admin){
+  async getAdminAccess(adminId: string) {
+    let admin: any = await this.adminModel
+      .findById(adminId)
+      .populate('accessPoint');
+    if (!admin) {
       return {
-        statusCode : 400,
-        message : 'ادمین یافت نشد',
-        error:'ادمین یافت نشد'
-      }
+        statusCode: 400,
+        message: 'ادمین یافت نشد',
+        error: 'ادمین یافت نشد',
+      };
     }
-    let allAccess = await this.pageModel.find()
-    let access :any = []
-    for (let i of allAccess){
-      let data = JSON.parse(JSON.stringify(i.toObject()))
-      if (admin.accessPoint.includes(data._id.toString())){
-          data['access'] = true
-          access.push(data)
-      }else{
-        data['access'] = true
-        access.push(data)
+    let allAccess = await this.pageModel.find();
+    let access: any = [];
+    for (let i of allAccess) {
+      console.log(allAccess, '/////allll access');
+
+      let data = JSON.parse(JSON.stringify(i.toObject()));
+
+      console.log();
+
+      if (admin.accessPoint?.includes(data._id.toString())) {
+        console.log(admin.accessPoint, 'ppppoooint');
+
+        data['access'] = true;
+        access.push(data);
+      } else {
+        data['access'] = false;
+        access.push(data);
       }
     }
     return {
-      message : 'سطح دسترسی' ,
-      statusCode : 200,
-      data : access
-    }
+      message: 'سطح دسترسی',
+      statusCode: 200,
+      data: access,
+    };
   }
-
 
   async updateAdminAccess(adminId: string, pageIds: string[]) {
     const isLocked = await this.lockerService.check(
