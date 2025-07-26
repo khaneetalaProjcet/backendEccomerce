@@ -10,6 +10,7 @@ export interface ProductDocumnet extends Document {
   description: string;
   wages: number;
   count: number;
+  mainImage: {name : string , src : string};
   category: Types.ObjectId;
   suggestedProducts: any[];
   price: number;
@@ -26,8 +27,8 @@ export class Product {
   @Prop({ type: [{name : {type : String} , src : {type : String}}], default: [{name : '' , src : ''}] })
   images: {name : string , src : string}[];
 
-  @Prop({ default: '' })
-  mainImage: string;
+  @Prop({ default: {} })
+  mainImage: {name : string , src : string};
 
   @Prop({ default: '' })
   description: string;
