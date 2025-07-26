@@ -51,8 +51,8 @@ export class Product {
   @Prop({ type: [Types.ObjectId], ref: 'Product', default: [] })
   suggestedProducts: Types.ObjectId[];
 
-  @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
-  price: Types.ObjectId;
+  @Prop({type : Number , default : 0})
+  price: number;
 }
 
 // schema.pre('save', function(next) {
