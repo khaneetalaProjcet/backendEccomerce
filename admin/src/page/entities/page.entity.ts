@@ -7,7 +7,6 @@ export interface pageDocument extends Document {
   _id: string;
   persianName: string;
   englishName: string;
-  accessPoint: mongoose.Types.ObjectId[];
 }
 
 
@@ -19,7 +18,6 @@ export class Page {
 
   @Prop({ type: mongoose.Schema.Types.String })
   englishName: string;
-
 
 }
 

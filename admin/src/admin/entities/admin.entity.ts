@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
+import { Page } from 'src/page/entities/page.entity';
 
 export interface AdminDocument extends Document {
   _id: string;
@@ -43,7 +44,7 @@ export class Admin {
   @Prop({ default: true })
   isActive: boolean;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'page' })
+  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: Page.name , default:[]})
   accessPoint: mongoose.Types.ObjectId[];
 }
 
