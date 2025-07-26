@@ -26,7 +26,7 @@ export class ProductService {
     @InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocumnet>,
     @InjectModel(ProductItems.name) private productItemModel: Model<ProductItems>,
-    @InjectModel(Order.name) private orderModel: Model<Order>,
+    @InjectModel(Order.name) private orderModel: Model<OrderInterface>,
     private goldPriceService: goldPriceService,
     private interservice: InterserviceService,
   ) {}
