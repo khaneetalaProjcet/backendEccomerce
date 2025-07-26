@@ -45,8 +45,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('swagger', app, document);
 
-  app.connectMicroservice(kafkaConsumerConfig);
-  await app.startAllMicroservices();
+  // app.connectMicroservice(kafkaConsumerConfig);
+  // await app.startAllMicroservices();
 
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());

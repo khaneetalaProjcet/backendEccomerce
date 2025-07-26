@@ -8,11 +8,11 @@ import { InterserviceService } from '../interservice/interservice.service';
 import { JwtService } from '@nestjs/jwt';
 import { JwtStrategy } from 'src/jwt/jwt.strategy';
 import { JwtAdminStrategy } from 'src/jwt/admin-jwt.strategy';
-import { KafkaModule } from 'src/kafka/kafka.module'; // ✅
+// import { KafkaModule } from 'src/kafka/kafka.module'; // ✅
 
 @Module({
   imports: [
-    KafkaModule, 
+     
     MongooseModule.forFeature([{ name: 'userM', schema: UserSchema2 }]),
   ],
   controllers: [UserController],

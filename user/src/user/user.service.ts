@@ -526,6 +526,43 @@ export class UserService {
     }
   }
 
+
+
+  async findByIdByAdmin(userId: string) {
+    // const session: ClientSession = await this.userModel.db.startSession();
+    // session.startTransaction();
+    try {
+      const user = await this.userModel.findById(userId);
+      // const user = await this.userModel.findById(userId).session(session)
+      if (!user) {
+        return {
+          message: 'کاربر پیدا نشد',
+          statusCode: 400,
+          error: 'کاربر پیدا نشد',
+        };
+      }
+      // await session.commitTransaction();
+      return {
+        message: 'ثبت نام شما کامل شد',
+        statusCode: 200,
+        data: user,
+      };
+    } catch (error) {
+      console.log('error', error);
+      // await session.abortTransaction();
+      return {
+        message: 'مشکلی از سمت سرور به وجود آمده',
+        statusCode: 500,
+        error: 'خطای داخلی سیستم',
+      };
+    } finally {
+      console.log('its here for commig');
+      // session.endSession();
+    }
+  }
+
+
+
   create(createUserDto: CreateUserDto) {
     return 'This action adds a new user';
   }
