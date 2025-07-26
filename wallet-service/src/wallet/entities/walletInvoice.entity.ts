@@ -44,7 +44,7 @@ export class WalletInvoice {
   status: string;
 
   @Prop({ type: Number, default: 0 })
-  state: number;                          // 0 : init  2 : send to order for approve   3 : order updated
+  state: number;                          // 0 : init  2 : send to order for approve     : order updated
 
   // @Prop({ type: String, default: '' })
   // terminalId: string;
