@@ -48,8 +48,8 @@ async function bootstrap() {
 
 
   app.useGlobalInterceptors(new ResponseInterceptor());
-  // app.useGlobalFilters(new HttpExceptionFilter());
-  //  app.connectMicroservice(kafkaConsumerConfig);
+  app.useGlobalFilters(new HttpExceptionFilter());
+   app.connectMicroservice(kafkaConsumerConfig);
   //  await app.startAllMicroservices();
   
   await app.listen(process.env.PORT ?? 9010);
