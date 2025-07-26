@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { ProductItems } from './productItems.entity';
 
 export interface ProductDocumnet extends Document {
   _id: string;

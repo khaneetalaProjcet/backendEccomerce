@@ -17,7 +17,8 @@ import {
 import { productListQueryDto } from './dto/pagination.dto';
 import { ProductFilterDto } from './dto/productFilterdto';
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
-import { log } from 'winston';
+import { Order, OrderInterface } from '../order/entities/order.entity';
+import { InterserviceService } from 'src/interservice/interservice.service';
 
 @Injectable()
 export class ProductService {
@@ -25,8 +26,11 @@ export class ProductService {
     @InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocumnet>,
     @InjectModel(ProductItems.name)
+    @InjectModel(Order.name)
+    private orderModel: Model<OrderInterface>,
     private productItemModel: Model<ProductItemsDocment>,
     private goldPriceService: goldPriceService,
+    private interservice: InterserviceService,
   ) {}
   async create(createProductDto: CreateProductDto) {
     try {
@@ -67,101 +71,110 @@ export class ProductService {
     }
   }
 
- async findAll(query: ProductFilterDto) {
-  try {
-    const limit = Number(query.limit) || 12;
-    const page = (!isNaN(Number(query.page)) && Number(query.page)) || 1;
-    const skip = (page - 1) * limit;
+  async findAll(query: ProductFilterDto) {
+    try {
+      const limit = Number(query.limit) || 12;
+      const page = (!isNaN(Number(query.page)) && Number(query.page)) || 1;
+      const skip = (page - 1) * limit;
 
-    const minPrice = !isNaN(Number(query.minPrice)) ? Number(query.minPrice) : 0;
-    const maxPrice = !isNaN(Number(query.maxPrice)) ? Number(query.maxPrice) : 0;
-    const minWeight = !isNaN(Number(query.minWeight)) ? Number(query.minWeight) : 0;
-    const maxWeight = !isNaN(Number(query.maxWeight)) ? Number(query.maxWeight) : 0;
-    const color = query.color && query.color !== 'undefined' ? query.color.trim() : null;
+      const minPrice = !isNaN(Number(query.minPrice))
+        ? Number(query.minPrice)
+        : 0;
+      const maxPrice = !isNaN(Number(query.maxPrice))
+        ? Number(query.maxPrice)
+        : 0;
+      const minWeight = !isNaN(Number(query.minWeight))
+        ? Number(query.minWeight)
+        : 0;
+      const maxWeight = !isNaN(Number(query.maxWeight))
+        ? Number(query.maxWeight)
+        : 0;
+      const color =
+        query.color && query.color !== 'undefined' ? query.color.trim() : null;
 
-    const goldPrice = await this.goldPriceService.getGoldPrice();
+      const goldPrice = await this.goldPriceService.getGoldPrice();
 
-    const products = await this.productModel
-      .find()
-      .populate('items')
-      .populate('firstCategory')
-      .populate('midCategory')
-      .populate('lastCategory');
+      const products = await this.productModel
+        .find()
+        .populate('items')
+        .populate('firstCategory')
+        .populate('midCategory')
+        .populate('lastCategory');
 
-    const filteredProducts = products
-      .filter((product: any) => {
-        return product.items.some((item: any) => {
-          const weight = Number(item.weight || 0);
-          const basePrice = weight * goldPrice;
-          const wage = (basePrice * product.wages) / 100;
-          const finalPrice = basePrice + wage;
+      const filteredProducts = products
+        .filter((product: any) => {
+          return product.items.some((item: any) => {
+            const weight = Number(item.weight || 0);
+            const basePrice = weight * goldPrice;
+            const wage = (basePrice * product.wages) / 100;
+            const finalPrice = basePrice + wage;
 
-          item.price = finalPrice;
+            item.price = finalPrice;
 
-          const inPriceRange =
-            (minPrice === 0 && maxPrice === 0) ||
-            (finalPrice >= minPrice && finalPrice <= maxPrice);
+            const inPriceRange =
+              (minPrice === 0 && maxPrice === 0) ||
+              (finalPrice >= minPrice && finalPrice <= maxPrice);
 
-          const inWeightRange =
-            (minWeight === 0 && maxWeight === 0) ||
-            (weight >= minWeight && weight <= maxWeight);
+            const inWeightRange =
+              (minWeight === 0 && maxWeight === 0) ||
+              (weight >= minWeight && weight <= maxWeight);
 
-          const matchesColor = !color || item.color?.trim() === color;
+            const matchesColor = !color || item.color?.trim() === color;
 
-          return inPriceRange && inWeightRange && matchesColor;
+            return inPriceRange && inWeightRange && matchesColor;
+          });
+        })
+        .map((product: any) => {
+          const filteredItems = product.items.filter((item: any) => {
+            const weight = Number(item.weight || 0);
+            const basePrice = weight * goldPrice;
+            const wage = (basePrice * product.wages) / 100;
+            const finalPrice = basePrice + wage;
+
+            item.price = finalPrice;
+
+            const inPriceRange =
+              (minPrice === 0 && maxPrice === 0) ||
+              (finalPrice >= minPrice && finalPrice <= maxPrice);
+
+            const inWeightRange =
+              (minWeight === 0 && maxWeight === 0) ||
+              (weight >= minWeight && weight <= maxWeight);
+
+            const matchesColor = !color || item.color?.trim() === color;
+
+            return inPriceRange && inWeightRange && matchesColor;
+          });
+
+          return {
+            ...(product.toObject?.() ?? product),
+            items: filteredItems,
+          };
         });
-      })
-      .map((product: any) => {
-        const filteredItems = product.items.filter((item: any) => {
-          const weight = Number(item.weight || 0);
-          const basePrice = weight * goldPrice;
-          const wage = (basePrice * product.wages) / 100;
-          const finalPrice = basePrice + wage;
 
-          item.price = finalPrice;
+      const total = filteredProducts.length;
+      const paginatedProducts = filteredProducts.slice(skip, skip + limit);
 
-          const inPriceRange =
-            (minPrice === 0 && maxPrice === 0) ||
-            (finalPrice >= minPrice && finalPrice <= maxPrice);
-
-          const inWeightRange =
-            (minWeight === 0 && maxWeight === 0) ||
-            (weight >= minWeight && weight <= maxWeight);
-
-          const matchesColor = !color || item.color?.trim() === color;
-
-          return inPriceRange && inWeightRange && matchesColor;
-        });
-
-        return {
-          ...(product.toObject?.() ?? product),
-          items: filteredItems,
-        };
-      });
-
-    const total = filteredProducts.length;
-    const paginatedProducts = filteredProducts.slice(skip, skip + limit);
-
-    return {
-      message: 'دریافت محصولات با موفقیت انجام شد',
-      statusCode: 200,
-      data: paginatedProducts,
-      pagination: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
-    };
-  } catch (error) {
-    console.log('error in finding all products', error);
-    return {
-      message: 'مشکل داخلی سیستم',
-      statusCode: 500,
-      error: 'مشکل داخلی سیستم',
-    };
+      return {
+        message: 'دریافت محصولات با موفقیت انجام شد',
+        statusCode: 200,
+        data: paginatedProducts,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      };
+    } catch (error) {
+      console.log('error in finding all products', error);
+      return {
+        message: 'مشکل داخلی سیستم',
+        statusCode: 500,
+        error: 'مشکل داخلی سیستم',
+      };
+    }
   }
-}
 
   async findOne(id: string) {
     try {
@@ -434,128 +447,137 @@ export class ProductService {
     }
   }
 
- async getProductBasedOnCategory(categoryId: string, query: ProductFilterDto) {
-  try {
-    const limit = Number(query.limit) || 12;
-    const page = (!isNaN(Number(query.page)) && Number(query.page)) || 1;
-    const skip = (page - 1) * limit;
+  async getProductBasedOnCategory(categoryId: string, query: ProductFilterDto) {
+    try {
+      const limit = Number(query.limit) || 12;
+      const page = (!isNaN(Number(query.page)) && Number(query.page)) || 1;
+      const skip = (page - 1) * limit;
 
-    const minPrice = !isNaN(Number(query.minPrice)) ? Number(query.minPrice) : 0;
-    const maxPrice = !isNaN(Number(query.maxPrice)) ? Number(query.maxPrice) : 0;
-    const minWeight = !isNaN(Number(query.minWeight)) ? Number(query.minWeight) : 0;
-    const maxWeight = !isNaN(Number(query.maxWeight)) ? Number(query.maxWeight) : 0;
-    const color = query.color && query.color !== 'undefined' ? query.color.trim() : null;
+      const minPrice = !isNaN(Number(query.minPrice))
+        ? Number(query.minPrice)
+        : 0;
+      const maxPrice = !isNaN(Number(query.maxPrice))
+        ? Number(query.maxPrice)
+        : 0;
+      const minWeight = !isNaN(Number(query.minWeight))
+        ? Number(query.minWeight)
+        : 0;
+      const maxWeight = !isNaN(Number(query.maxWeight))
+        ? Number(query.maxWeight)
+        : 0;
+      const color =
+        query.color && query.color !== 'undefined' ? query.color.trim() : null;
 
-    const category = await this.categoryModel.findById(categoryId).populate({
-      path: 'parent',
-      populate: { path: 'parent' },
-    });
-
-    if (!category) {
-      return {
-        message: 'دسته بندی انتخابی موجود نمی‌باشد',
-        statusCode: 400,
-        error: 'دسته بندی انتخابی موجود نمی‌باشد',
-      };
-    }
-
-    const filter = {
-      $or: [
-        { firstCategory: categoryId },
-        { midCategory: categoryId },
-        { lastCategory: categoryId },
-      ],
-    };
-
-    const products = await this.productModel
-      .find(filter)
-      .populate('items')
-      .populate('firstCategory')
-      .populate('midCategory')
-      .populate('lastCategory');
-
-    const goldPrice = await this.goldPriceService.getGoldPrice();
-
-    for (const product of products) {
-      for (const item of product.items) {
-        const weight = Number(item.weight || 0);
-        const basePrice = weight * goldPrice;
-        const wage = (basePrice * product.wages) / 100;
-        item.price = basePrice + wage;
-      }
-    }
-
-    const filteredProducts = products
-      .filter((product: any) => {
-        return product.items.some((item: any) => {
-          const weight = Number(item.weight || 0);
-          const price = Number(item.price || 0);
-          const itemColor = item.color?.trim();
-
-          const inPriceRange =
-            (minPrice === 0 && maxPrice === 0) ||
-            (price >= minPrice && price <= maxPrice);
-
-          const inWeightRange =
-            (minWeight === 0 && maxWeight === 0) ||
-            (weight >= minWeight && weight <= maxWeight);
-
-          const matchesColor = !color || itemColor === color;
-
-          return inPriceRange && inWeightRange && matchesColor;
-        });
-      })
-      .map((product: any) => {
-        const filteredItems = product.items.filter((item: any) => {
-          const weight = Number(item.weight || 0);
-          const price = Number(item.price || 0);
-          const itemColor = item.color?.trim();
-
-          const inPriceRange =
-            (minPrice === 0 && maxPrice === 0) ||
-            (price >= minPrice && price <= maxPrice);
-
-          const inWeightRange =
-            (minWeight === 0 && maxWeight === 0) ||
-            (weight >= minWeight && weight <= maxWeight);
-
-          const matchesColor = !color || itemColor === color;
-
-          return inPriceRange && inWeightRange && matchesColor;
-        });
-
-        return {
-          ...(product.toObject?.() ?? product),
-          items: filteredItems,
-        };
+      const category = await this.categoryModel.findById(categoryId).populate({
+        path: 'parent',
+        populate: { path: 'parent' },
       });
 
-    const total = filteredProducts.length;
-    const paginatedProducts = filteredProducts.slice(skip, skip + limit);
+      if (!category) {
+        return {
+          message: 'دسته بندی انتخابی موجود نمی‌باشد',
+          statusCode: 400,
+          error: 'دسته بندی انتخابی موجود نمی‌باشد',
+        };
+      }
 
-    return {
-      message: 'موفق',
-      statusCode: 200,
-      data: {
-        products: paginatedProducts,
-        category,
-        pagination: {
-          total,
-          page,
-          limit,
-          totalPages: Math.ceil(total / limit),
+      const filter = {
+        $or: [
+          { firstCategory: categoryId },
+          { midCategory: categoryId },
+          { lastCategory: categoryId },
+        ],
+      };
+
+      const products = await this.productModel
+        .find(filter)
+        .populate('items')
+        .populate('firstCategory')
+        .populate('midCategory')
+        .populate('lastCategory');
+
+      const goldPrice = await this.goldPriceService.getGoldPrice();
+
+      for (const product of products) {
+        for (const item of product.items) {
+          const weight = Number(item.weight || 0);
+          const basePrice = weight * goldPrice;
+          const wage = (basePrice * product.wages) / 100;
+          item.price = basePrice + wage;
+        }
+      }
+
+      const filteredProducts = products
+        .filter((product: any) => {
+          return product.items.some((item: any) => {
+            const weight = Number(item.weight || 0);
+            const price = Number(item.price || 0);
+            const itemColor = item.color?.trim();
+
+            const inPriceRange =
+              (minPrice === 0 && maxPrice === 0) ||
+              (price >= minPrice && price <= maxPrice);
+
+            const inWeightRange =
+              (minWeight === 0 && maxWeight === 0) ||
+              (weight >= minWeight && weight <= maxWeight);
+
+            const matchesColor = !color || itemColor === color;
+
+            return inPriceRange && inWeightRange && matchesColor;
+          });
+        })
+        .map((product: any) => {
+          const filteredItems = product.items.filter((item: any) => {
+            const weight = Number(item.weight || 0);
+            const price = Number(item.price || 0);
+            const itemColor = item.color?.trim();
+
+            const inPriceRange =
+              (minPrice === 0 && maxPrice === 0) ||
+              (price >= minPrice && price <= maxPrice);
+
+            const inWeightRange =
+              (minWeight === 0 && maxWeight === 0) ||
+              (weight >= minWeight && weight <= maxWeight);
+
+            const matchesColor = !color || itemColor === color;
+
+            return inPriceRange && inWeightRange && matchesColor;
+          });
+
+          return {
+            ...(product.toObject?.() ?? product),
+            items: filteredItems,
+          };
+        });
+
+      const total = filteredProducts.length;
+      const paginatedProducts = filteredProducts.slice(skip, skip + limit);
+
+      return {
+        message: 'موفق',
+        statusCode: 200,
+        data: {
+          products: paginatedProducts,
+          category,
+          pagination: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+          },
         },
-      },
-    };
-  } catch (error) {
-    console.log('error in getting category products', error);
-    return {
-      message: 'ناموفق',
-      statusCode: 500,
-      error: 'خطای داخلی سرور',
-    };
+      };
+    } catch (error) {
+      console.log('error in getting category products', error);
+      return {
+        message: 'ناموفق',
+        statusCode: 500,
+        error: 'خطای داخلی سرور',
+      };
+    }
   }
-}
   async filterProductsByPrice(query: ProductFilterDto) {
     const { minPrice = 0, maxPrice = 0 } = query;
 
@@ -767,6 +789,46 @@ export class ProductService {
         statusCode: 500,
         data: null,
       };
+    }
+  }
+
+  async getSummary() {
+    const totalProducts = await this.productModel.countDocuments();
+    const totalOrders = await this.orderModel.countDocuments();
+    const totalUsers = await this.interservice.getUsers();
+
+    const userCoount = totalUsers.length;
+
+    const now = new Date();
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const orderOfLastMonth = await this.orderModel.countDocuments({
+      status: 1,
+      createdAt: {
+        $gte: lastMonth,
+        $lt: startOfThisMonth,
+      },
+    });
+
+    return {
+      totalProducts,
+      totalOrders,
+      userCoount,
+      orderOfLastMonth,
+    };
+  }
+
+  async delete() {
+    try {
+      const result = await this.productModel.deleteMany({}); // deletes all documents in the collection
+
+      return {
+        message: 'All products deleted successfully',
+        deletedCount: result.deletedCount,
+      };
+    } catch (error) {
+      throw new Error(`Failed to delete all products: ${error.message}`);
     }
   }
 }

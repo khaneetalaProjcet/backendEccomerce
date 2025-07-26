@@ -202,4 +202,16 @@ export class ProductController {
   recommending(@Query() query: ProductFilterDto) {
     return this.productService.findAll(query);
   }
+
+  @Get('/summary')
+  @ApiOperation({})
+  @ApiResponse({})
+  summary() {
+    return this.productService.getSummary();
+  }
+
+  @Delete('/')
+  delete() {
+    return this.productService.delete();
+  }
 }
