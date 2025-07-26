@@ -17,19 +17,26 @@ import { InterserviceService } from './interservice/interservice.service';
 import { Module } from '@nestjs/common/decorators/modules/module.decorator';
 
 
-
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal : true}),
+    ConfigModule.forRoot({ isGlobal: true }),
     CacheModule.registerAsync(RedisOptions),
     MongooseModule.forRoot(process.env.MONGO_URI!),
-    MongooseModule.forFeature([{name : 'userM' , schema : UserSchema2}]),
-    // UserModule,
+    MongooseModule.forFeature([{ name: 'userM', schema: UserSchema2 }]),
+    KafkaModule,
+    UserModule,
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService , RabbitMqService, RedisServiceService, TokenizeService , JwtService, InterserviceService],
+  providers: [
+    AppService,
+    RabbitMqService,
+    RedisServiceService,
+    TokenizeService,
+    JwtService,
+    InterserviceService,
+  ],
 })
-
-
 export class AppModule {}
+
+

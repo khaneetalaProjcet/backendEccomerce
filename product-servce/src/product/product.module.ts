@@ -17,6 +17,7 @@ import {
   CategorySchema,
 } from 'src/category/entities/category.entity';
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
+import { InterserviceService } from 'src/interservice/interservice.service';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { goldPriceService } from 'src/goldPrice/goldPrice.service';
     JwtAdminStrategy,
     LockerService,
     RedisServiceService,
-    goldPriceService
+    goldPriceService,
+    InterserviceService
   ],
 })
 export class ProductModule {}

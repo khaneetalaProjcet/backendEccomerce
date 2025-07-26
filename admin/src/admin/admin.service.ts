@@ -10,6 +10,7 @@ import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { CreateLogDto } from './dto/createLog.dto';
 import { LocknewService } from 'src/locknew/locknew.service';
+import { log } from 'node:console';
 
 @Injectable()
 export class AdminService {
@@ -77,7 +78,9 @@ export class AdminService {
   }
 
   async findByPhoneNumber(phoneNumber: string) {
-    const admin = await  this.adminModel.findOne({ phoneNumber }).select('+password');
+    const admin = await this.adminModel
+      .findOne({ phoneNumber })
+      .select('+password');
     if (!admin) {
       return null;
     }
@@ -153,35 +156,59 @@ export class AdminService {
     }
   }
 
+  async getAdminAccess(adminId: string) {
+    let admin: any = await this.adminModel
+      .findById(adminId)
+      .populate('accessPoint');
 
-  async getAdminAccess(adminId : string){
-    let admin : any = await this.adminModel.findById(adminId).populate('accessPoint')
-    if (!admin){
+    console.log('1111', admin);
+    if (!admin) {
       return {
-        statusCode : 400,
-        message : 'ادمین یافت نشد',
-        error:'ادمین یافت نشد'
-      }
+        statusCode: 400,
+        message: 'ادمین یافت نشد',
+        error: 'ادمین یافت نشد',
+      };
     }
-    let allAccess = await this.pageModel.find()
-    let access :any = []
-    for (let i of allAccess){
-      let data = JSON.parse(JSON.stringify(i.toObject()))
-      if (admin.accessPoint.includes(data._id.toString())){
-          data['access'] = true
-          access.push(data)
-      }else{
-        data['access'] = true
-        access.push(data)
+    let allAccess = await this.pageModel.find();
+    let access: any = [];
+
+    console.log(admin.accessPoint, 'accesspoint is here ');
+
+    let adminAccessToString: string[] = [];
+    for (let i of admin.accessPoint) {
+      console.log(i, 'i is here');
+
+      adminAccessToString.push(i._id.toString());
+    }
+
+    console.log('after stringign >>>> ', adminAccessToString);
+
+    // let deepCopyOfAdminAccess = admin.accessPoint ? JSON.parse(JSON.stringify(admin.accessPoint)) : []
+    // console.log(deepCopyOfAdminAccess)
+    for (let i of allAccess) {
+      console.log(allAccess, 'all access is here');
+
+      let data = JSON.parse(JSON.stringify(i.toObject()));
+
+      console.log('dataid is >>>>', data._id);
+
+      if (adminAccessToString.includes(data._id)) {
+        console.log('its in', data._id);
+
+        data['access'] = true;
+        access.push(data);
+      } else {
+        console.log('its second ');
+        data['access'] = false;
+        access.push(data);
       }
     }
     return {
-      message : 'سطح دسترسی' ,
-      statusCode : 200,
-      data : access
-    }
+      message: 'سطح دسترسی',
+      statusCode: 200,
+      data: access,
+    };
   }
-
 
   async updateAdminAccess(adminId: string, pageIds: string[]) {
     const isLocked = await this.lockerService.check(
@@ -191,7 +218,7 @@ export class AdminService {
 
     if (isLocked) {
       return {
-        message: 'lotfan chand lahze digar talash konid',
+        message: 'لطفاً چند لحظه دیگر تلاش کنید',
         statusCode: 400,
       };
     }
@@ -203,8 +230,11 @@ export class AdminService {
         })
         .select('_id');
 
+      const accessPointIds = all.map((item) => item._id);
+      console.log('alllll', all);
+      console.log('alllll', accessPointIds);
       const admin = await this.adminModel.findByIdAndUpdate(adminId, {
-        accessPoint: all,
+        accessPoint: accessPointIds,
       });
 
       if (!admin) {
@@ -215,6 +245,8 @@ export class AdminService {
         };
       }
 
+      let updated = await this.adminModel.findById(adminId);
+      console.log('updated', updated);
       await this.lockerService.disablor(`admin-access${adminId}`);
 
       return {

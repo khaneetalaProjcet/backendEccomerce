@@ -5,6 +5,9 @@ import { Cart } from "src/cart/entities/cart.entity";
 import { Product } from "src/product/entities/product.entity";
 import { ProductItems } from "src/product/entities/productItems.entity";
 
+
+
+
 export interface OrderInterface extends Document {
 
     _id: mongoose.Types.ObjectId

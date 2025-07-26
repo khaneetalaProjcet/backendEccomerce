@@ -23,10 +23,21 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
 import { UpdateAdminAccessDto } from './dto/adminAccessibility.dto';
+import { EventPattern, Payload } from '@nestjs/microservices';
 
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
+
+  @EventPattern('user-created')
+  async handleUserCreated(@Payload() message: any) {
+    const userData =
+      typeof message.value === 'string'
+        ? JSON.parse(message.value)
+        : message.value;
+
+    console.log(' New user from UserService:', userData);
+  }
 
   @Post('register')
   @ApiOperation({ summary: 'validate otp code' })
@@ -124,12 +135,9 @@ export class AdminController {
     return await this.adminService.findById(req.user.userId);
   }
   @Get('/access/:id')
-  async getAdminAccess(
-    @Param('id') id: string,
-  ){
-    return this.adminService.getAdminAccess(id)
+  async getAdminAccess(@Param('id') id: string) {
+    return this.adminService.getAdminAccess(id);
   }
-
 
   @Post('access/:id')
   @ApiOperation({ summary: 'Update admin access pages' })

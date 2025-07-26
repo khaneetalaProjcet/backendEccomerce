@@ -193,7 +193,7 @@ export class ProductController {
   // }
 
   @Get('/recommendations')
-  @ApiOperation({ summary: 'get recommending products'})
+  @ApiOperation({ summary: 'get recommending products' })
   @ApiResponse({
     status: 200,
     description: 'List of recommending products',
@@ -201,5 +201,17 @@ export class ProductController {
   })
   recommending(@Query() query: ProductFilterDto) {
     return this.productService.findAll(query);
+  }
+
+  @Get('/summary')
+  @ApiOperation({})
+  @ApiResponse({})
+  summary() {
+    return this.productService.getSummary();
+  }
+
+  @Delete('/')
+  delete() {
+    return this.productService.delete();
   }
 }
