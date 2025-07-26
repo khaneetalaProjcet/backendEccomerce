@@ -6,7 +6,7 @@ export interface ProductDocumnet extends Document {
   _id: string;
   name: string;
   items: any[];
-  images: [string];
+  images: [{name : string , src : string}];
   description: string;
   wages: number;
   count: number;
@@ -23,8 +23,8 @@ export class Product {
   @Prop({ type: [Types.ObjectId], ref: 'ProductItems', required: true })
   items: Types.ObjectId[];
 
-  @Prop({ type: [String], default: [] })
-  images: string[];
+  @Prop({ type: [{name : {type : String} , src : {type : String}}], default: [{name : '' , src : ''}] })
+  images: {name : string , src : string}[];
 
   @Prop({ default: '' })
   mainImage: string;
@@ -54,16 +54,12 @@ export class Product {
   price: Types.ObjectId;
 }
 
-
-
 // schema.pre('save', function(next) {
 //   const err = new Error('something went wrong');
 //   // If you call `next()` with an argument, that argument is assumed to be
 //   // an error.
 //   next(err);
 // });
-
-
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
 

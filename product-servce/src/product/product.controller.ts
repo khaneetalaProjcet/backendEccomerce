@@ -173,8 +173,6 @@ export class ProductController {
     return this.productService.findAll(query);
   }
 
-
-
   // @Patch('/discount/:id')
   // @ApiOperation({ summary: 'add discount percent to the product' })
   // @ApiResponse({

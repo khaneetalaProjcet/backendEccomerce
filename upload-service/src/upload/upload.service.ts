@@ -16,7 +16,7 @@ export class UploadService {
     //   url: `/uploads/${file.filename}`,
     // };
      return {
-        message: '',  
+        message: '',
         statusCode: 200,
         data:`${process.env.UPLOAD_BASE_URL}/${file.filename}`
       }
