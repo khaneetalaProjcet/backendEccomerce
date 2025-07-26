@@ -19,13 +19,15 @@ import { ProductFilterDto } from './dto/productFilterdto';
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
 import { Order, OrderInterface } from '../order/entities/order.entity';
 import { InterserviceService } from 'src/interservice/interservice.service';
+import { log } from 'node:console';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocumnet>,
-    @InjectModel(ProductItems.name) private productItemModel: Model<ProductItems>,
+    @InjectModel(ProductItems.name)
+    private productItemModel: Model<ProductItems>,
     @InjectModel(Order.name) private orderModel: Model<OrderInterface>,
     private goldPriceService: goldPriceService,
     private interservice: InterserviceService,
@@ -795,7 +797,13 @@ export class ProductService {
     const totalOrders = await this.orderModel.countDocuments();
     const totalUsers = await this.interservice.getUsers();
 
-    const userCoount = totalUsers.length;
+    console.log(totalUsers  , '///// totalllllll is here');
+    
+
+
+    const userCoount = totalUsers.data.length;
+
+    console.log(userCoount, '///////////////userCount');
 
     const now = new Date();
     const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
@@ -810,16 +818,20 @@ export class ProductService {
     });
 
     return {
-      totalProducts,
+      data: {
+        totalProducts,
       totalOrders,
       userCoount,
       orderOfLastMonth,
+      },
+      message: "",
+      statusCode: 200
     };
   }
 
   async delete() {
     try {
-      const result = await this.productModel.deleteMany({}); // deletes all documents in the collection
+      const result = await this.productModel.deleteMany({});
 
       return {
         message: 'All products deleted successfully',
