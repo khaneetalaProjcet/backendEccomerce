@@ -23,7 +23,7 @@ import { Module } from '@nestjs/common/decorators/modules/module.decorator';
     CacheModule.registerAsync(RedisOptions),
     MongooseModule.forRoot(process.env.MONGO_URI!),
     MongooseModule.forFeature([{ name: 'userM', schema: UserSchema2 }]),
-    KafkaModule,
+    // KafkaModule,
     UserModule,
     AuthModule,
   ],
