@@ -26,7 +26,6 @@ export class CreateProductDto {
     type: [String],
   })
   @IsArray()
-  @IsObject()
   @IsOptional()
   images?: {name : string , src : string}[];
 
