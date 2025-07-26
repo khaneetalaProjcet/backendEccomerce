@@ -266,6 +266,7 @@ export class CartService {
     wagePercent: number;
     totalWeight: number;
   }[] {
+    console.log('checkig fucking cart' , cartProducts)
     return cartProducts.map((item) => {
       const weight =
         typeof item.product.weight === 'string'
