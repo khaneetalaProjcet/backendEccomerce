@@ -63,7 +63,7 @@ export class OrderService {
 
       if (body.paymentMethod === 2) {
         goldBox = await this.caculateNumberOfGoldBox(
-          ( +(totalPrice-cash) / +goldPrice).toString(),
+          (+(totalPrice - cash) / +goldPrice).toString(),
         );
       }
 
@@ -74,7 +74,7 @@ export class OrderService {
           mainProduct: p.mainProduct._id,
           count: p.count,
         })),
-        totalPrice : cash,
+        totalPrice: cash,
         cart: cart._id.toString(),
         date,
         time,
@@ -262,7 +262,8 @@ export class OrderService {
       const all = await this.orderModel
         .find()
         .populate('products.product')
-        .populate('products.mainProduct');
+        .populate('products.mainProduct')
+        .populate('user');
       return {
         message: '',
         statusCode: 200,
@@ -279,26 +280,27 @@ export class OrderService {
   }
 
   async getOrdersCountByStatus() {
-  try {
-    const successfulCount = await this.orderModel.countDocuments({ status: 4 }); 
-    const failedCount = await this.orderModel.countDocuments({ status: 5 });
-    const pendingCount = await this.orderModel.countDocuments({ status: 2 });
+    try {
+      const successfulCount = await this.orderModel.countDocuments({
+        status: 4,
+      });
+      const failedCount = await this.orderModel.countDocuments({ status: 5 });
+      const pendingCount = await this.orderModel.countDocuments({ status: 2 });
 
-    return {
-      statusCode: 200,
-      message: 'با موفقیت انجام شد',
-      data: [successfulCount, failedCount, pendingCount],
-    };
-  } catch (err) {
-    console.error(err);
-    return {
-      statusCode: 500,
-      message: 'مشکل داخلی سیستم',
-      error: err.message,
-    };
+      return {
+        statusCode: 200,
+        message: 'با موفقیت انجام شد',
+        data: [successfulCount, failedCount, pendingCount],
+      };
+    } catch (err) {
+      console.error(err);
+      return {
+        statusCode: 500,
+        message: 'مشکل داخلی سیستم',
+        error: err.message,
+      };
+    }
   }
-}
-
 
   findOne(id: number) {
     return `This action returns a #${id} order`;
@@ -564,41 +566,41 @@ export class OrderService {
     }
   }
 
- async confirmDelivery(id: string) {
-  try {
-    const thisOrder = await this.orderModel.findById(id); 
+  async confirmDelivery(id: string) {
+    try {
+      const thisOrder = await this.orderModel.findById(id);
 
-    if (!thisOrder) {
+      if (!thisOrder) {
+        return {
+          message: 'notFound',
+          statusCode: 404,
+        };
+      }
+
+      if (thisOrder.status !== 1) {
+        return {
+          message: 'Order status must be status 1 : approvePay',
+          statusCode: 400,
+        };
+      }
+
+      thisOrder.status = 4;
+
+      await thisOrder.save();
+
       return {
-        message: 'notFound',
-        statusCode: 404,
+        message: 'Order status updated to "received"',
+        statusCode: 200,
+        data: thisOrder,
+      };
+    } catch (error) {
+      console.error('Error updating delivery status:', error);
+      return {
+        message: 'internalError',
+        statusCode: 500,
       };
     }
-
-    if (thisOrder.status !== 1) {
-      return {
-        message: 'Order status must be status 1 : approvePay',
-        statusCode: 400,
-      };
-    }
-
-    thisOrder.status = 4; 
-
-    await thisOrder.save();
-
-    return {
-      message: 'Order status updated to "received"',
-      statusCode: 200,
-      data: thisOrder,
-    };
-  } catch (error) {
-    console.error('Error updating delivery status:', error);
-    return {
-      message: 'internalError',
-      statusCode: 500,
-    };
   }
-}
 
   private async caculateNumberOfGoldBox(goldBox: string) {
     let seperator = goldBox.split('');

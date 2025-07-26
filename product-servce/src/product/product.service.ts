@@ -25,39 +25,35 @@ export class ProductService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocumnet>,
-    @InjectModel(ProductItems.name)
-    @InjectModel(Order.name)
-    private orderModel: Model<OrderInterface>,
-    private productItemModel: Model<ProductItemsDocment>,
+    @InjectModel(ProductItems.name) private productItemModel: Model<ProductItems>,
+    @InjectModel(Order.name) private orderModel: Model<Order>,
     private goldPriceService: goldPriceService,
     private interservice: InterserviceService,
   ) {}
   async create(createProductDto: CreateProductDto) {
     try {
       const items = createProductDto.items;
-      
+
       const productItems: string[] = [];
       let count = 0;
-      console.log('its come till here')
       for (let index = 0; index < items.length; index++) {
         const element = items[index];
+
         const i = await this.productItemModel.create({
           size: element.size,
           color: element.color,
           weight: element.weight,
           count: element.count,
-          price : 0,
         });
-        productItems.push(i._id);
+        productItems.push(i._id.toString());
         count += element.count;
       }
-      console.log('its come till here2222')
+
       createProductDto.items = productItems;
 
       createProductDto.count = count;
-      console.log('after creation' , createProductDto)
+
       const product = await this.productModel.create(createProductDto);
-      console.log('after creation' , product)
       return {
         message: '',
         statusCode: 200,
