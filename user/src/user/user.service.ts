@@ -12,14 +12,14 @@ import { AddressDto } from './dto/addAdress.dto';
 import { UpdateAddressDto } from './dto/updateAdress.sto';
 import { IdentityDto } from 'src/user/dto/Identity.dto';
 import { use } from 'passport';
-import { ClientKafka } from '@nestjs/microservices';
+// import { ClientKafka } from '@nestjs/microservices';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel('userM') private userModel: Model<UserDocument>,
     private readonly internalService: InterserviceService,
-    @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
+    // @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
   ) {}
 
   async checkOrCreate(phoneNumber: string) {
@@ -212,7 +212,7 @@ export class UserService {
   }
 
   async onModuleInit() {
-    await this.kafkaClient.connect();
+    // await this.kafkaClient.connect();
 
     // await this.getAllUser();
   }
