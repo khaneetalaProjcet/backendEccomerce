@@ -18,8 +18,7 @@ export class OrderService {
   constructor(
     private readonly goldPriceService: goldPriceService,
     @InjectModel(Cart.name) private cartModel: Model<CartInterface>,
-    @InjectModel(ProductItems.name)
-    private productItemsModel: Model<ProductItemsDocment>,
+    @InjectModel(ProductItems.name) private productItemsModel: Model<ProductItemsDocment>,
     @InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
     @InjectModel(Order.name) private orderModel: Model<OrderInterface>,
   ) {}
