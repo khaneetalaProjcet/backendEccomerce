@@ -32,6 +32,12 @@ import { JwtAdminAuthGuard } from 'src/jwt/admin-jwt-auth.guard';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // @Post('test-kafka')
+  // async testKafka(@Body() body: any) {
+  //   await this.userService.emitUserCreatedEvent(body);
+  //   return { message: 'Kafka event sent', data: body };
+  // }
+
   @Post('/complete')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -430,7 +436,7 @@ export class UserController {
     status: 200,
     description: 'get all ngo succeed',
     schema: {
-      example: {  
+      example: {
         success: true,
         message: 'get all ngo succeed',
         error: null,
@@ -596,15 +602,20 @@ export class UserController {
   }
 
   @Get('/admin/users')
-  @UseGuards(JwtAdminAuthGuard)
+  // @UseGuards(JwtAdminAuthGuard)
   @ApiBearerAuth()
   async getAllUsers() {
     return this.userService.getAllUser();
   }
 
-
   @Patch('/disable/:id')
-  async disable(@Param('id') userId: string,) {
+  async disable(@Param('id') userId: string) {
     return this.userService.activation(userId);
+  }
+
+  @Get('/provinces')
+  // @ApiBearerAuth()
+  async getUsersProvinces() {
+    return this.userService.getUsersProvinces();
   }
 }

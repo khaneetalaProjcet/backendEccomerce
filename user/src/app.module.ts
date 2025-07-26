@@ -17,20 +17,26 @@ import { InterserviceService } from './interservice/interservice.service';
 import { KafkaModule } from './kafka/kafka.module';
 
 
-
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal : true}),
+    ConfigModule.forRoot({ isGlobal: true }),
     CacheModule.registerAsync(RedisOptions),
     MongooseModule.forRoot(process.env.MONGO_URI!),
-    MongooseModule.forFeature([{name : 'userM' , schema : UserSchema2}]),
-    // UserModule,
+    MongooseModule.forFeature([{ name: 'userM', schema: UserSchema2 }]),
+    KafkaModule,
+    UserModule,
     AuthModule,
-    // KafkaModule
   ],
   controllers: [AppController],
-  providers: [AppService , RabbitMqService, RedisServiceService, TokenizeService , JwtService, InterserviceService],
+  providers: [
+    AppService,
+    RabbitMqService,
+    RedisServiceService,
+    TokenizeService,
+    JwtService,
+    InterserviceService,
+  ],
 })
-
-
 export class AppModule {}
+
+

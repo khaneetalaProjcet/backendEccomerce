@@ -173,8 +173,6 @@ export class ProductController {
     return this.productService.findAll(query);
   }
 
-
-
   // @Patch('/discount/:id')
   // @ApiOperation({ summary: 'add discount percent to the product' })
   // @ApiResponse({
@@ -195,7 +193,7 @@ export class ProductController {
   // }
 
   @Get('/recommendations')
-  @ApiOperation({ summary: 'get recommending products'})
+  @ApiOperation({ summary: 'get recommending products' })
   @ApiResponse({
     status: 200,
     description: 'List of recommending products',

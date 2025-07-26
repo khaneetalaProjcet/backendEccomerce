@@ -9,14 +9,19 @@ import {
   Req,
   Res,
   UseGuards,
-  
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
 import { JwtAdminAuthGuard } from '../jwt/admin-jwt-auth.guard';
-import { ApiBody, ApiResponse, ApiOperation, ApiParam,ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @Controller('order')
 export class OrderController {
@@ -126,6 +131,11 @@ export class OrderController {
   @Get('delall')
   delAll() {
     return this.orderService.deletAll();
+  }
+
+  @Get('/order-by-status')
+  OrdersCountByStatus() {
+    return this.orderService.getOrdersCountByStatus();
   }
 
   // @Get(':id')

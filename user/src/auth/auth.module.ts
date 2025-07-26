@@ -3,9 +3,9 @@ import { AuthService } from './auth.service';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
-import { ConfigService } from '@nestjs/config';  // Add this import
+import { ConfigService } from '@nestjs/config'; 
 import { JwtStrategy } from '../jwt/jwt.strategy';
-import { JwtAuthGuard } from '../jwt/jwt-auth.guard';  // Add this import
+import { JwtAuthGuard } from '../jwt/jwt-auth.guard';
 import { UserModule } from 'src/user/user.module';
 import { ConfigModule } from '@nestjs/config';  
 import { UserService } from 'src/user/user.service';
@@ -16,11 +16,12 @@ import { UserSchema2 } from 'src/user/entities/user.entity';
 import { RedisOptions } from 'configs/redis.config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { InterserviceService } from 'src/interservice/interservice.service';
-
+import { KafkaModule } from '../kafka/kafka.module';
 
 @Module({
   imports: [
     UserModule,
+    KafkaModule,
     PassportModule,
     ConfigModule,  
     CacheModule.registerAsync(RedisOptions),

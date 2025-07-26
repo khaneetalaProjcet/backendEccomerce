@@ -30,51 +30,51 @@ export class AuthService {
     return Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
   }
 
+  async sendOtp(@Req() req: any, @Res() res: any, body: sendOtpDto) {
+    try {
+      const { phoneNumber } = body;
 
+      const otp = await this.otpGenerator();
+      const data = { otp: otp, date: new Date().getTime() };
 
-async sendOtp(@Req() req: any, @Res() res: any, body: sendOtpDto) {
-  try {
-    const { phoneNumber } = body;
+    const test =   await this.redisService.setOtp(
+        `otp-${phoneNumber}`,
+        JSON.stringify(data),
+      );
 
-    const otp = await this.otpGenerator();
-    const data = { otp: otp, date: new Date().getTime() };
+      console.log(test,"test is here");
+      
 
-    await this.redisService.setOtp(
-      `otp-${phoneNumber}`,
-      JSON.stringify(data),
-    );
+      const smsService = new SmsService();
+      const smsResponse: any = await smsService.sendOtpMessage(
+        phoneNumber,
+        otp.toString(),
+      );
 
-    const smsService = new SmsService();
-    const smsResponse: any = await smsService.sendOtpMessage(
-      phoneNumber,
-      otp.toString(),
-    );
+      if (!smsResponse.success) {
+        return {
+          message: smsResponse.msg || 'ارسال کد تایید ناموفق',
+          statusCode: 500,
+        };
+      }
 
-    if (!smsResponse.success) {
       return {
-        message: smsResponse.msg || 'ارسال کد تایید ناموفق',
+        message: 'ارسال کد تایید موفق',
+        statusCode: 200,
+        data: null,
+      };
+    } catch (error) {
+      console.log('error in sending otp:', error);
+      return {
+        message: 'ارسال کد تایید ناموفق',
         statusCode: 500,
+        error: 'خطای داخلی سیستم',
       };
     }
-
-    return {
-      message: 'ارسال کد تایید موفق',
-      statusCode: 200,
-      data: null,
-    };
-  } catch (error) {
-    console.log('error in sending otp:', error);
-    return {
-      message: 'ارسال کد تایید ناموفق',
-      statusCode: 500,
-      error: 'خطای داخلی سیستم',
-    };
   }
-}
 
   async validateOtp(body: validateOtpDto) {
     try {
-      
       //  const array=await this.userModel.find()
 
       //  for (let index = 0; index < array.length; index++) {
@@ -86,12 +86,9 @@ async sendOtp(@Req() req: any, @Res() res: any, body: sendOtpDto) {
 
       const phoneNumber = body.phoneNumber;
 
-      
-
       let findedOtp = await this.redisService.get(`otp-${body.phoneNumber}`);
 
-      console.log(findedOtp,"///// findotp");
-      
+      console.log(findedOtp, '///// findotp');
 
       findedOtp = JSON.parse(findedOtp);
       const date = new Date().getTime();
@@ -101,7 +98,7 @@ async sendOtp(@Req() req: any, @Res() res: any, body: sendOtpDto) {
           statusCode: 400,
           error: 'شماره تلفن پیدا نشد',
         };
-      } 
+      }
       console.log('date', date - findedOtp.date);
 
       if (date - findedOtp.date > 120000) {

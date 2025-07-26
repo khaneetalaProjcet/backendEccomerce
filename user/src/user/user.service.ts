@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,12 +12,14 @@ import { AddressDto } from './dto/addAdress.dto';
 import { UpdateAddressDto } from './dto/updateAdress.sto';
 import { IdentityDto } from 'src/user/dto/Identity.dto';
 import { use } from 'passport';
+import { ClientKafka } from '@nestjs/microservices';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel('userM') private userModel: Model<UserDocument>,
     private readonly internalService: InterserviceService,
+    @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
   ) {}
 
   async checkOrCreate(phoneNumber: string) {
@@ -209,9 +211,16 @@ export class UserService {
     // }
   }
 
+  async onModuleInit() {
+    await this.kafkaClient.connect();
+
+    // await this.getAllUser();
+  }
+
   async getAllUser() {
     try {
       const users = await this.userModel.find();
+      // this.kafkaClient.emit('user', users);
       return {
         message: '',
         statusCode: 200,
@@ -223,6 +232,44 @@ export class UserService {
         message: 'مشکلی از سمت سرور به وجود آمده',
         statusCode: 500,
         error: 'خطای داخلی سیستم',
+      };
+    }
+  }
+
+  async getUsersProvinces() {
+    try {
+      const array = [] as { name: string; value: number }[];
+
+      const users = await this.userModel.find();
+
+      for (const user of users) {
+        for (const addr of user.adresses) {
+          const province = addr.province?.trim();
+          if (!province) continue;
+
+          const checkForExistingProvince = array.find(
+            (item) => item.name === province,
+          );  
+
+          if (checkForExistingProvince) {
+            checkForExistingProvince.value += 1;
+          } else {
+            array.push({ name: province, value: 1 });
+          }
+        }
+      }
+
+      return {
+        data: array,
+        message: 'تعداد کاربران بر اساس استان',
+        statusCode: 200,
+      };
+    } catch (error) {
+      console.log('errrrr', error);
+      return {
+        data: null,
+        message: 'خطا در دریافت اطلاعات',
+        statusCode: 500,
       };
     }
   }
@@ -308,13 +355,12 @@ export class UserService {
       message: '',
       statusCode: 200,
       data: user.adresses,
-    };  
+    };
   }
 
   async getSpecificAddress(req: any, res: any, adressId: string) {
     let userId = req.user.userId;
     let address = await this.userModel.findById(userId);
-    
 
     if (!address) {
       return {
@@ -388,10 +434,7 @@ export class UserService {
 
   async deleteAddress(userId: string, adressId: string) {
     console.log('its here for delete address >>>> ', adressId, userId);
-    const user = await this.userModel.findById(
-      userId,
-
-    );
+    const user = await this.userModel.findById(userId);
 
     if (!user) {
       return {
@@ -503,40 +546,41 @@ export class UserService {
     return `This action removes a #${id} user`;
   }
 
- async activation(userId: string) {
-  try {
-    const user = await this.userModel.findById(userId);
-    console.log(user,"user is heer");
-    console.log(userId,"userId is heer");
-    console.log( typeof userId,"user is heereeeeeeeeeee");
-    
-    if (!user) {
+  async activation(userId: string) {
+    try {
+      const user = await this.userModel.findById(userId);
+      console.log(user, 'user is heer');
+      console.log(userId, 'userId is heer');
+      console.log(typeof userId, 'user is heereeeeeeeeeee');
+
+      if (!user) {
+        return {
+          message: 'کاربر پیدا نشد',
+          statusCode: 400,
+          error: 'کاربر پیدا نشد',
+        };
+      }
+
+      if (user.isActive) {
+        await user.updateOne({ isActive: false });
+      } else {
+        await user.updateOne({ isActive: true });
+      }
+
+      const updatedUser = await this.userModel.findById(userId);
+
       return {
-        message: 'کاربر پیدا نشد',
-        statusCode: 400,
-        error: 'کاربر پیدا نشد',
+        message: 'done',
+        statusCode: 200,
+        data: updatedUser,
+      };
+    } catch (error) {
+      console.log('error', error);
+      return {
+        message: 'مشکلی از سمت سرور به وجود آمده',
+        statusCode: 500,
+        error: 'خطای داخلی سیستم',
       };
     }
-
-    if (user.isActive) {
-      await user.updateOne({ isActive: false });
-    } else {
-      await user.updateOne({ isActive: true });
-    }
-
-    const updatedUser = await this.userModel.findById(userId);
-
-    return {
-      message: "done",
-      statusCode: 200,
-      data: updatedUser,
-    };
-  } catch (error) {
-    console.log('error', error);
-    return {
-      message: 'مشکلی از سمت سرور به وجود آمده',
-      statusCode: 500,
-      error: 'خطای داخلی سیستم',
-    };
   }
-}}
+}

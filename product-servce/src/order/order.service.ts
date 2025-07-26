@@ -278,6 +278,28 @@ export class OrderService {
     }
   }
 
+  async getOrdersCountByStatus() {
+  try {
+    const successfulCount = await this.orderModel.countDocuments({ status: 4 }); 
+    const failedCount = await this.orderModel.countDocuments({ status: 5 });
+    const pendingCount = await this.orderModel.countDocuments({ status: 2 });
+
+    return {
+      statusCode: 200,
+      message: 'با موفقیت انجام شد',
+      data: [successfulCount, failedCount, pendingCount],
+    };
+  } catch (err) {
+    console.error(err);
+    return {
+      statusCode: 500,
+      message: 'مشکل داخلی سیستم',
+      error: err.message,
+    };
+  }
+}
+
+
   findOne(id: number) {
     return `This action returns a #${id} order`;
   }

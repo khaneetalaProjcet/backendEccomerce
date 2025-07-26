@@ -26,5 +26,4 @@ export class RedisServiceService {
         await this.cache.set(key , value , 120000)
     }
     
-    // async del(){}
 }
