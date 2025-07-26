@@ -27,7 +27,7 @@ export class Product {
   @Prop({ type: [{name : {type : String} , src : {type : String}}], default: [{name : '' , src : ''}] })
   images: {name : string , src : string}[];
 
-  @Prop({ default: {} })
+  @Prop({ type : {name : {type : String} , src : {type : String}} ,default: {} })
   mainImage: {name : string , src : string};
 
   @Prop({ default: '' })
