@@ -8,6 +8,7 @@ import { Page, PageSchema } from 'src/page/entities/page.entity';
 import { HttpModule } from '@nestjs/axios';
 import { LocknewService } from 'src/locknew/locknew.service';
 import { RedisServiceService } from 'src/redis-service/redis-service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
