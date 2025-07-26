@@ -6,6 +6,7 @@ import {
   IsString,
   IsNumber,
   IsMongoId,
+  IsObject,
 } from 'class-validator';
 
 export class CreateProductDto {
@@ -40,9 +41,9 @@ export class CreateProductDto {
     example: 'High-quality gold product',
     description: 'Description of the product',
   })
-  @IsString()
+  @IsObject()
   @IsOptional()
-  mainImage?: string;
+  mainImage?: {name : string , src : string};
 
   @ApiProperty({
     example: 150,

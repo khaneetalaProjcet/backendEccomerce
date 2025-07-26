@@ -229,7 +229,7 @@ export class CartService {
       cart.products as any,
       goldPrice,
     );
-
+    
     const enrichedProducts = cart.products.map((p, i) => ({
       ...JSON.parse(JSON.stringify(p)),
       pricing: itemPrices[i],
