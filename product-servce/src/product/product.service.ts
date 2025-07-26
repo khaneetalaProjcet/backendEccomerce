@@ -34,9 +34,9 @@ export class ProductService {
       
       const productItems: string[] = [];
       let count = 0;
+      console.log('its come till here')
       for (let index = 0; index < items.length; index++) {
         const element = items[index];
-
         const i = await this.productItemModel.create({
           size: element.size,
           color: element.color,
@@ -47,12 +47,13 @@ export class ProductService {
         productItems.push(i._id);
         count += element.count;
       }
-
+      console.log('its come till here2222')
       createProductDto.items = productItems;
 
       createProductDto.count = count;
-
+      console.log('after creation' , createProductDto)
       const product = await this.productModel.create(createProductDto);
+      console.log('after creation' , product)
       return {
         message: '',
         statusCode: 200,
