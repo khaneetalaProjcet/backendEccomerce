@@ -222,14 +222,14 @@ export class CartService {
         history: [],
       });
     }
-
+    console.log('cart is >>>>> ' , cart)
     const goldPrice = await this.goldPriceService.getGoldPrice(); // مثال: 3,200,000 تومان به‌ازای هر گرم طلا
 
     const itemPrices = this.calculateCartItemPrices(
       cart.products as any,
       goldPrice,
     );
-
+    
     const enrichedProducts = cart.products.map((p, i) => ({
       ...JSON.parse(JSON.stringify(p)),
       pricing: itemPrices[i],
@@ -266,6 +266,7 @@ export class CartService {
     wagePercent: number;
     totalWeight: number;
   }[] {
+    console.log('checkig fucking cart' , cartProducts)
     return cartProducts.map((item) => {
       const weight =
         typeof item.product.weight === 'string'
