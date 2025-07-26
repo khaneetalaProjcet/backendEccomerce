@@ -21,7 +21,7 @@ export class CreateProductItemDto {
   @IsString()
   @IsNotEmpty()
   weight: string;
-
+  
   @ApiProperty({ example: 100, description: 'Count of this items' })
   @IsNumber()
   @IsNotEmpty()

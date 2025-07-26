@@ -42,6 +42,7 @@ export class ProductService {
           color: element.color,
           weight: element.weight,
           count: element.count,
+          price : 0,
         });
         productItems.push(i._id);
         count += element.count;

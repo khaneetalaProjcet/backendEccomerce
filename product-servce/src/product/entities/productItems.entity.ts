@@ -24,7 +24,7 @@ export class ProductItems {
   @Prop()
   count: number;
 
-  @Prop({default : 0})
+  @Prop({default : 0 , required :false})
   price: number;
 }
 
