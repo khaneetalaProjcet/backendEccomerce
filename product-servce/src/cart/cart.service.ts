@@ -222,7 +222,7 @@ export class CartService {
         history: [],
       });
     }
-
+    console.log('cart is >>>>> ' , cart)
     const goldPrice = await this.goldPriceService.getGoldPrice(); // مثال: 3,200,000 تومان به‌ازای هر گرم طلا
 
     const itemPrices = this.calculateCartItemPrices(
