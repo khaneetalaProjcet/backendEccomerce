@@ -31,7 +31,7 @@ export class ProductService {
   async create(createProductDto: CreateProductDto) {
     try {
       const items = createProductDto.items;
-
+      
       const productItems: string[] = [];
       let count = 0;
       for (let index = 0; index < items.length; index++) {

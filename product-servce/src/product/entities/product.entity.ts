@@ -66,6 +66,5 @@ export const ProductSchema = SchemaFactory.createForClass(Product);
 
 ProductSchema.methods = {
   _calculateDiscount: async function () {
-    
  }
 }
