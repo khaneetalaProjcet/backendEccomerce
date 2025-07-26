@@ -66,22 +66,17 @@ export class UploadController {
         // const allowedTypes = (process.env.ALLOWED_TYPES || 'image/jpeg')
         //   .split(',')
         //   .map((t) => t.trim());
-
         // const forbiddenExts = (process.env.FORBIDDEN_EXTENSIONS || '')
         //   .split(',')
         //   .map((ext) => ext.trim());
-
         const ext = extname(file.originalname).toLowerCase();
         const mime = file.mimetype;
-
         // if (forbiddenExts.includes(ext)) {
         //   return cb(new BadRequestException('Forbidden file extension'), false);
         // }
-
         // if (!allowedTypes.includes(mime)) {
         //   return cb(new BadRequestException('Unsupported file type'), false);
         // }
-
         cb(null, true);
       },
     }),
@@ -141,18 +136,14 @@ export class UploadController {
         // const forbiddenExts = (process.env.FORBIDDEN_EXTENSIONS || '')
         //   .split(',')
         //   .map((ext) => ext.trim());
-
         const ext = extname(file.originalname).toLowerCase();
         const mime = file.mimetype;
-
         // if (forbiddenExts.includes(ext)) {
         //   return cb(new BadRequestException('Forbidden file extension'), false);
         // }
-
         // if (!allowedTypes.includes(mime)) {
         //   return cb(new BadRequestException('Unsupported file type'), false);
         // }
-
         cb(null, true);
       },
     }),

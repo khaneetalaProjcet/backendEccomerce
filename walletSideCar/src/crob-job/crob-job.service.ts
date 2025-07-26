@@ -23,6 +23,4 @@ export class CrobJobService {
 
         console.log('pendings list is>>>>>' , pendings)
     }
-
-
 }
