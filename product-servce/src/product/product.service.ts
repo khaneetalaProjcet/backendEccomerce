@@ -793,13 +793,16 @@ export class ProductService {
   }
 
   async getSummary() {
+
+    console.log("summary is calling");
+    
     const totalProducts = await this.productModel.countDocuments();
     const totalOrders = await this.orderModel.countDocuments();
     const totalUsers = await this.interservice.getUsers();
 
     console.log(totalUsers  , '///// totalllllll is here');
     
-
+    
 
     const userCoount = totalUsers.data.length;
 
