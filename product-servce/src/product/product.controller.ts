@@ -23,6 +23,7 @@ import { UpdateProductItemDto } from './dto/update-productItem.dto';
 import { query } from 'winston';
 import { productListQueryDto } from './dto/pagination.dto';
 import { ProductFilterDto } from './dto/productFilterdto';
+import { log } from 'node:console';
 
 @Controller('product')
 export class ProductController {
@@ -207,6 +208,9 @@ export class ProductController {
   @ApiOperation({})
   @ApiResponse({})
   summary() {
+
+    console.log("hi from here ");
+    
     return this.productService.getSummary();
   }
 

@@ -55,7 +55,7 @@ export class InterserviceService {
   }
 
     async getUsers() {
-    const url = 'http://localhost:9010/admin/users';
+    const url = 'http://localhost:9011/user/admin/users';
 
     const token = await this.getToken();
 
@@ -63,7 +63,7 @@ export class InterserviceService {
       throw new BadRequestException('لطفا دوباره امتحان کنید');
     }
     const response = await fetch(url, {
-      method: 'POST',
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${token.token}`,
         'Content-Type': 'application/json',
