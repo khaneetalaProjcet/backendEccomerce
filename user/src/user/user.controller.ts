@@ -238,7 +238,6 @@ export class UserController {
     return this.userService.upgradeProfile(userId, body);
   }
 
-
   @Get('/info')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -297,9 +296,6 @@ export class UserController {
     return this.userService.findById(userId);
   }
 
-
-
-  
   @Get('/admin/info/:userId')
   @UseGuards(JwtAdminAuthGuard)
   @ApiBearerAuth()
@@ -352,9 +348,13 @@ export class UserController {
       },
     },
   })
-  getUserByAdmin(@Req() req: any, @Res() res: any , @Param('userId') userId : string) {
+  getUserByAdmin(
+    @Req() req: any,
+    @Res() res: any,
+    @Param('userId') userId: string,
+  ) {
     console.log('reqUser', req.user);
-    return this.userService.findById(userId);
+    return this.userService.findByIdByAdmin(userId);
   }
 
   @Post('/address/add')
@@ -675,6 +675,7 @@ export class UserController {
   }
 
   @Get('/provinces')
+  @UseGuards(JwtAdminAuthGuard)
   // @ApiBearerAuth()
   async getUsersProvinces() {
     return this.userService.getUsersProvinces();

@@ -532,6 +532,7 @@ export class UserService {
     // const session: ClientSession = await this.userModel.db.startSession();
     // session.startTransaction();
     try {
+        console.log('findby id ...... ' , userId);
       const user = await this.userModel.findById(userId);
       // const user = await this.userModel.findById(userId).session(session)
       if (!user) {
