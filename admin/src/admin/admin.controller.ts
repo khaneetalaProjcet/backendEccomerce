@@ -163,11 +163,8 @@ export class AdminController {
     @Param('id') id: string,
     @Body() body: UpdateAdminAccessDto,
   ) {
-    return this.adminService.updateAdminAccess(
-    id,body
-    );
+    return this.adminService.updateAdminAccess(id, body);
   }
-
 
   @Get('/')
   @ApiOperation({ summary: 'List all admins' })

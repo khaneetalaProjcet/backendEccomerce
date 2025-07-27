@@ -196,6 +196,8 @@ export class AdminService {
       data: access,
     };
   }
+
+  
 async updateAdminAccess(adminId: string, body: UpdateAdminAccessDto) {
   const isLocked = await this.lockerService.check(
     `admin-access:${adminId}`,
@@ -209,12 +211,8 @@ async updateAdminAccess(adminId: string, body: UpdateAdminAccessDto) {
     };
   }
 
-
-  console.log(body.data,"//////////body data is ");
-  
-
   try {
-    const allowedPageIds = body.data.map((p) => p._id);
+    const allowedPageIds = body.map((p) => p._id);
 
     const foundPages = await this.pageModel
       .find({ _id: { $in: allowedPageIds } })
@@ -237,11 +235,8 @@ async updateAdminAccess(adminId: string, body: UpdateAdminAccessDto) {
       return {
         message: 'ادمین یافت نشد',
         statusCode: 404,
-        error: 'کاربر با این شناسه یافت نشد',
       };
     }
-
-    // await this.lockerService.disable(`admin-access:${adminId}`);
 
     return {
       message: 'دسترسی‌های ادمین بروزرسانی شد',
@@ -250,14 +245,12 @@ async updateAdminAccess(adminId: string, body: UpdateAdminAccessDto) {
     };
   } catch (error) {
     return {
-      message: 'خطا در بروزرسانی دسترسی‌های ادمین',
+      message: 'خطا در بروزرسانی',
       statusCode: 500,
       error: error.message,
     };
   }
 }
-
-
 
   async update(id: string, updateAdminDto: UpdateAdminDto) {
     const isLocked = await this.lockerService.check(`admin-update:${id}`, 5);
