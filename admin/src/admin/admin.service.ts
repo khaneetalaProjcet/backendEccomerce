@@ -80,7 +80,7 @@ export class AdminService {
 
   async findByPhoneNumber(phoneNumber: string) {
     const admin = await this.adminModel
-      .findOne({ phoneNumber }).populate('accessPoint')
+      .findOne({ phoneNumber })
       .select('+password');
     if (!admin) {
       return null;
