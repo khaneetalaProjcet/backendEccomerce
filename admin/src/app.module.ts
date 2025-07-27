@@ -9,7 +9,7 @@ import { RedisServiceService } from './redis-service/redis-service';
 import { TokenizeService } from './tokenize/tokenize.service';
 import { JwtService } from '@nestjs/jwt';
 import { InterserviceService } from './interservice/interservice.service';
-import { KafkaModule } from './kafka/kafka.module';
+// import { KafkaModule } from './kafka/kafka.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { Admin, AdminSchema } from './admin/entities/admin.entity';
@@ -27,7 +27,7 @@ import { LocknewService } from './locknew/locknew.service';
     MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
     // UserModule,
     // AuthModule,
-    KafkaModule,
+    // KafkaModule,
     AuthModule,
     AdminModule,
     PageModule,
