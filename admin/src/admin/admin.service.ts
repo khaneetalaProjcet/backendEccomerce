@@ -174,10 +174,10 @@ export class AdminService {
     // console.log('hellla;sdlkfjas;ofhinalkfhj', allAccess)
 
     let ids = admin.accessPoint.map((item) => {
-      return item._id.toString()
-    })
+      return item._id.toString();
+    });
 
-    console.log('list of the ids' , ids)
+    console.log('list of the ids', ids);
     for (let i of allAccess) {
       let data = JSON.parse(JSON.stringify(i.toObject()));
       // console.log(admin.accessPoint[0] , data._id)
@@ -215,9 +215,21 @@ export class AdminService {
           _id: { $in: pageIds },
         })
         .select('_id');
+      
+      console.log(all , 'all is here ');
+      
+
+      if (all.length !== pageIds.length) {
+        return {
+          message: 'برخی صفحات یافت نشدند',
+          statusCode: 400,
+        };
+      }
+
+      const res = all.map((item) => item._id);
 
       const admin = await this.adminModel.findByIdAndUpdate(adminId, {
-        accessPoint: all,
+        accessPoint: res,
       });
 
       if (!admin) {
