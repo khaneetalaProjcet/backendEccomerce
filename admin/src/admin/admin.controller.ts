@@ -161,13 +161,13 @@ export class AdminController {
   })
   async addAdminAccessibility(
     @Param('id') id: string,
-    @Body() updateAdminAccessDto: UpdateAdminAccessDto,
+    @Body() body: UpdateAdminAccessDto,
   ) {
     return this.adminService.updateAdminAccess(
-      id,
-      updateAdminAccessDto.pageIds,
+    id,body
     );
   }
+
 
   @Get('/')
   @ApiOperation({ summary: 'List all admins' })

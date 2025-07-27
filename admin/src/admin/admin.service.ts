@@ -11,6 +11,7 @@ import { lastValueFrom } from 'rxjs';
 import { CreateLogDto } from './dto/createLog.dto';
 import { LocknewService } from 'src/locknew/locknew.service';
 import { log } from 'node:console';
+import { UpdateAdminAccessDto } from './dto/adminAccessibility.dto';
 
 @Injectable()
 export class AdminService {
@@ -195,66 +196,68 @@ export class AdminService {
       data: access,
     };
   }
+async updateAdminAccess(adminId: string, body: UpdateAdminAccessDto) {
+  const isLocked = await this.lockerService.check(
+    `admin-access:${adminId}`,
+    5,
+  );
 
-  async updateAdminAccess(adminId: string, pageIds: string[]) {
-    const isLocked = await this.lockerService.check(
-      `admin-access:${adminId}`,
-      5,
-    );
+  if (isLocked) {
+    return {
+      message: 'لطفاً چند لحظه دیگر تلاش کنید',
+      statusCode: 400,
+    };
+  }
 
-    if (isLocked) {
+
+  console.log(body.data,"//////////body data is ");
+  
+
+  try {
+    const allowedPageIds = body.data.map((p) => p._id);
+
+    const foundPages = await this.pageModel
+      .find({ _id: { $in: allowedPageIds } })
+      .select('_id');
+
+    if (foundPages.length !== allowedPageIds.length) {
       return {
-        message: 'lotfan chand lahze digar talash konid',
+        message: 'برخی صفحات یافت نشدند',
         statusCode: 400,
       };
     }
 
-    try {
-      const all = await this.pageModel
-        .find({
-          _id: { $in: pageIds },
-        })
-        .select('_id');
-      
-      console.log(all , 'all is here ');
-      
+    const accessPoints = foundPages.map((p) => p._id);
 
-      if (all.length !== pageIds.length) {
-        return {
-          message: 'برخی صفحات یافت نشدند',
-          statusCode: 400,
-        };
-      }
+    const admin = await this.adminModel.findByIdAndUpdate(adminId, {
+      accessPoint: accessPoints,
+    });
 
-      const res = all.map((item) => item._id);
-
-      const admin = await this.adminModel.findByIdAndUpdate(adminId, {
-        accessPoint: res,
-      });
-
-      if (!admin) {
-        return {
-          message: 'کاربر یافت نشد',
-          statusCode: 404,
-          error: 'کاربر با این شناسه یافت نشد',
-        };
-      }
-
-      await this.lockerService.disablor(`admin-access${adminId}`);
-
+    if (!admin) {
       return {
-        message: 'دسترسی‌های ادمین بروزرسانی شد',
-        statusCode: 200,
-        data: all,
-      };
-    } catch (error) {
-      return {
-        message: 'خطا در بروزرسانی دسترسی‌های ادمین',
-        statusCode: 500,
-        error: error.message,
+        message: 'ادمین یافت نشد',
+        statusCode: 404,
+        error: 'کاربر با این شناسه یافت نشد',
       };
     }
+
+    // await this.lockerService.disable(`admin-access:${adminId}`);
+
+    return {
+      message: 'دسترسی‌های ادمین بروزرسانی شد',
+      statusCode: 200,
+      data: accessPoints,
+    };
+  } catch (error) {
+    return {
+      message: 'خطا در بروزرسانی دسترسی‌های ادمین',
+      statusCode: 500,
+      error: error.message,
+    };
   }
+}
+
+
 
   async update(id: string, updateAdminDto: UpdateAdminDto) {
     const isLocked = await this.lockerService.check(`admin-update:${id}`, 5);
