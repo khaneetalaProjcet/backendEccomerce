@@ -157,11 +157,11 @@ export class AdminService {
   }
 
   async getAdminAccess(adminId: string) {
+    console.log(adminId, '////////adminId');
+
     let admin: any = await this.adminModel
       .findById(adminId)
       .populate('accessPoint');
-
-    console.log('1111', admin);
     if (!admin) {
       return {
         statusCode: 400,
@@ -171,34 +171,20 @@ export class AdminService {
     }
     let allAccess = await this.pageModel.find();
     let access: any = [];
+    // console.log('hellla;sdlkfjas;ofhinalkfhj', allAccess)
 
-    console.log(admin.accessPoint, 'accesspoint is here ');
+    let ids = admin.accessPoint.map((item) => {
+      return item._id.toString()
+    })
 
-    let adminAccessToString: string[] = [];
-    for (let i of admin.accessPoint) {
-      console.log(i, 'i is here');
-
-      adminAccessToString.push(i._id.toString());
-    }
-
-    console.log('after stringign >>>> ', adminAccessToString);
-
-    // let deepCopyOfAdminAccess = admin.accessPoint ? JSON.parse(JSON.stringify(admin.accessPoint)) : []
-    // console.log(deepCopyOfAdminAccess)
+    console.log('list of the ids' , ids)
     for (let i of allAccess) {
-      console.log(allAccess, 'all access is here');
-
       let data = JSON.parse(JSON.stringify(i.toObject()));
-
-      console.log('dataid is >>>>', data._id);
-
-      if (adminAccessToString.includes(data._id)) {
-        console.log('its in', data._id);
-
+      // console.log(admin.accessPoint[0] , data._id)
+      if (ids.includes(data._id.toString())) {
         data['access'] = true;
         access.push(data);
       } else {
-        console.log('its second ');
         data['access'] = false;
         access.push(data);
       }
@@ -218,7 +204,7 @@ export class AdminService {
 
     if (isLocked) {
       return {
-        message: 'لطفاً چند لحظه دیگر تلاش کنید',
+        message: 'lotfan chand lahze digar talash konid',
         statusCode: 400,
       };
     }
@@ -230,11 +216,8 @@ export class AdminService {
         })
         .select('_id');
 
-      const accessPointIds = all.map((item) => item._id);
-      console.log('alllll', all);
-      console.log('alllll', accessPointIds);
       const admin = await this.adminModel.findByIdAndUpdate(adminId, {
-        accessPoint: accessPointIds,
+        accessPoint: all,
       });
 
       if (!admin) {
@@ -245,8 +228,6 @@ export class AdminService {
         };
       }
 
-      let updated = await this.adminModel.findById(adminId);
-      console.log('updated', updated);
       await this.lockerService.disablor(`admin-access${adminId}`);
 
       return {
