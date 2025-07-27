@@ -152,14 +152,15 @@ export class ProductService {
           };
         });
       
-        for (let i of filteredProducts) {
+      for (let i of filteredProducts) {
+          console.log('item issss into the loop >>>> ' , i.item)
           let sumOfTheItemPrices = 0;
           for (let j of i.item) {
             sumOfTheItemPrices += j.price;
           }
           i.price = sumOfTheItemPrices / i.item.length;
         }
-        
+
       const total = filteredProducts.length;
       const paginatedProducts = filteredProducts.slice(skip, skip + limit);
 
