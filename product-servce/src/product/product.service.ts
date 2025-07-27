@@ -153,15 +153,15 @@ export class ProductService {
         });
       
       for (let i of filteredProducts) {
-          console.log('item issss into the loop >>>> ' , i.items)
+        console.log('item issss into the loop >>>> ', i.items);
         let sumOfTheItemPrices = 0;
         if (i && i.items && i.items.length) {
           for (let j of i.items) {
             sumOfTheItemPrices += j.price;
           }
         }
-          i.price = sumOfTheItemPrices / i.items.length;
-        }
+        i.price = sumOfTheItemPrices / i.items.length;
+      }
 
       const total = filteredProducts.length;
       const paginatedProducts = filteredProducts.slice(skip, skip + limit);
@@ -556,13 +556,24 @@ export class ProductService {
 
             return inPriceRange && inWeightRange && matchesColor;
           });
-
           return {
             ...(product.toObject?.() ?? product),
             items: filteredItems,
           };
         });
 
+      for (let i of filteredProducts) {
+        console.log('item issss into the loop >>>> ', i.items);
+        let sumOfTheItemPrices = 0;
+        if (i && i.items && i.items.length) {
+          for (let j of i.items) {
+            sumOfTheItemPrices += j.price;
+          }
+        }
+        i.price = sumOfTheItemPrices / i.items.length;
+      }
+      
+      
       const total = filteredProducts.length;
       const paginatedProducts = filteredProducts.slice(skip, skip + limit);
 
