@@ -793,18 +793,17 @@ export class ProductService {
   }
 
   async getSummary() {
+    console.log('summary is calling');
 
-    console.log("summary is calling");
-    
     const totalProducts = await this.productModel.countDocuments();
     const totalOrders = await this.orderModel.countDocuments();
     const totalUsers = await this.interservice.getUsers();
 
-    console.log(totalUsers  , '///// totalllllll is here');
-    
-    
+    console.log(totalUsers, '///// totalllllll is here');
 
-    const userCoount = totalUsers.data.length;
+    const userCoount = Array.isArray(totalUsers?.data)
+      ? totalUsers.data.length
+      : 0;
 
     console.log(userCoount, '///////////////userCount');
 
@@ -823,12 +822,12 @@ export class ProductService {
     return {
       data: {
         totalProducts,
-      totalOrders,
-      userCoount,
-      orderOfLastMonth,
+        totalOrders,
+        userCoount,
+        orderOfLastMonth,
       },
-      message: "",
-      statusCode: 200
+      message: '',
+      statusCode: 200,
     };
   }
 
