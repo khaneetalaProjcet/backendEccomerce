@@ -80,7 +80,7 @@ export class AdminService {
 
   async findByPhoneNumber(phoneNumber: string) {
     const admin = await this.adminModel
-      .findOne({ phoneNumber })
+      .findOne({ phoneNumber }).populate('accessPoint')
       .select('+password');
     if (!admin) {
       return null;
@@ -163,6 +163,11 @@ export class AdminService {
     let admin: any = await this.adminModel
       .findById(adminId)
       .populate('accessPoint');
+    
+    
+    console.log(admin,"admin is here ");
+    
+    
     if (!admin) {
       return {
         statusCode: 400,
@@ -234,6 +239,9 @@ async updateAdminAccess(adminId: string, body: UpdateAdminAccessDto) {
     const admin = await this.adminModel.findByIdAndUpdate(adminId, {
       accessPoint: accessPoints,
     });
+
+    console.log(admin,"admin is her ");
+    
 
     if (!admin) {
       return {
