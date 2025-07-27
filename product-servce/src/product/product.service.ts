@@ -151,6 +151,8 @@ export class ProductService {
             items: filteredItems,
           };
         });
+      
+      
 
       const total = filteredProducts.length;
       const paginatedProducts = filteredProducts.slice(skip, skip + limit);
@@ -799,7 +801,6 @@ export class ProductService {
     const totalOrders = await this.orderModel.countDocuments();
     const totalUsers = await this.interservice.getUsers();
 
-    console.log(totalUsers, '///// totalllllll is here');
 
     const userCoount = Array.isArray(totalUsers?.data)
       ? totalUsers.data.length

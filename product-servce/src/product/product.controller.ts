@@ -24,6 +24,7 @@ import { query } from 'winston';
 import { productListQueryDto } from './dto/pagination.dto';
 import { ProductFilterDto } from './dto/productFilterdto';
 import { log } from 'node:console';
+import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
 
 @Controller('product')
 export class ProductController {
@@ -205,6 +206,7 @@ export class ProductController {
   }
 
   @Get('/summary')
+  @UseGuards(JwtAdminAuthGuard)
   @ApiOperation({})
   @ApiResponse({})
   summary() {
