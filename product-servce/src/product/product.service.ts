@@ -93,7 +93,7 @@ export class ProductService {
         query.color && query.color !== 'undefined' ? query.color.trim() : null;
 
       const goldPrice = await this.goldPriceService.getGoldPrice();
-
+      console.log('goldPrice' , goldPrice)
       const products = await this.productModel
         .find()
         .populate('items')
@@ -152,8 +152,14 @@ export class ProductService {
           };
         });
       
-      
-
+        for (let i of filteredProducts) {
+          let sumOfTheItemPrices = 0;
+          for (let j of i.item) {
+            sumOfTheItemPrices += j.price;
+          }
+          i.price = sumOfTheItemPrices / i.item.length;
+        }
+        
       const total = filteredProducts.length;
       const paginatedProducts = filteredProducts.slice(skip, skip + limit);
 
