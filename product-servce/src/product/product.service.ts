@@ -155,12 +155,12 @@ export class ProductService {
       for (let i of filteredProducts) {
           console.log('item issss into the loop >>>> ' , i.items)
         let sumOfTheItemPrices = 0;
-        if (i && i.items) {
+        if (i && i.items && i.items.length) {
           for (let j of i.items) {
             sumOfTheItemPrices += j.price;
           }
         }
-          i.price = sumOfTheItemPrices / i.item.length;
+          i.price = sumOfTheItemPrices / i.items.length;
         }
 
       const total = filteredProducts.length;
