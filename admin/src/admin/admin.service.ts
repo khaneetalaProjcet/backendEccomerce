@@ -197,7 +197,6 @@ export class AdminService {
     };
   }
 
-  
 async updateAdminAccess(adminId: string, body: UpdateAdminAccessDto) {
   const isLocked = await this.lockerService.check(
     `admin-access:${adminId}`,
@@ -212,7 +211,9 @@ async updateAdminAccess(adminId: string, body: UpdateAdminAccessDto) {
   }
 
   try {
-    const allowedPageIds = body.map((p) => p._id);
+    const allowedPageIds = body
+      .filter((p) => p.access === true)
+      .map((p) => p._id);
 
     const foundPages = await this.pageModel
       .find({ _id: { $in: allowedPageIds } })
@@ -226,6 +227,9 @@ async updateAdminAccess(adminId: string, body: UpdateAdminAccessDto) {
     }
 
     const accessPoints = foundPages.map((p) => p._id);
+
+    console.log(accessPoints,"//////");
+    
 
     const admin = await this.adminModel.findByIdAndUpdate(adminId, {
       accessPoint: accessPoints,
