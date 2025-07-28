@@ -24,8 +24,11 @@ export class ProductItems {
   @Prop()
   count: number;
 
-  @Prop({default : 0 , required :false})
+  @Prop({ default: 0, required: false })
   price: number;
+
+  @Prop({ default: 0, required: false })
+  discountPercent: number;
 }
 
 export const ProductItemSchema = SchemaFactory.createForClass(ProductItems);

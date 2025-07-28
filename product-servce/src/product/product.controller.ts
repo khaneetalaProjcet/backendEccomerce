@@ -101,7 +101,7 @@ export class ProductController {
     return this.productService.createProductItems(createProductDto);
   }
   @Post('item/update/:id')
-  @UseGuards(JwtAdminAuthGuard)
+  // @UseGuards(JwtAdminAuthGuard)
   @ApiOperation({ summary: 'updating each items of the product' })
   @ApiBody({ type: UpdateProductItemDto })
   @ApiResponse({
