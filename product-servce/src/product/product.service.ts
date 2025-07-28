@@ -393,8 +393,15 @@ export class ProductService {
           error: 'محصول پیدا نشد',
         };
       }
+
+
+      const convertedId = dto.productId.toString()
+
+      console.log(convertedId,"convertedId");
+      
+
       const product = await this.productModel
-        .findById(dto.productId)
+        .findById(convertedId)
         .populate('items')
         .exec();
       if (!product) {
