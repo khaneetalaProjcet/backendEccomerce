@@ -80,7 +80,7 @@ export class ProductService {
 
       let { search } = query;
 
-      const hasSearch = query.color && query.color !== 'undefined';
+      const hasSearch = query.search && query.search !== 'undefined';
 
       const searchCondition: any = hasSearch
         ? {
@@ -115,6 +115,10 @@ export class ProductService {
         .populate('firstCategory')
         .populate('midCategory')
         .populate('lastCategory');
+      
+      
+      console.log(products,"products is here");
+      
 
       const filteredProducts = products
         .filter((product: any) => {
@@ -168,7 +172,6 @@ export class ProductService {
         });
 
       for (let i of filteredProducts) {
-        console.log('item issss into the loop >>>> ', i.items);
         let sumOfTheItemPrices = 0;
         if (i && i.items && i.items.length) {
           for (let j of i.items) {
