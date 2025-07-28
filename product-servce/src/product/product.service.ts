@@ -79,7 +79,10 @@ export class ProductService {
       const skip = (page - 1) * limit;
 
       let { search } = query;
-      const hasSearch = typeof search === 'string' && search.trim() !== 'undefind';
+
+      console.log(search, typeof search,"/////search");
+      
+      const hasSearch =  query.color && query.color !== 'undefined' ;
 
       const searchCondition: any = hasSearch
         ? {
