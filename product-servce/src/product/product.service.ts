@@ -77,10 +77,11 @@ export class ProductService {
       const limit = Number(query.limit) || 12;
       const page = (!isNaN(Number(query.page)) && Number(query.page)) || 1;
       const skip = (page - 1) * limit;
+      
 
-      let { search } = query;
 
-      console.log(search, typeof search,"/////search");
+       let { search } = query;
+
       
       const hasSearch =  query.color && query.color !== 'undefined' ;
 
@@ -92,6 +93,7 @@ export class ProductService {
             ],
           }
         : {};
+      
 
       const minPrice = !isNaN(Number(query.minPrice))
         ? Number(query.minPrice)
@@ -398,9 +400,11 @@ export class ProductService {
         };
       }
 
-      const convertedId = dto.productId.toString();
 
-      console.log(convertedId, 'convertedId');
+      const convertedId = dto.productId.toString()
+
+      console.log(convertedId,"convertedId");
+      
 
       const product = await this.productModel
         .findById(convertedId)
