@@ -80,9 +80,7 @@ export class ProductService {
 
       let { search } = query;
 
-      console.log(search, typeof search,"/////search");
-      
-      const hasSearch =  query.color && query.color !== 'undefined' ;
+      const hasSearch = query.color && query.color !== 'undefined';
 
       const searchCondition: any = hasSearch
         ? {
@@ -107,6 +105,8 @@ export class ProductService {
         : 0;
       const color =
         query.color && query.color !== 'undefined' ? query.color.trim() : null;
+
+      console.log(search, query, '/////////');
 
       const goldPrice = await this.goldPriceService.getGoldPrice();
       const products = await this.productModel
