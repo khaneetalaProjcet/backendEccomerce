@@ -18,7 +18,8 @@ export class OrderService {
   constructor(
     private readonly goldPriceService: goldPriceService,
     @InjectModel(Cart.name) private cartModel: Model<CartInterface>,
-    @InjectModel(ProductItems.name) private productItemsModel: Model<ProductItemsDocment>,
+    @InjectModel(ProductItems.name)
+    private productItemsModel: Model<ProductItemsDocment>,
     @InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
     @InjectModel(Order.name) private orderModel: Model<OrderInterface>,
   ) {}
@@ -256,13 +257,35 @@ export class OrderService {
     }
   }
 
-  async getAllOrder() {
+  async getAllOrder(query: string) {
     try {
-      const all = await this.orderModel
-        .find()
-        .populate('products.product')
-        .populate('products.mainProduct')
-        .populate('user');
+      let all;
+      if (query && query != '' && query !== 'undefined') {
+        all = await this.orderModel
+          .find({
+            $or: [
+              {$regex : {date : new RegExp(query , 'i')} },
+              {$regex :{ time : new RegExp(query , 'i')} },
+              {$regex : {invoiceId : new RegExp(query ,'i')} },
+              {$regex : {'address.addressId' : new RegExp(query ,'i')} },
+              {$regex : {'address.adress' : new RegExp(query ,'i')} },
+              {$regex : {'address.postCode' : new RegExp(query ,'i')} },
+              {$regex : {'address.name' : new RegExp(query ,'i')} },
+              {$regex : {adress : new RegExp(query ,'i')} },
+              {$regex : {postCode : new RegExp(query ,'i')} },
+              {$regex : {name : new RegExp(query ,'i')} },
+            ]
+          })
+          .populate('products.product')
+          .populate('products.mainProduct')
+          .populate('user');
+      } else {
+        all = await this.orderModel
+          .find()
+          .populate('products.product')
+          .populate('products.mainProduct')
+          .populate('user');
+      }
       return {
         message: '',
         statusCode: 200,

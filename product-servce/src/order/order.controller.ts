@@ -9,6 +9,7 @@ import {
   Req,
   Res,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -36,8 +37,8 @@ export class OrderController {
   }
   @Get('admin/orders')
   @UseGuards(JwtAdminAuthGuard)
-  findAllOrderAdmin(@Req() req: any, @Res() res: any) {
-    return this.orderService.getAllOrder();
+  findAllOrderAdmin(@Req() req: any, @Res() res: any , @Query('search') search : string) {
+    return this.orderService.getAllOrder(search);
   }
 
   @Get('user')
