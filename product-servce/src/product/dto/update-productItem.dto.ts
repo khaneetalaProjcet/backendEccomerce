@@ -4,7 +4,6 @@ import {
   IsOptional,
   IsString,
   IsNumber,
-  IsMongoId,
 } from 'class-validator';
 
 export class UpdateProductItemDto {

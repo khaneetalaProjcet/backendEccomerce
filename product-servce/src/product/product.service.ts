@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Search } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { CreateProductItemDto } from './dto/create-productItem.dto';
@@ -19,7 +19,7 @@ import { ProductFilterDto } from './dto/productFilterdto';
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
 import { Order, OrderInterface } from '../order/entities/order.entity';
 import { InterserviceService } from 'src/interservice/interservice.service';
-import { log } from 'node:console';
+
 
 @Injectable()
 export class ProductService {
@@ -77,6 +77,15 @@ export class ProductService {
       const page = (!isNaN(Number(query.page)) && Number(query.page)) || 1;
       const skip = (page - 1) * limit;
 
+      let { search } = query;
+      let reSearch = new RegExp(search);
+      const searchCondition: any = {
+        $or: [
+          { $regex: { name: reSearch } },
+          { $regex: { description: reSearch } },
+        ],
+      };
+
       const minPrice = !isNaN(Number(query.minPrice))
         ? Number(query.minPrice)
         : 0;
@@ -93,9 +102,8 @@ export class ProductService {
         query.color && query.color !== 'undefined' ? query.color.trim() : null;
 
       const goldPrice = await this.goldPriceService.getGoldPrice();
-      console.log('goldPrice' , goldPrice)
       const products = await this.productModel
-        .find()
+        .find(searchCondition)
         .populate('items')
         .populate('firstCategory')
         .populate('midCategory')
@@ -151,7 +159,7 @@ export class ProductService {
             items: filteredItems,
           };
         });
-      
+
       for (let i of filteredProducts) {
         console.log('item issss into the loop >>>> ', i.items);
         let sumOfTheItemPrices = 0;
@@ -372,6 +380,9 @@ export class ProductService {
         weight: dto.weight,
         discountPercent: dto.discountPercent,
       });
+
+      console.log(prodcutItem, '//// product item ');
+
       if (!prodcutItem) {
         return {
           message: 'محصول پیدا نشد',
@@ -567,13 +578,14 @@ export class ProductService {
         let sumOfTheItemPrices = 0;
         if (i && i.items && i.items.length) {
           for (let j of i.items) {
+            console.log(j, 'j is here ');
+
             sumOfTheItemPrices += j.price;
           }
         }
         i.price = sumOfTheItemPrices / i.items.length;
       }
-      
-      
+
       const total = filteredProducts.length;
       const paginatedProducts = filteredProducts.slice(skip, skip + limit);
 
@@ -631,39 +643,6 @@ export class ProductService {
       data: filteredProducts,
     };
   }
-
-  // async addDiscount(productId: string, dto: UpdateProductItemDto) {
-  //   try {
-  //     const discountPercent = dto.discountPercent;
-
-  //     const updatedProductItem = await this.productItemModel.findByIdAndUpdate(
-  //       productId,
-  //       {
-  //         discountPercent: discountPercent,
-  //       },
-  //     );
-
-  //     if (!updatedProductItem) {
-  //       return {
-  //         message: 'محصول مورد نظر یافت نشد',
-  //         statusCode: 400,
-  //         data: null,
-  //       };
-  //     }
-
-  //     return {
-  //       message: 'موفق',
-  //       statusCode: 200,
-  //       data: updatedProductItem,
-  //     };
-  //   } catch (error) {
-  //     return {
-  //       message: 'internal server error',
-  //       statusCode: 500,
-  //       data: null,
-  //     };
-  //   }
-  // }
 
   async recommandation(query: productListQueryDto) {
     try {
@@ -820,7 +799,6 @@ export class ProductService {
     const totalProducts = await this.productModel.countDocuments();
     const totalOrders = await this.orderModel.countDocuments();
     const totalUsers = await this.interservice.getUsers();
-
 
     const userCoount = Array.isArray(totalUsers?.data)
       ? totalUsers.data.length
