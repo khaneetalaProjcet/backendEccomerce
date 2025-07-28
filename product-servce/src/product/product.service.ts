@@ -77,13 +77,10 @@ export class ProductService {
       const limit = Number(query.limit) || 12;
       const page = (!isNaN(Number(query.page)) && Number(query.page)) || 1;
       const skip = (page - 1) * limit;
-      
 
+      let { search } = query;
 
-       let { search } = query;
-
-      
-      const hasSearch =  query.color && query.color !== 'undefined' ;
+      const hasSearch = query.color && query.color !== 'undefined';
 
       const searchCondition: any = hasSearch
         ? {
@@ -93,7 +90,6 @@ export class ProductService {
             ],
           }
         : {};
-      
 
       const minPrice = !isNaN(Number(query.minPrice))
         ? Number(query.minPrice)
@@ -109,6 +105,8 @@ export class ProductService {
         : 0;
       const color =
         query.color && query.color !== 'undefined' ? query.color.trim() : null;
+
+      console.log(search, query, '/////////');
 
       const goldPrice = await this.goldPriceService.getGoldPrice();
       const products = await this.productModel
@@ -400,11 +398,9 @@ export class ProductService {
         };
       }
 
+      const convertedId = dto.productId.toString();
 
-      const convertedId = dto.productId.toString()
-
-      console.log(convertedId,"convertedId");
-      
+      console.log(convertedId, 'convertedId');
 
       const product = await this.productModel
         .findById(convertedId)
