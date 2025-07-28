@@ -20,7 +20,7 @@ import { goldPriceService } from 'src/goldPrice/goldPrice.service';
 import { Order, OrderInterface } from '../order/entities/order.entity';
 import { InterserviceService } from 'src/interservice/interservice.service';
 import { isValidObjectId } from 'mongoose';
-
+import { log } from 'node:console';
 
 @Injectable()
 export class ProductService {
@@ -80,12 +80,14 @@ export class ProductService {
 
       let { search } = query;
       let reSearch = new RegExp(search);
-      const searchCondition: any = {
-        $or: [
-          { $regex: { name: reSearch } },
-          { $regex: { description: reSearch } },
-        ],
-      };
+      const searchCondition: any = search
+        ? {
+            $or: [
+              { name: { $regex: reSearch } },
+              { description: { $regex: reSearch } },
+            ],
+          }
+        : {};
 
       const minPrice = !isNaN(Number(query.minPrice))
         ? Number(query.minPrice)
@@ -342,8 +344,6 @@ export class ProductService {
         color: dto.color,
       });
 
-      
-
       const product = await this.productModel.findByIdAndUpdate(dto.productId, {
         $push: { items: prodcutItem._id },
         new: true,
@@ -384,13 +384,7 @@ export class ProductService {
         discountPercent: dto.discountPercent,
       });
 
-      if (!isValidObjectId(dto.productId)) {
-        return {
-          message: 'شناسه نامعتبر است',
-          statusCode: 400,
-          error: 'شناسه نامعتبر است',
-        };
-      }
+      console.log(prodcutItem);
 
       if (!prodcutItem) {
         return {
