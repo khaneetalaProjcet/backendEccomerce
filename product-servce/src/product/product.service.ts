@@ -19,6 +19,7 @@ import { ProductFilterDto } from './dto/productFilterdto';
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
 import { Order, OrderInterface } from '../order/entities/order.entity';
 import { InterserviceService } from 'src/interservice/interservice.service';
+import { isValidObjectId } from 'mongoose';
 
 
 @Injectable()
@@ -341,6 +342,8 @@ export class ProductService {
         color: dto.color,
       });
 
+      
+
       const product = await this.productModel.findByIdAndUpdate(dto.productId, {
         $push: { items: prodcutItem._id },
         new: true,
@@ -381,7 +384,13 @@ export class ProductService {
         discountPercent: dto.discountPercent,
       });
 
-      console.log(prodcutItem, '//// product item ');
+      if (!isValidObjectId(dto.productId)) {
+        return {
+          message: 'شناسه نامعتبر است',
+          statusCode: 400,
+          error: 'شناسه نامعتبر است',
+        };
+      }
 
       if (!prodcutItem) {
         return {
