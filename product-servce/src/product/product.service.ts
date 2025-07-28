@@ -79,12 +79,13 @@ export class ProductService {
       const skip = (page - 1) * limit;
 
       let { search } = query;
-      let reSearch = new RegExp(search);
-      const searchCondition: any = search
+      const hasSearch = typeof search === 'string' && search.trim() !== 'undefind';
+
+      const searchCondition: any = hasSearch
         ? {
             $or: [
-              { name: { $regex: reSearch } },
-              { description: { $regex: reSearch } },
+              { name: { $regex: new RegExp(search, 'i') } },
+              { description: { $regex: new RegExp(search, 'i') } },
             ],
           }
         : {};
@@ -394,11 +395,9 @@ export class ProductService {
         };
       }
 
+      const convertedId = dto.productId.toString();
 
-      const convertedId = dto.productId.toString()
-
-      console.log(convertedId,"convertedId");
-      
+      console.log(convertedId, 'convertedId');
 
       const product = await this.productModel
         .findById(convertedId)
