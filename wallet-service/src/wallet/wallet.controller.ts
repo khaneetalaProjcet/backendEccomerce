@@ -157,8 +157,24 @@ export class WalletController {
     return this.walletService.secondRedirectFromGateway(body);
   }
 
-  @Get('/goldboxInvoices')
-  @UseGuards(JwtAuthGuard)
+  // @Get('/goldboxInvoices')
+  // @UseGuards(JwtAuthGuard)
+  // @ApiOperation({ summary: 'Retrieve gold box invoices' })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Gold box invoices retrieved successfully',
+  // })
+  // @ApiResponse({
+  //   status: 500,
+  //   description: 'Internal server error',
+  // })
+  // async getGoldBoxInvoices(@Query() query: walletListQueryDto) {
+  //   return this.walletService.findGolBoxInvoice(query);
+  // }
+
+
+
+  @Get('/invoice/gold/all')
   @ApiOperation({ summary: 'Retrieve gold box invoices' })
   @ApiResponse({
     status: 200,
@@ -203,6 +219,6 @@ export class WalletController {
     return this.walletService.findWalletInvoice(query);
   }
 
-  
+
 
 }

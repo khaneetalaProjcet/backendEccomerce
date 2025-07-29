@@ -336,10 +336,10 @@ export class WalletService {
       const skip = page * limit;
 
       let { search } = query;
-      const safeQuery = search.trim();
-      const regex = new RegExp(safeQuery, 'i');
-
+      
       const hasSearch = query.search && query.search !== 'undefined';
+      const safeQuery = hasSearch ? search.trim() : ''
+      const regex = new RegExp(safeQuery, 'i');
 
       const searchCondition: any = hasSearch
         ? {
@@ -408,9 +408,6 @@ export class WalletService {
         this.walletInvoiceModel.find(searchCondition).skip(skip).limit(limit),
         this.walletInvoiceModel.countDocuments(),
       ]);
-
-          // let invoices = await this.walletInvoiceModel.find()
-          // let total = await this.walletInvoiceModel.countDocuments()
 
       console.log('its heree >>>> ' , invoices , total)
 
