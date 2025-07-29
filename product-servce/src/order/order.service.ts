@@ -12,6 +12,8 @@ import {
 import { Product, ProductDocumnet } from 'src/product/entities/product.entity';
 import { Order, OrderInterface } from './entities/order.entity';
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
+import { orderFilterDto } from './dto/orderFilter.dto';
+import { error } from 'console';
 
 @Injectable()
 export class OrderService {
@@ -172,19 +174,40 @@ export class OrderService {
     }
   }
 
-  async allWaiting() {
+  async allWaiting(query: string) {
     try {
-      const sent = await this.orderModel
-        .find({
-          status: 1,
-        })
-        .populate('products.product')
-        .populate('products.mainProduct');
+      let all;
+      if (query && query != '' && query !== 'undefined') {
+        all = await this.orderModel
+          .find({
+            status: 1,
+            $or: [
+              { $regex: { date: new RegExp(query, 'i') } },
+              { $regex: { time: new RegExp(query, 'i') } },
+              { $regex: { invoiceId: new RegExp(query, 'i') } },
+              { $regex: { 'address.addressId': new RegExp(query, 'i') } },
+              { $regex: { 'address.adress': new RegExp(query, 'i') } },
+              { $regex: { 'address.postCode': new RegExp(query, 'i') } },
+              { $regex: { 'address.name': new RegExp(query, 'i') } },
+              { $regex: { adress: new RegExp(query, 'i') } },
+              { $regex: { postCode: new RegExp(query, 'i') } },
+              { $regex: { name: new RegExp(query, 'i') } },
+            ],
+          })
+          .populate('products.product')
+          .populate('products.mainProduct');
+      } else {
+        all = await this.orderModel
+          .find({ status: 1 })
+          .populate('products.product')
+          .populate('products.mainProduct')
+          .populate('user');
+      }
 
       return {
         message: '',
         statusCode: 200,
-        data: sent,
+        data: all,
       };
     } catch (error) {
       console.log(error);
@@ -264,17 +287,17 @@ export class OrderService {
         all = await this.orderModel
           .find({
             $or: [
-              {$regex : {date : new RegExp(query , 'i')} },
-              {$regex :{ time : new RegExp(query , 'i')} },
-              {$regex : {invoiceId : new RegExp(query ,'i')} },
-              {$regex : {'address.addressId' : new RegExp(query ,'i')} },
-              {$regex : {'address.adress' : new RegExp(query ,'i')} },
-              {$regex : {'address.postCode' : new RegExp(query ,'i')} },
-              {$regex : {'address.name' : new RegExp(query ,'i')} },
-              {$regex : {adress : new RegExp(query ,'i')} },
-              {$regex : {postCode : new RegExp(query ,'i')} },
-              {$regex : {name : new RegExp(query ,'i')} },
-            ]
+              { $regex: { date: new RegExp(query, 'i') } },
+              { $regex: { time: new RegExp(query, 'i') } },
+              { $regex: { invoiceId: new RegExp(query, 'i') } },
+              { $regex: { 'address.addressId': new RegExp(query, 'i') } },
+              { $regex: { 'address.adress': new RegExp(query, 'i') } },
+              { $regex: { 'address.postCode': new RegExp(query, 'i') } },
+              { $regex: { 'address.name': new RegExp(query, 'i') } },
+              { $regex: { adress: new RegExp(query, 'i') } },
+              { $regex: { postCode: new RegExp(query, 'i') } },
+              { $regex: { name: new RegExp(query, 'i') } },
+            ],
           })
           .populate('products.product')
           .populate('products.mainProduct')
@@ -292,7 +315,7 @@ export class OrderService {
         data: all,
       };
     } catch (err) {
-      console.log('err');
+      console.log('err', err);
       return {
         message: 'مشکل داخلی سیسنم',
         statusCode: 500,

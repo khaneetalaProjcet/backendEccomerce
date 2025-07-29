@@ -31,8 +31,6 @@ export class InterserviceService {
     };
     const token = await this.getToken();
 
-    console.log('token', token.token);
-
     if (!token) {
       throw new BadRequestException('لطفا دوباره امتحان کنید');
     }
