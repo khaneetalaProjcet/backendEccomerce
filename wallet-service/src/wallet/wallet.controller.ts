@@ -174,7 +174,7 @@ export class WalletController {
 
 
 
-  @Get('/invoice/gold/all')
+  @Get('/invoices/gold/all')
   @ApiOperation({ summary: 'Retrieve gold box invoices' })
   @ApiResponse({
     status: 200,
