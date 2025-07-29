@@ -173,7 +173,7 @@ export class WalletController {
   }
 
   @Get('/walletInvoices')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Retrieve wallet payment invoices' })
   @ApiResponse({
     status: 200,

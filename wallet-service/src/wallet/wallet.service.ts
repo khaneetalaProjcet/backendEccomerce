@@ -402,10 +402,15 @@ export class WalletService {
           }
         : {};
 
-      const [invoices, total] = await Promise.all([
-        this.walletInvoiceModel.find(searchCondition).skip(skip).limit(limit),
-        this.walletInvoiceModel.countDocuments(),
-      ]);
+      // const [invoices, total] = await Promise.all([
+      //   this.walletInvoiceModel.find(searchCondition).skip(skip).limit(limit),
+      //   this.walletInvoiceModel.countDocuments(),
+      // ]);
+
+          let invoices = await this.walletInvoiceModel.find()
+          let total = await this.walletInvoiceModel.countDocuments()
+
+      console.log('its heree >>>> ' , invoices , total)
 
       return {
         message: '',
