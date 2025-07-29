@@ -174,49 +174,56 @@ export class OrderService {
     }
   }
 
-  async allWaiting(query: string) {
-    try {
-      let all;
-      if (query && query != '' && query !== 'undefined') {
-        all = await this.orderModel
-          .find({
-            $or: [
-              { date: { $regex: new RegExp(query, 'i') } },
-              { time: { $regex: new RegExp(query, 'i') } },
-              { invoiceId: { $regex: new RegExp(query, 'i') } },
-              { 'address.addressId': { $regex: new RegExp(query, 'i') } },
-              { 'address.adress': { $regex: new RegExp(query, 'i') } },
-              { 'address.postCode': { $regex: new RegExp(query, 'i') } },
-              { 'address.name': { $regex: new RegExp(query, 'i') } },
-              { adress: { $regex: new RegExp(query, 'i') } },
-              { postCode: { $regex: new RegExp(query, 'i') } },
-              { name: { $regex: new RegExp(query, 'i') } },
-            ],
-          })
-          .populate('products.product')
-          .populate('products.mainProduct');
-      } else {
-        all = await this.orderModel
-          .find({ status: 1 })
-          .populate('products.product')
-          .populate('products.mainProduct')
-          .populate('user');
-      }
+async allWaiting(query: string) {
+  try {
+    let all;
 
-      return {
-        message: '',
-        statusCode: 200,
-        data: all,
-      };
-    } catch (error) {
-      console.log(error);
-      return {
-        message: 'مشکل داخلی سیسنم',
-        statusCode: 500,
-        error: 'مشکل داخلی سیسنم',
-      };
+    if (query && typeof query === 'string' && query.trim() !== '' && query !== 'undefined') {
+      const safeQuery = query.trim();
+      const regex = new RegExp(safeQuery, 'i');
+
+      all = await this.orderModel
+        .find({
+          status: 1,
+          $or: [
+            { date: { $regex: regex } },
+            { time: { $regex: regex } },
+            { invoiceId: { $regex: regex } },
+            { 'address.addressId': { $regex: regex } },
+            { 'address.adress': { $regex: regex } },
+            { 'address.postCode': { $regex: regex } },
+            { 'address.name': { $regex: regex } },
+            { adress: { $regex: regex } },
+            { postCode: { $regex: regex } },
+            { name: { $regex: regex } },
+          ],
+        })
+        .populate('products.product')
+        .populate('products.mainProduct')
+        .populate('user');
+    } else {
+      all = await this.orderModel
+        .find({ status: 1 })
+        .populate('products.product')
+        .populate('products.mainProduct')
+        .populate('user');
     }
+
+    return {
+      message: '',
+      statusCode: 200,
+      data: all,
+    };
+  } catch (error) {
+    console.error('Error in allWaiting:', error);
+    return {
+      message: 'مشکل داخلی سیستم',
+      statusCode: 500,
+      error: 'مشکل داخلی سیستم',
+    };
   }
+}
+
 
   async findOneById(orderId: string) {
     try {
