@@ -12,7 +12,11 @@ import {
   WalletInvoice,
   WalletInvoiceInterface,
 } from './entities/walletInvoice.entity';
-import { goldInvoice,goldInvoiceInterface } from './entities/goldBoxInvoice.entity';
+import {
+  goldInvoice,
+  goldInvoiceInterface,
+} from './entities/goldBoxInvoice.entity';
+import { walletListQueryDto } from './dto/pagination.dto';
 
 @Injectable()
 export class WalletService {
@@ -21,7 +25,7 @@ export class WalletService {
     private interService: InterserviceService,
     @InjectModel(WalletInvoice.name)
     private walletInvoiceModel: Model<WalletInvoiceInterface>,
-        @InjectModel(goldInvoice.name)
+    @InjectModel(goldInvoice.name)
     private golldBoxModel: Model<goldInvoiceInterface>,
     private payments: AppService,
 
@@ -325,77 +329,104 @@ export class WalletService {
     return `This action returns all wallet`;
   }
 
+  async findGolBoxInvoice(query: walletListQueryDto) {
+    try {
+      const limit = Number(query.limit) || 12;
+      const page = Number(query.page) || 0;
+      const skip = page * limit;
 
-async findGolBoxInvoice(query: any) {
-  try {
-    const limit = Number(query.limit) || 12;
-    const page = Number(query.page) || 0;
-    const skip = page * limit;
+      let { search } = query;
+      const safeQuery = search.trim();
+      const regex = new RegExp(safeQuery, 'i');
 
-    const [invoices, total] = await Promise.all([
-      this.golldBoxModel
-        .find()
-        .skip(skip)
-        .limit(limit),
-      this.golldBoxModel.countDocuments(),
-    ]);
+      const hasSearch = query.search && query.search !== 'undefined';
 
-    return {
-      message: '',
-      statusCode: 200,
-      data: invoices,
-      pagination: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      message: 'مشکل داخلی سیستم',
-      statusCode: 500,
-      error: 'مشکل داخلی سیستم',
-    };
+      const searchCondition: any = hasSearch
+        ? {
+            $or: [
+              { orderId: { $regex: regex } },
+              { status: { $regex: regex } },
+              { date: { $regex: regex } },
+              { time: { $regex: regex } },
+              { invoiceId: { $regex: regex } },
+            ],
+          }
+        : {};
+
+      const [invoices, total] = await Promise.all([
+        this.golldBoxModel.find(searchCondition).skip(skip).limit(limit),
+        this.golldBoxModel.countDocuments(),
+      ]);
+
+      return {
+        message: '',
+        statusCode: 200,
+        data: invoices,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        message: 'مشکل داخلی سیستم',
+        statusCode: 500,
+        error: 'مشکل داخلی سیستم',
+      };
+    }
   }
-}
 
-async findWalletInvoice(query: any) {
-  try {
-    const limit = Number(query.limit) || 12;
-    const page = Number(query.page) || 0;
-    const skip = page * limit;
+  async findWalletInvoice(query: any) {
+    try {
+      const limit = Number(query.limit) || 12;
+      const page = Number(query.page) || 0;
+      const skip = page * limit;
 
-    const [invoices, total] = await Promise.all([
-      this.walletInvoiceModel
-        .find()
-        .skip(skip)
-        .limit(limit),
-      this.walletInvoiceModel.countDocuments(),
-    ]);
+      let { search } = query;
+      const safeQuery = search.trim();
+      const regex = new RegExp(safeQuery, 'i');
 
-    return {
-      message: '',
-      statusCode: 200,
-      data: invoices,
-      pagination: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      message: 'مشکل داخلی سیستم',
-      statusCode: 500,
-      error: 'مشکل داخلی سیستم',
-    };
+      const hasSearch = query.search && query.search !== 'undefined';
+
+      const searchCondition: any = hasSearch
+        ? {
+            $or: [
+              { orderId: { $regex: regex } },
+              { status: { $regex: regex } },
+              { traceNo: { $regex: regex } },
+              { ResNum: { $regex: regex } },
+            ],
+          }
+        : {};
+
+      const [invoices, total] = await Promise.all([
+        this.walletInvoiceModel.find(searchCondition).skip(skip).limit(limit),
+        this.walletInvoiceModel.countDocuments(),
+      ]);
+
+      return {
+        message: '',
+        statusCode: 200,
+        data: invoices,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        message: 'مشکل داخلی سیستم',
+        statusCode: 500,
+        error: 'مشکل داخلی سیستم',
+      };
+    }
   }
-}
-
 
   async findOne(owner: string) {
     const wallet = await this.walletModel.findOne({ owner });
@@ -416,7 +447,7 @@ async findWalletInvoice(query: any) {
 
   async payOrder(orderId: string) {
     console.log('order id', orderId);
-    
+
     let order = await this.interService.getOrder(orderId);
 
     if (order == 0) {
@@ -462,207 +493,262 @@ async findWalletInvoice(query: any) {
     }
   }
 
-
-
-  async redirectFromGateway(body : any){
-    console.log( 'it comes in to the redirect', body)
-    let page = ''
-    let walletInvoice : any = await this.walletInvoiceModel.findOne({
-      ResNum: body.ResNum
-    })
+  async redirectFromGateway(body: any) {
+    console.log('it comes in to the redirect', body);
+    let page = '';
+    let walletInvoice: any = await this.walletInvoiceModel.findOne({
+      ResNum: body.ResNum,
+    });
     try {
       if (!walletInvoice) {
-      console.log('wallet invoice not exits')
-      page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا معتبر')
-    } else {
-      console.log('wallet invoice is >>>> ', walletInvoice)
-      if (body.State === 'CanceledByUser') {   // canceled by user stat 1
-        console.log('the payment is canceled by user')
-        walletInvoice.status = 'failed'
-        await walletInvoice.save()
-        page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'انصراف از درخواست')
-        return {
-          message: 'page',
-          statusCode: 301,
-          page
-        }
-      } else if (body.State === 'OK') {     // ok state 2 here we should double check the transActions
-        console.log('ok the transActions')
-        
-        let responseOfVerification = await this.interService.verifyTransAction(body.RefNum)
+        console.log('wallet invoice not exits');
+        page = await this.failedPage(
+          'https://ecommerce.khaneetala.ir/',
+          'تراکنش نا معتبر',
+        );
+      } else {
+        console.log('wallet invoice is >>>> ', walletInvoice);
+        if (body.State === 'CanceledByUser') {
+          // canceled by user stat 1
+          console.log('the payment is canceled by user');
+          walletInvoice.status = 'failed';
+          await walletInvoice.save();
+          page = await this.failedPage(
+            'https://ecommerce.khaneetala.ir/',
+            'انصراف از درخواست',
+          );
+          return {
+            message: 'page',
+            statusCode: 301,
+            page,
+          };
+        } else if (body.State === 'OK') {
+          // ok state 2 here we should double check the transActions
+          console.log('ok the transActions');
 
-        if (responseOfVerification && responseOfVerification.Success) {     // of the transAction was success
-          console.log('transAction succeeded')
-          walletInvoice.payment = responseOfVerification.TransactionDetail;
-          walletInvoice.status = 'completed'
-          walletInvoice.RefNum = body.RefNum;
-          walletInvoice.traceNo = body.TraceNo
-          let orderUpdated = await this.interService.aprovePey(walletInvoice.orderId.toString(), 1, walletInvoice)
-          if (orderUpdated === 1) {
-            walletInvoice.state = 3
+          let responseOfVerification =
+            await this.interService.verifyTransAction(body.RefNum);
+
+          if (responseOfVerification && responseOfVerification.Success) {
+            // of the transAction was success
+            console.log('transAction succeeded');
+            walletInvoice.payment = responseOfVerification.TransactionDetail;
+            walletInvoice.status = 'completed';
+            walletInvoice.RefNum = body.RefNum;
+            walletInvoice.traceNo = body.TraceNo;
+            let orderUpdated = await this.interService.aprovePey(
+              walletInvoice.orderId.toString(),
+              1,
+              walletInvoice,
+            );
+            if (orderUpdated === 1) {
+              walletInvoice.state = 3;
+            } else {
+              walletInvoice.state = 2;
+            }
+            console.log('response of order updated', orderUpdated);
+            await walletInvoice.save();
+            page = await this.successPage('https://ecommerce.khaneetala.ir/');
+            return {
+              message: 'page',
+              statusCode: 301,
+              page,
+            };
           } else {
-            walletInvoice.state = 2
+            page = await this.failedPage(
+              'https://ecommerce.khaneetala.ir/',
+              'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.',
+            );
+            console.log('finallllll');
+            return {
+              message: 'page',
+              statusCode: 301,
+              page,
+            };
           }
-          console.log('response of order updated', orderUpdated)
-          await walletInvoice.save()
-          page = await this.successPage('https://ecommerce.khaneetala.ir/')
+        } else if (body.State === 'Failed') {
+          // failed state 3
+          console.log('the payment is canceled by user');
+          walletInvoice.status = 'failed';
+          await walletInvoice.save();
+          page = await this.failedPage(
+            'https://ecommerce.khaneetala.ir/',
+            'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.',
+          );
+          console.log('finallllll');
           return {
             message: 'page',
             statusCode: 301,
-            page
-          }
+            page,
+          };
         } else {
-          page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.')
-          console.log('finallllll')
+          // everything else state 4
+          console.log('the payment is canceled by user');
+          walletInvoice.status = 'failed';
+          await walletInvoice.save();
+          page = await this.failedPage(
+            'https://ecommerce.khaneetala.ir/',
+            'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.',
+          );
+          console.log('finallllll');
           return {
             message: 'page',
             statusCode: 301,
-            page
-          }
-        }
-      } else if (body.State === 'Failed') {      // failed state 3
-        console.log('the payment is canceled by user')
-        walletInvoice.status = 'failed'
-        await walletInvoice.save()
-        page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.')
-        console.log('finallllll')
-        return {
-          message: 'page',
-          statusCode: 301,
-          page
-        }
-      } else {      // everything else state 4
-        console.log('the payment is canceled by user')
-        walletInvoice.status = 'failed'
-        await walletInvoice.save()
-        page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.')
-        console.log('finallllll')
-        return {
-          message: 'page',
-          statusCode: 301,
-          page
+            page,
+          };
         }
       }
-    }
     } catch (error) {
-      console.log('error in redirect to api', error)
+      console.log('error in redirect to api', error);
       // let page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.')
       return {
         message: 'page',
         statusCode: 301,
-        page
-      }
+        page,
+      };
     }
   }
 
-
   /**
    * this is for redirect from gateway after submiting the order with paymentMethod 2
-   * @param body 
-   * @returns 
+   * @param body
+   * @returns
    */
-  async secondRedirectFromGateway(body : any){
-    console.log( 'it comes in to the redirect', body)
-    let page = ''
-    let walletInvoice : any = await this.walletInvoiceModel.findOne({
-      ResNum: body.ResNum
-    })
+  async secondRedirectFromGateway(body: any) {
+    console.log('it comes in to the redirect', body);
+    let page = '';
+    let walletInvoice: any = await this.walletInvoiceModel.findOne({
+      ResNum: body.ResNum,
+    });
 
-    let goldBoxInvoice : any = await this.golldBoxModel.findOne({
-      orderId : walletInvoice.orderId
-    })
-
+    let goldBoxInvoice: any = await this.golldBoxModel.findOne({
+      orderId: walletInvoice.orderId,
+    });
 
     try {
       if (!goldBoxInvoice) {
-        console.log('goldBoxInvoice was not exists')
-        page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا معتبر')
+        console.log('goldBoxInvoice was not exists');
+        page = await this.failedPage(
+          'https://ecommerce.khaneetala.ir/',
+          'تراکنش نا معتبر',
+        );
       }
 
-      console.log('after getting goldBox invoice' , goldBoxInvoice)
-      if (!walletInvoice) {              // check for existing wallet invoice
-        console.log('wallet invoice not exits')
-        page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا معتبر')
-      } else {                                       // when the wallet invoice was exist
-        console.log('wallet invoice is >>>> ', walletInvoice)
-        if (body.State === 'CanceledByUser') {   // canceled by user stat 1             // check the redirect state 
-          console.log('the payment is canceled by user')
-          walletInvoice.status = 'failed'                         // make status of the wallet invoice to failed
-          await walletInvoice.save()
-          page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'انصراف از درخواست')        // generate the failed page
-          return {
-          message: 'page',
-          statusCode: 301,
-          page
-        }
-      } else if (body.State === 'OK') {     // ok state 2 here we should double check the transActions   // in this session we need to update the goldbox too
-        console.log('ok the transActions')
-        
-        let responseOfVerification = await this.interService.verifyTransAction(body.RefNum)    // verify the transaction from sep
-
-        if (responseOfVerification && responseOfVerification.Success) {     // of the transAction was success
-          console.log('transAction succeeded')
-          walletInvoice.payment = responseOfVerification.TransactionDetail;
-          walletInvoice.status = 'completed'
-          walletInvoice.RefNum = body.RefNum;
-          walletInvoice.traceNo = body.TraceNo
-          let orderUpdated = await this.interService.aprovePey(walletInvoice.orderId.toString(), 1, walletInvoice)
-          if (orderUpdated === 1) {
-            walletInvoice.state = 3        // when the order updated after approve the transAction
-          } else {
-            walletInvoice.state = 2        // when the order did not updated after approve the transAction
-          }
-          goldBoxInvoice.state = 1;
-          console.log('response of order updated', orderUpdated)
+      console.log('after getting goldBox invoice', goldBoxInvoice);
+      if (!walletInvoice) {
+        // check for existing wallet invoice
+        console.log('wallet invoice not exits');
+        page = await this.failedPage(
+          'https://ecommerce.khaneetala.ir/',
+          'تراکنش نا معتبر',
+        );
+      } else {
+        // when the wallet invoice was exist
+        console.log('wallet invoice is >>>> ', walletInvoice);
+        if (body.State === 'CanceledByUser') {
+          // canceled by user stat 1             // check the redirect state
+          console.log('the payment is canceled by user');
+          walletInvoice.status = 'failed'; // make status of the wallet invoice to failed
           await walletInvoice.save();
-          await goldBoxInvoice.save();
-          page = await this.successPage('https://ecommerce.khaneetala.ir/')           // generate the failed page
-          return {                                       
-            message: 'page',
-            statusCode: 301,
-            page
-          }
-        } else {                                                       // if the verification of sep transactions was failed
-          page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.')
-          console.log('finallllll')
+          page = await this.failedPage(
+            'https://ecommerce.khaneetala.ir/',
+            'انصراف از درخواست',
+          ); // generate the failed page
           return {
             message: 'page',
             statusCode: 301,
-            page
+            page,
+          };
+        } else if (body.State === 'OK') {
+          // ok state 2 here we should double check the transActions   // in this session we need to update the goldbox too
+          console.log('ok the transActions');
+
+          let responseOfVerification =
+            await this.interService.verifyTransAction(body.RefNum); // verify the transaction from sep
+
+          if (responseOfVerification && responseOfVerification.Success) {
+            // of the transAction was success
+            console.log('transAction succeeded');
+            walletInvoice.payment = responseOfVerification.TransactionDetail;
+            walletInvoice.status = 'completed';
+            walletInvoice.RefNum = body.RefNum;
+            walletInvoice.traceNo = body.TraceNo;
+            let orderUpdated = await this.interService.aprovePey(
+              walletInvoice.orderId.toString(),
+              1,
+              walletInvoice,
+            );
+            if (orderUpdated === 1) {
+              walletInvoice.state = 3; // when the order updated after approve the transAction
+            } else {
+              walletInvoice.state = 2; // when the order did not updated after approve the transAction
+            }
+            goldBoxInvoice.state = 1;
+            console.log('response of order updated', orderUpdated);
+            await walletInvoice.save();
+            await goldBoxInvoice.save();
+            page = await this.successPage('https://ecommerce.khaneetala.ir/'); // generate the failed page
+            return {
+              message: 'page',
+              statusCode: 301,
+              page,
+            };
+          } else {
+            // if the verification of sep transactions was failed
+            page = await this.failedPage(
+              'https://ecommerce.khaneetala.ir/',
+              'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.',
+            );
+            console.log('finallllll');
+            return {
+              message: 'page',
+              statusCode: 301,
+              page,
+            };
           }
-        }
-      } else if (body.State === 'Failed') {     // failed state 3
-        console.log('the payment is canceled by user')
-        walletInvoice.status = 'failed'
-        await walletInvoice.save()
-        page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.')
-        console.log('finallllll')
-        return {
-          message: 'page',
-          statusCode: 301,
-          page
-        }
-      } else {      // everything else state 4
-        console.log('the payment is canceled by user')
-        walletInvoice.status = 'failed'
-        await walletInvoice.save()
-        page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.')
-        console.log('finallllll')
-        return {
-          message: 'page',
-          statusCode: 301,
-          page
+        } else if (body.State === 'Failed') {
+          // failed state 3
+          console.log('the payment is canceled by user');
+          walletInvoice.status = 'failed';
+          await walletInvoice.save();
+          page = await this.failedPage(
+            'https://ecommerce.khaneetala.ir/',
+            'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.',
+          );
+          console.log('finallllll');
+          return {
+            message: 'page',
+            statusCode: 301,
+            page,
+          };
+        } else {
+          // everything else state 4
+          console.log('the payment is canceled by user');
+          walletInvoice.status = 'failed';
+          await walletInvoice.save();
+          page = await this.failedPage(
+            'https://ecommerce.khaneetala.ir/',
+            'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.',
+          );
+          console.log('finallllll');
+          return {
+            message: 'page',
+            statusCode: 301,
+            page,
+          };
         }
       }
-    }
     } catch (error) {
-      console.log('error in redirect to api', error)
-      page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.')
+      console.log('error in redirect to api', error);
+      page = await this.failedPage(
+        'https://ecommerce.khaneetala.ir/',
+        'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.',
+      );
       return {
         message: 'page',
         statusCode: 400,
-        page
-      }
+        page,
+      };
     }
   }
 }

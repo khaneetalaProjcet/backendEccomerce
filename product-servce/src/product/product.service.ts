@@ -391,6 +391,7 @@ export class ProductService {
         discountPercent: dto.discountPercent,
       });
 
+
       console.log(prodcutItem);  
       
 
@@ -403,8 +404,6 @@ export class ProductService {
       }
 
       const convertedId = dto.productId.toString();
-
-      console.log(convertedId, 'convertedId');
 
       const product = await this.productModel
         .findById(convertedId)
