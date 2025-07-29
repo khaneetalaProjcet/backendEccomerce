@@ -12,6 +12,7 @@ import { AddressDto } from './dto/addAdress.dto';
 import { UpdateAddressDto } from './dto/updateAdress.sto';
 import { IdentityDto } from 'src/user/dto/Identity.dto';
 import { use } from 'passport';
+import { userFilterDto } from './dto/userFilter.dto';
 // import { ClientKafka } from '@nestjs/microservices';
 
 @Injectable()
@@ -213,13 +214,27 @@ export class UserService {
 
   async onModuleInit() {
     // await this.kafkaClient.connect();
-
     // await this.getAllUser();
   }
 
-  async getAllUser() {
+  async getAllUser(query: userFilterDto) {
     try {
-      const users = await this.userModel.find();
+      let { search } = query;
+
+      const hasSearch = query.search && query.search !== 'undefined';
+
+      const searchCondition: any = hasSearch
+        ? {
+            $or: [
+              { firstName: { $regex: new RegExp(search, 'i') } },
+              { lastName: { $regex: new RegExp(search, 'i') } },
+              { nationalCode: { $regex: new RegExp(search, 'i') } },
+              { phoneNumber: { $regex: new RegExp(search, 'i') } },
+            ],
+          }
+        : {};
+
+      const users = await this.userModel.find(searchCondition);
       // this.kafkaClient.emit('user', users);
       return {
         message: '',
@@ -249,7 +264,7 @@ export class UserService {
 
           const checkForExistingProvince = array.find(
             (item) => item.name === province,
-          );  
+          );
 
           if (checkForExistingProvince) {
             checkForExistingProvince.value += 1;
@@ -526,13 +541,11 @@ export class UserService {
     }
   }
 
-
-
   async findByIdByAdmin(userId: string) {
     // const session: ClientSession = await this.userModel.db.startSession();
     // session.startTransaction();
     try {
-        console.log('findby id ...... ' , userId);
+      console.log('findby id ...... ', userId);
       const user = await this.userModel.findById(userId);
       // const user = await this.userModel.findById(userId).session(session)
       if (!user) {
@@ -561,8 +574,6 @@ export class UserService {
       // session.endSession();
     }
   }
-
-
 
   create(createUserDto: CreateUserDto) {
     return 'This action adds a new user';
