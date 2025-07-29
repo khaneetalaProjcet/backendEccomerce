@@ -286,18 +286,20 @@ export class OrderService {
       if (query && query != '' && query !== 'undefined') {
         all = await this.orderModel
           .find({
-            $or: [
-              { $regex: { date: new RegExp(query, 'i') } },
-              { $regex: { time: new RegExp(query, 'i') } },
-              { $regex: { invoiceId: new RegExp(query, 'i') } },
-              { $regex: { 'address.addressId': new RegExp(query, 'i') } },
-              { $regex: { 'address.adress': new RegExp(query, 'i') } },
-              { $regex: { 'address.postCode': new RegExp(query, 'i') } },
-              { $regex: { 'address.name': new RegExp(query, 'i') } },
-              { $regex: { adress: new RegExp(query, 'i') } },
-              { $regex: { postCode: new RegExp(query, 'i') } },
-              { $regex: { name: new RegExp(query, 'i') } },
-            ],
+            $match: {
+              $or: [
+                { $regex: { date: new RegExp(query, 'i') } },
+                { $regex: { time: new RegExp(query, 'i') } },
+                { $regex: { invoiceId: new RegExp(query, 'i') } },
+                { $regex: { 'address.addressId': new RegExp(query, 'i') } },
+                { $regex: { 'address.adress': new RegExp(query, 'i') } },
+                { $regex: { 'address.postCode': new RegExp(query, 'i') } },
+                { $regex: { 'address.name': new RegExp(query, 'i') } },
+                { $regex: { adress: new RegExp(query, 'i') } },
+                { $regex: { postCode: new RegExp(query, 'i') } },
+                { $regex: { name: new RegExp(query, 'i') } },
+              ],
+            },
           })
           .populate('products.product')
           .populate('products.mainProduct')
