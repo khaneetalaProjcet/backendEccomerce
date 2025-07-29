@@ -379,8 +379,10 @@ export class WalletService {
     }
   }
 
+
   async findWalletInvoice(query: walletListQueryDto) {
     try {
+      console.log('its here wallaaaaa')
       const limit = Number(query.limit) || 12;
       const page = Number(query.page) || 0;
       const skip = page * limit;
