@@ -10,6 +10,7 @@ import {
   Res,
   ValidationPipe,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -27,6 +28,7 @@ import { UpdateAddressDto } from './dto/updateAdress.sto';
 import { AddressDto } from './dto/addAdress.dto';
 import { IdentityDto } from './dto/Identity.dto';
 import { JwtAdminAuthGuard } from 'src/jwt/admin-jwt-auth.guard';
+import { userFilterDto } from './dto/userFilter.dto';
 
 @Controller('user')
 export class UserController {
@@ -665,8 +667,8 @@ export class UserController {
   @Get('/admin/users')
   // @UseGuards(JwtAdminAuthGuard)
   @ApiBearerAuth()
-  async getAllUsers() {
-    return this.userService.getAllUser();
+  async getAllUsers(@Query() query:userFilterDto) {
+    return this.userService.getAllUser(query);
   }
 
   @Patch('/disable/:id')
