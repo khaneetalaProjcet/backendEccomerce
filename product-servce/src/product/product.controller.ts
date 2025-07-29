@@ -211,8 +211,6 @@ export class ProductController {
   @ApiResponse({})
   summary() {
 
-    console.log("hi from here ");
-    
     return this.productService.getSummary();
   }
 

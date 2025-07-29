@@ -391,7 +391,8 @@ export class ProductService {
         discountPercent: dto.discountPercent,
       });
 
-      console.log(prodcutItem);
+      console.log(prodcutItem);  
+      
 
       if (!prodcutItem) {
         return {
@@ -815,11 +816,12 @@ export class ProductService {
     const totalOrders = await this.orderModel.countDocuments();
     const totalUsers = await this.interservice.getUsers();
 
+    console.log(totalUsers,"total users");
+    
+
     const userCoount = Array.isArray(totalUsers?.data)
       ? totalUsers.data.length
       : 0;
-
-    console.log(userCoount, '///////////////userCount');
 
     const now = new Date();
     const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);

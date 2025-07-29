@@ -23,6 +23,7 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
+import { orderFilterDto } from './dto/orderFilter.dto';
 
 @Controller('order')
 export class OrderController {
@@ -50,8 +51,8 @@ export class OrderController {
 
   @Get('waiting')
   @UseGuards(JwtAdminAuthGuard)
-  allWaiting(@Req() req: any, @Res() res: any) {
-    return this.orderService.allWaiting();
+  allWaiting(@Req() req: any, @Res() res: any, @Query() query:string) {
+    return this.orderService.allWaiting(query);
   }
 
   @Get('price')
