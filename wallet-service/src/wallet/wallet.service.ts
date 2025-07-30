@@ -17,6 +17,7 @@ import {
   goldInvoiceInterface,
 } from './entities/goldBoxInvoice.entity';
 import { walletListQueryDto } from './dto/pagination.dto';
+import { log } from 'node:console';
 
 @Injectable()
 export class WalletService {
@@ -381,10 +382,15 @@ export class WalletService {
 
   async findWalletInvoice(query: walletListQueryDto) {
     try {
-      const limit = Number(query.limit) || 12;
-      const page = Number(query.page) || 0;
+      console.log("hiiii");
+      
+      const limit = query.limit && !isNaN(Number(query.limit)) && Number(query.limit) || 12;
+      const page =query.page && !isNaN(Number(query.page)) && Number(query.page) || 0;
       const skip = page * limit;
 
+
+      console.log(query.limit,query.page);
+      
       let { search } = query;
       const safeQuery = search.trim();
       const regex = new RegExp(safeQuery, 'i');
@@ -407,8 +413,11 @@ export class WalletService {
         this.walletInvoiceModel.countDocuments(),
       ]);
 
+
+      console.log('jkhgkjhjlkjn',invoices, total);
+      
       return {
-        message: '',
+        message: 'success',
         statusCode: 200,
         data: invoices,
         pagination: {

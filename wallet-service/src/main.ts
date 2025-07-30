@@ -51,6 +51,6 @@ async function bootstrap() {
 
   // app.connectMicroservice(kafkaConsumerConfig);
   //  await app.startAllMicroservices();
-  await app.listen(process.env.PORT ?? 9011);
+  await app.listen( 9011);
 }
 bootstrap();

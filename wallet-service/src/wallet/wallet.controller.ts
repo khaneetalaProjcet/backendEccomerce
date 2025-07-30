@@ -158,7 +158,7 @@ export class WalletController {
   }
 
   @Get('/goldboxInvoices')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Retrieve gold box invoices' })
   @ApiResponse({
     status: 200,
@@ -173,7 +173,7 @@ export class WalletController {
   }
 
   @Get('/walletInvoices')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Retrieve wallet payment invoices' })
   @ApiResponse({
     status: 200,
