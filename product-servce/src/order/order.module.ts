@@ -12,6 +12,7 @@ import { Cart, cartSchema } from '../cart/entities/cart.entity';
 import { Order, orderSchema } from './entities/order.entity';
 import { OrderService } from './order.service';
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
+import { KafkaProducerService } from 'src/kafka/kafka.producer';
 
 
 

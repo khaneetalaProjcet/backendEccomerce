@@ -157,8 +157,24 @@ export class WalletController {
     return this.walletService.secondRedirectFromGateway(body);
   }
 
-  @Get('/goldboxInvoices')
+  // @Get('/goldboxInvoices')
   // @UseGuards(JwtAuthGuard)
+  // @ApiOperation({ summary: 'Retrieve gold box invoices' })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Gold box invoices retrieved successfully',
+  // })
+  // @ApiResponse({
+  //   status: 500,
+  //   description: 'Internal server error',
+  // })
+  // async getGoldBoxInvoices(@Query() query: walletListQueryDto) {
+  //   return this.walletService.findGolBoxInvoice(query);
+  // }
+
+
+
+  @Get('/invoices/gold/all')
   @ApiOperation({ summary: 'Retrieve gold box invoices' })
   @ApiResponse({
     status: 200,
@@ -172,7 +188,22 @@ export class WalletController {
     return this.walletService.findGolBoxInvoice(query);
   }
 
-  @Get('/walletInvoices')
+  // @Get('/walletInvoices')
+  // // @UseGuards(JwtAuthGuard)
+  // @ApiOperation({ summary: 'Retrieve wallet payment invoices' })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Wallet invoices retrieved successfully',
+  // })
+  // @ApiResponse({
+  //   status: 500,
+  //   description: 'Internal server error',
+  // })
+  // async getWalletInvoices(@Query() query: walletListQueryDto) {
+  //   return this.walletService.findWalletInvoice(query);
+  // }
+
+  @Get('/invoices/all')
   // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Retrieve wallet payment invoices' })
   @ApiResponse({
@@ -184,6 +215,10 @@ export class WalletController {
     description: 'Internal server error',
   })
   async getWalletInvoices(@Query() query: walletListQueryDto) {
+    console.log('oitttt')
     return this.walletService.findWalletInvoice(query);
   }
+
+
+
 }

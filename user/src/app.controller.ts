@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { AppService } from './app.service';
-// import {KafkaProducerService} from "../src/kafka/kafka.producer"
+import {KafkaProducerService} from "../src/kafka/kafka.producer"
 import { Get } from '@nestjs/common/decorators/http/request-mapping.decorator';
 
 @Controller()

@@ -10,7 +10,6 @@ import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { CreateLogDto } from './dto/createLog.dto';
 import { LocknewService } from 'src/locknew/locknew.service';
-import { log } from 'node:console';
 import { UpdateAdminAccessDto } from './dto/adminAccessibility.dto';
 
 @Injectable()

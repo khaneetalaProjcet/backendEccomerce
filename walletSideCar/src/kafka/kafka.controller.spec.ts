@@ -1,18 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { KafkaController } from './kafka.controller';
 import { KafkaService } from './kafka.service';
 
-describe('KafkaService', () => {
-  let service: KafkaService;
+describe('KafkaController', () => {
+  let controller: KafkaController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      controllers: [KafkaController],
       providers: [KafkaService],
     }).compile();
 
-    service = module.get<KafkaService>(KafkaService);
+    controller = module.get<KafkaController>(KafkaController);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(controller).toBeDefined();
   });
 });

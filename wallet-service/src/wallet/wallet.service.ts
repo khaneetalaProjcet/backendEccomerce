@@ -337,10 +337,10 @@ export class WalletService {
       const skip = page * limit;
 
       let { search } = query;
-      const safeQuery = search.trim();
-      const regex = new RegExp(safeQuery, 'i');
-
+      
       const hasSearch = query.search && query.search !== 'undefined';
+      const safeQuery = hasSearch ? search.trim() : ''
+      const regex = new RegExp(safeQuery, 'i');
 
       const searchCondition: any = hasSearch
         ? {
@@ -380,23 +380,23 @@ export class WalletService {
     }
   }
 
+
   async findWalletInvoice(query: walletListQueryDto) {
     try {
-      console.log("hiiii");
-      
-      const limit = query.limit && !isNaN(Number(query.limit)) && Number(query.limit) || 12;
-      const page =query.page && !isNaN(Number(query.page)) && Number(query.page) || 0;
+      console.log('its here wallaaaaa')
+      const limit = Number(query.limit) || 12;
+      const page = Number(query.page) || 0;
       const skip = page * limit;
 
 
       console.log(query.limit,query.page);
       
       let { search } = query;
-      const safeQuery = search.trim();
-      const regex = new RegExp(safeQuery, 'i');
-
+      
       const hasSearch = query.search && query.search !== 'undefined';
-
+      
+      const safeQuery = hasSearch ? search?.trim() : '';
+      const regex = new RegExp(safeQuery, 'i');
       const searchCondition: any = hasSearch
         ? {
             $or: [
@@ -413,9 +413,8 @@ export class WalletService {
         this.walletInvoiceModel.countDocuments(),
       ]);
 
+      console.log('its heree >>>> ' , invoices , total)
 
-      console.log('jkhgkjhjlkjn',invoices, total);
-      
       return {
         message: 'success',
         statusCode: 200,

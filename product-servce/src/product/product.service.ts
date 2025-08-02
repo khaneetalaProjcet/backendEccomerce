@@ -287,6 +287,9 @@ export class ProductService {
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     try {
+
+      console.log('its fuckind dto >>>> ' , updateProductDto)
+
       const product = await this.productModel
         .findByIdAndUpdate(id, updateProductDto)
         .exec();

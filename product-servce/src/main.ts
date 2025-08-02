@@ -49,6 +49,9 @@ async function bootstrap() {
   //  await app.startAllMicroservices();
   // app.useGlobalFilters(new HttpExceptionFilter());
 
+   app.connectMicroservice(kafkaConsumerConfig);
+  await app.startAllMicroservices();
+
   await app.listen(process.env.PORT ?? 9014);
 }
 bootstrap();
