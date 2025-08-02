@@ -23,8 +23,8 @@ export class Product {
   @Prop({ type: [Types.ObjectId], ref: 'ProductItems', required: true })
   items: Types.ObjectId[];
 
-  @Prop({ type: [{name : {type : String} , src : {type : String}}], default: [{name : '' , src : ''}] })
-  images: {name : string , src : string}[];
+    @Prop({ type: [{name : {type : String} , src : {type : String}}], default: [{name : '' , src : ''}] })
+    images: {name : string , src : string}[];
 
   @Prop({ type : {name : {type : String} , src : {type : String}} ,default: {} })
   mainImage: {name : string , src : string};

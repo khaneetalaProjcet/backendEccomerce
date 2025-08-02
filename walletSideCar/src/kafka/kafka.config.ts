@@ -1,16 +1,14 @@
-// kafka/kafka.config.ts
-
 import { KafkaOptions, Transport } from '@nestjs/microservices';
 
 export const kafkaConsumerConfig: KafkaOptions = {
   transport: Transport.KAFKA,
   options: {
     client: {
-      clientId: 'product-consumer',
+      clientId: 'wallet-consumer', 
       brokers: ['127.0.0.1:9092'],
     },
     consumer: {
-      groupId: 'product-group', 
+      groupId: 'wallet-group',
     },
   },
 };

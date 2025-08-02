@@ -34,11 +34,11 @@ import { userFilterDto } from './dto/userFilter.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // @Post('test-kafka')
-  // async testKafka(@Body() body: any) {
-  //   await this.userService.emitUserCreatedEvent(body);
-  //   return { message: 'Kafka event sent', data: body };
-  // }
+    // @Post('test-kafka')
+    // async testKafka(@Body() body: any) {
+    //   await this.userService.emitUserCreatedEvent(body);
+    //   return { message: 'Kafka event sent', data: body };
+    // }  
 
   @Post('/complete')
   @UseGuards(JwtAuthGuard)

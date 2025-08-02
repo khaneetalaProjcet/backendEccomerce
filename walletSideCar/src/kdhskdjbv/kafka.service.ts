@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { KafkaOptions, Transport } from '@nestjs/microservices';
 import { kafkaConsumerConfig } from 'configs/kafka.config';
 import { Kafka } from 'kafkajs';
 
@@ -6,6 +7,8 @@ import { Kafka } from 'kafkajs';
 
 @Injectable()
 export class KafkaService {
+
+    
 
     async onModuleInit() {
         await this.producer.connect();

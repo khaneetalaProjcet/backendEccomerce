@@ -23,11 +23,17 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import { orderFilterDto } from './dto/orderFilter.dto';
+import { EventPattern, Payload } from '@nestjs/microservices';
 
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
+
+  @EventPattern('wallet')
+  @Get()
+  testkafka(@Payload() message: any) {
+    console.log('event received in order controller', message);
+  }
 
   @Post('create')
   @UseGuards(JwtAuthGuard)
@@ -38,7 +44,11 @@ export class OrderController {
   }
   @Get('admin/orders')
   @UseGuards(JwtAdminAuthGuard)
-  findAllOrderAdmin(@Req() req: any, @Res() res: any , @Query('search') search : string) {
+  findAllOrderAdmin(
+    @Req() req: any,
+    @Res() res: any,
+    @Query('search') search: string,
+  ) {
     return this.orderService.getAllOrder(search);
   }
 
@@ -51,7 +61,7 @@ export class OrderController {
 
   @Get('waiting')
   @UseGuards(JwtAdminAuthGuard)
-  allWaiting(@Req() req: any, @Res() res: any, @Query() query:string) {
+  allWaiting(@Req() req: any, @Res() res: any, @Query() query: string) {
     return this.orderService.allWaiting(query);
   }
 

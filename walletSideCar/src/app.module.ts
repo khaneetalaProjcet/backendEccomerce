@@ -11,12 +11,19 @@ import { RedisOptions } from 'configs/redis.config';
 import { KafkaService } from './kafka/kafka.service';
 import { InterserviceService } from './interservice/interservice.service';
 import { PaymentService } from './payment/payment.service';
-import { goldInvoice, goldInvoiceSchema } from './wallet/entities/goldBoxInvoice.entity';
-import { WalletInvoice, WalletInvoiceSchema } from './wallet/entities/walletInvoice.entity';
+import {
+  goldInvoice,
+  goldInvoiceSchema,
+} from './wallet/entities/goldBoxInvoice.entity';
+import {
+  WalletInvoice,
+  WalletInvoiceSchema,
+} from './wallet/entities/walletInvoice.entity';
 import { wallet, walletSchema } from './wallet/entities/wallet.entity';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CrobJobService } from './crob-job/crob-job.service';
-
+import { KafkaProducerService } from './kafka/kafka.poducer';
+import { KafkaModule } from './kafka/kafka.module';
 
 @Module({
   imports: [
@@ -25,12 +32,23 @@ import { CrobJobService } from './crob-job/crob-job.service';
     CacheModule.registerAsync(RedisOptions),
     MongooseModule.forRoot(process.env.MONGO_URI!),
     WalletModule,
-    MongooseModule.forFeature([{ name: goldInvoice.name, schema: goldInvoiceSchema },{ name: wallet.name, schema: walletSchema }, { name: WalletInvoice.name, schema:WalletInvoiceSchema }]),
+    MongooseModule.forFeature([
+      { name: goldInvoice.name, schema: goldInvoiceSchema },
+      { name: wallet.name, schema: walletSchema },
+      { name: WalletInvoice.name, schema: WalletInvoiceSchema },
+    ]),
+    KafkaModule,
   ],
 
   controllers: [AppController],
-  providers: [AppService, RedisServiceService, JwtService,KafkaService ,  InterserviceService, PaymentService, CrobJobService],
+  providers: [
+    AppService,
+    RedisServiceService,
+    JwtService,
+    KafkaService,
+    InterserviceService,
+    PaymentService,
+    CrobJobService,
+  ],
 })
-
-
-export class AppModule { }
+export class AppModule {}
