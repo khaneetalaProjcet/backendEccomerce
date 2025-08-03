@@ -115,10 +115,8 @@ export class ProductService {
         .populate('firstCategory')
         .populate('midCategory')
         .populate('lastCategory');
-      
-      
-      console.log(products,"products is here");
-      
+
+      console.log(products, 'products is here');
 
       const filteredProducts = products
         .filter((product: any) => {
@@ -287,11 +285,13 @@ export class ProductService {
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     try {
-      console.log('its fuckind dto >>>> ', updateProductDto)
-      console.log(id , "id is here");
+      console.log('its fuckind dto >>>> ', updateProductDto);
+      console.log(id, 'id is here');
 
-      const product = await this.productModel
-        .findByIdAndUpdate(id, updateProductDto)
+      const product = await this.productModel.findByIdAndUpdate(
+        id,
+        updateProductDto,
+      );
       if (!product) {
         return {
           message: 'محصول پیدا نشد',
@@ -299,6 +299,9 @@ export class ProductService {
           error: 'محصول پیدا نشد',
         };
       }
+
+      console.log(product, '////// product is here in updateeeeeeeeeee');
+
       return {
         message: '',
         statusCode: 200,
@@ -393,9 +396,7 @@ export class ProductService {
         discountPercent: dto.discountPercent,
       });
 
-
-      console.log(prodcutItem);  
-      
+      console.log(prodcutItem);
 
       if (!prodcutItem) {
         return {
@@ -817,8 +818,7 @@ export class ProductService {
     const totalOrders = await this.orderModel.countDocuments();
     const totalUsers = await this.interservice.getUsers();
 
-    console.log(totalUsers,"total users");
-    
+    console.log(totalUsers, 'total users');
 
     const userCoount = Array.isArray(totalUsers?.data)
       ? totalUsers.data.length
