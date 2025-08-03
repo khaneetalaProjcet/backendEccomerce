@@ -21,12 +21,14 @@ import { Order, OrderInterface } from '../order/entities/order.entity';
 import { InterserviceService } from 'src/interservice/interservice.service';
 import { isValidObjectId } from 'mongoose';
 import { log } from 'node:console';
+import { Cart, CartInterface } from 'src/cart/entities/cart.entity';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<ProductDocumnet>,
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocumnet>,
+    @InjectModel(Cart.name) private cartModel: Model<CartInterface>,
     @InjectModel(ProductItems.name)
     private productItemModel: Model<ProductItems>,
     @InjectModel(Order.name) private orderModel: Model<OrderInterface>,
@@ -85,8 +87,10 @@ export class ProductService {
     try {
 
 
-      await this.productItemModel.deleteMany({})
-      await this.productModel.deleteMany({})
+      // await this.productItemModel.deleteMany({})
+      // await this.productModel.deleteMany({})
+
+      await this.cartModel.deleteMany({})
 
       const limit = Number(query.limit) || 12;
       const page = (!isNaN(Number(query.page)) && Number(query.page)) || 1;
