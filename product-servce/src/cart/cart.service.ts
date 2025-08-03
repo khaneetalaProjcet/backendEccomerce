@@ -182,7 +182,7 @@ export class CartService {
         addCart.products[productIndex].count = +body.count;
       }
 
-      // Recalculate the total count
+      // Recalculate the total count //
       let totalCount = 0;
       for (const p of addCart.products) {
         totalCount += +p.count;
