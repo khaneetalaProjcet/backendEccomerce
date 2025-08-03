@@ -85,8 +85,8 @@ export class ProductService {
     try {
 
 
-      await this.productItemModel.deleteMany({})
-      await this.productModel.deleteMany({})
+      // await this.productItemModel.deleteMany({})
+      // await this.productModel.deleteMany({})
 
       const limit = Number(query.limit) || 12;
       const page = (!isNaN(Number(query.page)) && Number(query.page)) || 1;
