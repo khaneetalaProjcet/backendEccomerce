@@ -44,13 +44,13 @@ export class Product {
   @Prop({ default: 0 })
   count: number;
 
-  @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'Category', default: '' })
   firstCategory: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'Category',  default : ''})
   midCategory: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'Category',  default : ''})
   lastCategory: Types.ObjectId;
 
   @Prop({ type: [Types.ObjectId], ref: 'Product', default: [] })
