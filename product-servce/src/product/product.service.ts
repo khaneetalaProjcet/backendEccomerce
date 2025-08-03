@@ -58,11 +58,14 @@ export class ProductService {
 
       createProductDto.count = count;
 
-      createProductDto.firstCategory = (createProductDto.firstCategory && createProductDto.firstCategory != '' && createProductDto.firstCategory != 'undefined') ?createProductDto.firstCategory : '' 
-      createProductDto.midCategory = (createProductDto.midCategory && createProductDto.midCategory != '' && createProductDto.midCategory != 'undefined') ?createProductDto.midCategory : '' 
-      createProductDto.lastCategory = (createProductDto.lastCategory && createProductDto.lastCategory != '' && createProductDto.lastCategory != 'undefined') ?createProductDto.lastCategory : '' 
-      
+      createProductDto.firstCategory = (createProductDto.firstCategory && createProductDto.firstCategory != '' && createProductDto.firstCategory != 'undefined') ?createProductDto.firstCategory : null
+      createProductDto.midCategory = (createProductDto.midCategory && createProductDto.midCategory != '' && createProductDto.midCategory != 'undefined') ?createProductDto.midCategory : null
+      createProductDto.lastCategory = (createProductDto.lastCategory && createProductDto.lastCategory != '' && createProductDto.lastCategory != 'undefined') ?createProductDto.lastCategory : null 
+
       const product = await this.productModel.create(createProductDto);
+
+      console.log('after craetion product >>>> ' , product)
+
       return {
         message: '',
         statusCode: 200,
