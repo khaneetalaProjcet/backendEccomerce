@@ -19,6 +19,7 @@ import {
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
 import { InterserviceService } from 'src/interservice/interservice.service';
 import { Order, orderSchema } from 'src/order/entities/order.entity';
+import { Cart, cartSchema } from 'src/cart/entities/cart.entity';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { Order, orderSchema } from 'src/order/entities/order.entity';
       { name: Category.name, schema: CategorySchema },
       { name: ProductItems.name, schema: ProductItemSchema },
       { name: Order.name, schema: orderSchema },
+      { name: Cart.name, schema: cartSchema },
     ]),
   ],
   controllers: [ProductController],
