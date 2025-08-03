@@ -56,8 +56,8 @@ export class CreateProductDto {
     example: 150,
     description: 'Wages associated with the product',
   })
-  @IsNumber()
   @IsOptional()
+  @IsNumber()
   count?: number;
 
   @ApiProperty({
@@ -65,20 +65,19 @@ export class CreateProductDto {
     description: 'ID of the product category',
   })
   @IsMongoId()
-  @IsOptional()
   firstCategory: string;
   @ApiProperty({
     example: '60f7a1b3b5d4b32f884d8a5e',
     description: 'ID of the product category',
   })
-  @IsMongoId()
   @IsOptional()
+  @IsMongoId()
   midCategory?: string;
   @ApiProperty({
     example: '60f7a1b3b5d4b32f884d8a5e',
     description: 'ID of the product category',
   })
-  @IsMongoId()
   @IsOptional()
+  @IsMongoId()
   lastCategory?: string;
 }
