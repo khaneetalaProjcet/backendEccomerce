@@ -16,9 +16,9 @@ import { RedisOptions } from 'configs/redis.config';
 import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
 import { goldPriceService } from './goldPrice/goldPrice.service';
-import { OrderKafkaConsumer } from './order/order.kafka';
-import { kafkaConsumerConfig } from './kafka/kafka.config';
-import { KafkaModule } from './kafka/kafka.module';
+// import { OrderKafkaConsumer } from './order/order.kafka';
+// import { kafkaConsumerConfig } from './kafka/kafka.config';
+// import { KafkaModule } from './kafka/kafka.module';
 
 @Module({
   imports: [
@@ -30,9 +30,9 @@ import { KafkaModule } from './kafka/kafka.module';
     ProductModule,
     CartModule,
     OrderModule,
-    KafkaModule
+    // KafkaModule
   ],
-  controllers: [AppController,OrderKafkaConsumer],
+  controllers: [AppController],
   providers: [AppService, JwtService, InterserviceService, RedisServiceService, goldPriceService],
 })
 export class AppModule { }
