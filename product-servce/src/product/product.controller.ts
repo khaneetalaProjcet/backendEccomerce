@@ -112,7 +112,7 @@ export class ProductController {
   })
   updateItem(
     @Param('id') id: string,
-    @Body() updateProductDtoItemDto: UpdateProductItemDto,
+    @Body(new ValidationPipe()) updateProductDtoItemDto: UpdateProductItemDto,
   ) {
     return this.productService.updateProductItems(id, updateProductDtoItemDto);
   }

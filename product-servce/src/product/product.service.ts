@@ -395,6 +395,10 @@ export class ProductService {
 
   async updateProductItems(id: string, dto: UpdateProductItemDto) {
     try {
+
+      console.log('body issss>>>' , dto)
+      console.log('body issss222222>>>' , dto.discountPercent , typeof(dto.discountPercent))
+
       const prodcutItem = await this.productItemModel.findByIdAndUpdate(id, {
         count: dto.count,
         color: dto.color,
@@ -403,7 +407,9 @@ export class ProductService {
         discountPercent: dto.discountPercent,
       });
 
-      console.log(prodcutItem);
+      let updated = await this.productItemModel.findById(id)
+      
+      console.log('after updated' , updated);
 
       if (!prodcutItem) {
         return {
@@ -418,7 +424,8 @@ export class ProductService {
       const product = await this.productModel
         .findById(convertedId)
         .populate('items')
-        .exec();
+
+      
       if (!product) {
         return {
           message: 'محصول پیدا نشد',
