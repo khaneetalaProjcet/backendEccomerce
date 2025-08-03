@@ -10,7 +10,9 @@ export interface ProductDocumnet extends Document {
   wages: number;
   count: number;
   mainImage: { name: string; src: string };
-  category: Types.ObjectId;
+  firstCategory: Types.ObjectId;
+  midCategory: Types.ObjectId;
+  lastCategory: Types.ObjectId;
   suggestedProducts: any[];
   price: number;
 }
@@ -44,13 +46,13 @@ export class Product {
   @Prop({ default: 0 })
   count: number;
 
-  @Prop({ type: Types.ObjectId, ref: 'Category', default: '' })
+  @Prop({ type: Types.ObjectId, ref: 'Category', default: null })
   firstCategory: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Category',  default : ''})
+  @Prop({ type: Types.ObjectId, ref: 'Category',  default : null})
   midCategory: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Category',  default : ''})
+  @Prop({ type: Types.ObjectId, ref: 'Category',  default : null})
   lastCategory: Types.ObjectId;
 
   @Prop({ type: [Types.ObjectId], ref: 'Product', default: [] })

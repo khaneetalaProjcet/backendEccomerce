@@ -287,4 +287,19 @@ export class CartService {
       };
     });
   }
+
+    async delete() {
+    try {
+      const result = await this.cartModel.deleteMany({});
+
+      return {
+        message: 'All cart deleted successfully',
+       data: result.deletedCount,
+        statusCode: 200,
+        
+      };
+    } catch (error) {
+      throw new Error(`Failed to delete all products: ${error.message}`);
+    }
+  }
 }
