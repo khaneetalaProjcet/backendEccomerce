@@ -40,7 +40,7 @@ export class CartService {
         };
       }
       let product = await this.productModel.findOne({
-        items: { $in: item._id },
+        items: { $in: item },
       });
       console.log('22222', product);
       if (!product) {
