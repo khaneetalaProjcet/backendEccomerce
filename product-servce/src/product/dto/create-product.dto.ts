@@ -27,7 +27,7 @@ export class CreateProductDto {
   })
   @IsArray()
   @IsOptional()
-  images?: {name : string , src : string}[];
+  images?: { name: string; src: string }[];
 
   @ApiProperty({
     example: 'High-quality gold product',
@@ -43,7 +43,7 @@ export class CreateProductDto {
   })
   @IsObject()
   @IsOptional()
-  mainImage?: {name : string , src : string};
+  mainImage?: { name: string; src: string };
 
   @ApiProperty({
     example: 150,
@@ -65,17 +65,20 @@ export class CreateProductDto {
     description: 'ID of the product category',
   })
   @IsMongoId()
+  @IsOptional()
   firstCategory: string;
   @ApiProperty({
     example: '60f7a1b3b5d4b32f884d8a5e',
     description: 'ID of the product category',
   })
   @IsMongoId()
+  @IsOptional()
   midCategory?: string;
   @ApiProperty({
     example: '60f7a1b3b5d4b32f884d8a5e',
     description: 'ID of the product category',
   })
   @IsMongoId()
+  @IsOptional()
   lastCategory?: string;
 }

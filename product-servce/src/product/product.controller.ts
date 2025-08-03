@@ -40,7 +40,7 @@ export class ProductController {
     description: 'The product has been successfully created.',
     type: Product,
   })
-  create(@Body() createProductDto: CreateProductDto) {
+  create( @Body(new ValidationPipe())  createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
 
