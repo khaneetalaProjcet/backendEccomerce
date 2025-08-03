@@ -39,12 +39,14 @@ export class CartService {
           error: 'محصول مورد نظر یافت نشد',
         };
       }
-      // let product = await this.productModel.findOne({
-      //   items: { $in: item._id },
-      // });
+
+      const productsWithItem = await this.productModel.find({
+        items: item._id,
+      });
+      console.log('productsWithItem:', productsWithItem);
 
       let product = await this.productModel.findOne({
-        items: new mongoose.Types.ObjectId(item._id),
+        items: { $in: item._id },
       });
 
       console.log('22222', product);
