@@ -25,11 +25,7 @@ export class CartService {
 
   async addToCart(userid: string, body: CreateCartDto) {
     try {
-      console.log(userid, 'userId');
-
-      console.log(body, 'body is here in cart');
-
-      // await this.cartModel.deleteMany()
+    
       let item = await this.productItemsModel.findById(body.item);
       console.log('ffff', item);
       if (!item) {
@@ -40,16 +36,10 @@ export class CartService {
         };
       }
 
-      // const productsWithItem = await this.productModel.find({
-      //   items: item._id,
-      // });
-      // console.log('productsWithItem:', productsWithItem);
-
       let product = await this.productModel.findOne({
         items: { $in: item._id.toString() },
       });
 
-      console.log('22222', product);
       if (!product) {
         return {
           message: 'محصول مورد نظر یافت نشد',
@@ -66,7 +56,6 @@ export class CartService {
         };
       }
 
-      console.log('ffff', item);
       let addCart = await this.cartModel.findOne({ user: userid });
       if (!addCart) {
         let newAddCard = await this.cartModel.create({
@@ -134,7 +123,7 @@ export class CartService {
         };
       }
       let product = await this.productModel.findOne({
-        items: { $in: item._id },
+        items: { $in: item._id.toString() },
       });
 
       console.log('22222', product);
