@@ -64,7 +64,7 @@ export class ProductController {
   }
 
   @Patch('update/:id')
-  @UseGuards(JwtAdminAuthGuard)
+  // @UseGuards(JwtAdminAuthGuard)
   @ApiOperation({ summary: 'Update a product by ID' })
   @ApiParam({ name: 'id', description: 'The ID of the product' })
   @ApiBody({ type: UpdateProductDto })
