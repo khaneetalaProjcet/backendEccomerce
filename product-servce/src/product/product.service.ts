@@ -287,12 +287,11 @@ export class ProductService {
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     try {
-
-      console.log('its fuckind dto >>>> ' , updateProductDto)
+      console.log('its fuckind dto >>>> ', updateProductDto)
+      console.log(id , "id is here");
 
       const product = await this.productModel
         .findByIdAndUpdate(id, updateProductDto)
-        .exec();
       if (!product) {
         return {
           message: 'محصول پیدا نشد',

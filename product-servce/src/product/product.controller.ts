@@ -63,7 +63,7 @@ export class ProductController {
     return this.productService.findOne(id);
   }
 
-  @Post('update/:id')
+  @Patch('update/:id')
   @UseGuards(JwtAdminAuthGuard)
   @ApiOperation({ summary: 'Update a product by ID' })
   @ApiParam({ name: 'id', description: 'The ID of the product' })
@@ -78,7 +78,7 @@ export class ProductController {
     return this.productService.update(id, updateProductDto);
   }
 
-  @Get('remove/:id')
+  @Delete('remove/:id')
   @UseGuards(JwtAdminAuthGuard)
   @ApiOperation({ summary: 'Delete a product by ID' })
   @ApiParam({ name: 'id', description: 'The ID of the product' })
