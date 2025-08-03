@@ -14,6 +14,15 @@ export class UpdateProductDto {
   @IsString()
   @IsNotEmpty()
   name?: string;
+
+  @ApiProperty({
+    example: 'sasdfasdf',
+    description: '',
+  })
+  @IsArray()
+  items : string[]
+
+    
   @ApiProperty({
     example: ['image1.jpg', 'image2.jpg'],
     description: 'List of image URLs or paths',

@@ -10,6 +10,7 @@ import {
   Req,
   Res,
   Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -74,7 +75,7 @@ export class ProductController {
     type: Product,
   })
   @ApiResponse({ status: 404, description: 'Product not found' })
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+  update(@Param('id') id: string, @Body(new ValidationPipe()) updateProductDto: UpdateProductDto) {
     return this.productService.update(id, updateProductDto);
   }
 

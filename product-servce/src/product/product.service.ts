@@ -106,8 +106,6 @@ export class ProductService {
       const color =
         query.color && query.color !== 'undefined' ? query.color.trim() : null;
 
-      console.log(search, query, '/////////');
-
       const goldPrice = await this.goldPriceService.getGoldPrice();
       const products = await this.productModel
         .find(searchCondition)
@@ -116,7 +114,6 @@ export class ProductService {
         .populate('midCategory')
         .populate('lastCategory');
 
-      console.log(products, 'products is here');
 
       const filteredProducts = products
         .filter((product: any) => {
@@ -287,6 +284,13 @@ export class ProductService {
     try {
       console.log('its fuckind dto >>>> ', updateProductDto);
       console.log(id, 'id is here');
+
+      updateProductDto.items = updateProductDto.items.map((elem: any) => {
+        return elem._id
+      })
+
+      console.log('after fixing update items in body>>>>' , updateProductDto)
+
 
       const product = await this.productModel.findById(id);
       if (!product) {
