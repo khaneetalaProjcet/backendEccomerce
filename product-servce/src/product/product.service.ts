@@ -83,6 +83,11 @@ export class ProductService {
 
   async findAll(query: ProductFilterDto) {
     try {
+
+
+      await this.productItemModel.deleteMany({})
+      await this.productModel.deleteMany({})
+
       const limit = Number(query.limit) || 12;
       const page = (!isNaN(Number(query.page)) && Number(query.page)) || 1;
       const skip = (page - 1) * limit;
