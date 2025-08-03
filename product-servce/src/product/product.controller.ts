@@ -40,7 +40,7 @@ export class ProductController {
     description: 'The product has been successfully created.',
     type: Product,
   })
-  create( @Body(new ValidationPipe())  createProductDto: CreateProductDto) {
+  create(@Body(new ValidationPipe()) createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
 
@@ -75,7 +75,10 @@ export class ProductController {
     type: Product,
   })
   @ApiResponse({ status: 404, description: 'Product not found' })
-  update(@Param('id') id: string, @Body(new ValidationPipe()) updateProductDto: UpdateProductDto) {
+  update(
+    @Param('id') id: string,
+    @Body(new ValidationPipe()) updateProductDto: UpdateProductDto,
+  ) {
     return this.productService.update(id, updateProductDto);
   }
 
@@ -211,12 +214,16 @@ export class ProductController {
   @ApiOperation({})
   @ApiResponse({})
   summary() {
-
     return this.productService.getSummary();
   }
 
   @Delete('/')
   delete() {
+    return this.productService.delete();
+  }
+
+  @Delete('/item')
+  deleteItm() {
     return this.productService.delete();
   }
 }

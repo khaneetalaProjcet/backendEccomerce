@@ -871,7 +871,24 @@ export class ProductService {
 
       return {
         message: 'All products deleted successfully',
-        deletedCount: result.deletedCount,
+       data: result.deletedCount,
+        statusCode: 200,
+        
+      };
+    } catch (error) {
+      throw new Error(`Failed to delete all products: ${error.message}`);
+    }
+  }
+
+    async deleteItem() {
+    try {
+      const result = await this.productItemModel.deleteMany({});
+
+      return {
+        message: 'All products deleted successfully',
+       data: result.deletedCount,
+        statusCode: 200,
+        
       };
     } catch (error) {
       throw new Error(`Failed to delete all products: ${error.message}`);
