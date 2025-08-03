@@ -39,7 +39,6 @@ export class ProductService {
 
       console.log(createProductDto,"/////create");
       
-
       const productItems: string[] = [];
       let count = 0;
       for (let index = 0; index < items.length; index++) {
@@ -59,6 +58,10 @@ export class ProductService {
 
       createProductDto.count = count;
 
+      createProductDto.firstCategory = (createProductDto.firstCategory && createProductDto.firstCategory != '' && createProductDto.firstCategory != 'undefined') ?createProductDto.firstCategory : '' 
+      createProductDto.midCategory = (createProductDto.midCategory && createProductDto.midCategory != '' && createProductDto.midCategory != 'undefined') ?createProductDto.midCategory : '' 
+      createProductDto.lastCategory = (createProductDto.lastCategory && createProductDto.lastCategory != '' && createProductDto.lastCategory != 'undefined') ?createProductDto.lastCategory : '' 
+      
       const product = await this.productModel.create(createProductDto);
       return {
         message: '',
