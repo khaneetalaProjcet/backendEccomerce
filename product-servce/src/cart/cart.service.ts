@@ -40,13 +40,13 @@ export class CartService {
         };
       }
 
-      const productsWithItem = await this.productModel.find({
-        items: item._id,
-      });
-      console.log('productsWithItem:', productsWithItem);
+      // const productsWithItem = await this.productModel.find({
+      //   items: item._id,
+      // });
+      // console.log('productsWithItem:', productsWithItem);
 
       let product = await this.productModel.findOne({
-        items: { $in: item._id },
+        items: { $in: item._id.toString() },
       });
 
       console.log('22222', product);
