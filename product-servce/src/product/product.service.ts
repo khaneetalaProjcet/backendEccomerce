@@ -37,6 +37,9 @@ export class ProductService {
     try {
       const items = createProductDto.items;
 
+      console.log(createProductDto,"/////create");
+      
+
       const productItems: string[] = [];
       let count = 0;
       for (let index = 0; index < items.length; index++) {

@@ -67,13 +67,12 @@ export class CreateProductDto {
   @IsMongoId()
   firstCategory: string;
 
-  
+
   @ApiProperty({
     example: '60f7a1b3b5d4b32f884d8a5e',
     description: 'ID of the product category',
   })
-  @IsOptional()
-  @IsMongoId()
+  @IsString()
   midCategory?: string;
 
 
@@ -81,7 +80,6 @@ export class CreateProductDto {
     example: '60f7a1b3b5d4b32f884d8a5e',
     description: 'ID of the product category',
   })
-  @IsOptional()
-  @IsMongoId()
+  @IsString()
   lastCategory?: string;
 }
