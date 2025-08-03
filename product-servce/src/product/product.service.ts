@@ -288,10 +288,7 @@ export class ProductService {
       console.log('its fuckind dto >>>> ', updateProductDto);
       console.log(id, 'id is here');
 
-      const product = await this.productModel.findByIdAndUpdate(
-        id,
-        updateProductDto,
-      );
+      const product = await this.productModel.findById(id);
       if (!product) {
         return {
           message: 'محصول پیدا نشد',
@@ -300,7 +297,13 @@ export class ProductService {
         };
       }
 
-      console.log(product, '////// product is here in updateeeeeeeeeee');
+      await product.updateOne(updateProductDto)
+      console.log(product, '////// product is here in updateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+
+
+      let afterUpdated = await this.productModel.findById(id);
+
+      console.log(afterUpdated, '////// product is here in updateeeeeeeeeee');
 
       return {
         message: '',
