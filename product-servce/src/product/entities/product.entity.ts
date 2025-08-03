@@ -5,11 +5,11 @@ export interface ProductDocumnet extends Document {
   _id: string;
   name: string;
   items: any[];
-  images: [{name : string , src : string}];
+  images: [{ name: string; src: string }];
   description: string;
   wages: number;
   count: number;
-  mainImage: {name : string , src : string};
+  mainImage: { name: string; src: string };
   category: Types.ObjectId;
   suggestedProducts: any[];
   price: number;
@@ -23,11 +23,17 @@ export class Product {
   @Prop({ type: [Types.ObjectId], ref: 'ProductItems', required: true })
   items: Types.ObjectId[];
 
-    @Prop({ type: [{name : {type : String} , src : {type : String}}], default: [{name : '' , src : ''}] })
-    images: {name : string , src : string}[];
+  @Prop({
+    type: [{ name: { type: String }, src: { type: String } }],
+    default: [{ name: '', src: '' }],
+  })
+  images: { name: string; src: string }[];
 
-  @Prop({ type : {name : {type : String} , src : {type : String}} ,default: {} })
-  mainImage: {name : string , src : string};
+  @Prop({
+    type: { name: { type: String }, src: { type: String } },
+    default: {},
+  })
+  mainImage: { name: string; src: string };
 
   @Prop({ default: '' })
   description: string;
@@ -50,7 +56,7 @@ export class Product {
   @Prop({ type: [Types.ObjectId], ref: 'Product', default: [] })
   suggestedProducts: Types.ObjectId[];
 
-  @Prop({type : Number , default : 0})
+  @Prop({ type: Number, default: 0 })
   price: number;
 }
 
@@ -64,6 +70,5 @@ export class Product {
 export const ProductSchema = SchemaFactory.createForClass(Product);
 
 ProductSchema.methods = {
-  _calculateDiscount: async function () {
- }
-}
+  _calculateDiscount: async function () {},
+};

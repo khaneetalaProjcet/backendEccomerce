@@ -25,6 +25,10 @@ export class CartService {
 
   async addToCart(userid: string, body: CreateCartDto) {
     try {
+      console.log(userid, 'userId');
+
+      console.log(body, 'body is here in cart');
+
       // await this.cartModel.deleteMany()
       let item = await this.productItemsModel.findById(body.item);
       console.log('ffff', item);
@@ -112,7 +116,7 @@ export class CartService {
   }
 
   async updateCart(userId: string, body: UpdateItemCount) {
-    console.log('its hereeeeee' , body)
+    console.log('its hereeeeee', body);
     try {
       let item = await this.productItemsModel.findById(body.item);
       if (!item) {
@@ -125,7 +129,6 @@ export class CartService {
       let product = await this.productModel.findOne({
         items: { $in: item._id },
       });
-
 
       console.log('22222', product);
       if (!product) {
@@ -149,8 +152,8 @@ export class CartService {
         .populate('products.product')
         .populate('products.mainProduct');
 
-      console.log('cart founded >>>> ' , addCart)
-      
+      console.log('cart founded >>>> ', addCart);
+
       if (!addCart) {
         return {
           message: '',
@@ -160,14 +163,12 @@ export class CartService {
       }
 
       // console.log(addCart , "////////");
-      
 
       const productIndex = addCart.products.findIndex(
         (p) => p.product._id.toString() === item._id.toString(),
       );
 
-      console.log(productIndex,"////// product index");
-      
+      console.log(productIndex, '////// product index');
 
       if (productIndex === -1) {
         return {
@@ -193,7 +194,7 @@ export class CartService {
       addCart.count = totalCount;
 
       await addCart.save();
-      console.log('acrt updated')
+      console.log('acrt updated');
       return {
         message: 'سبد خرید بروزرسانی شد',
         statusCode: 200,
@@ -222,14 +223,14 @@ export class CartService {
         history: [],
       });
     }
-    console.log('cart is >>>>> ' , cart)
+    console.log('cart is >>>>> ', cart);
     const goldPrice = await this.goldPriceService.getGoldPrice(); // مثال: 3,200,000 تومان به‌ازای هر گرم طلا
 
     const itemPrices = this.calculateCartItemPrices(
       cart.products as any,
       goldPrice,
     );
-    
+
     const enrichedProducts = cart.products.map((p, i) => ({
       ...JSON.parse(JSON.stringify(p)),
       pricing: itemPrices[i],
@@ -266,7 +267,7 @@ export class CartService {
     wagePercent: number;
     totalWeight: number;
   }[] {
-    console.log('checkig fucking cart' , cartProducts)
+    console.log('checkig fucking cart', cartProducts);
     return cartProducts.map((item) => {
       const weight =
         typeof item.product.weight === 'string'

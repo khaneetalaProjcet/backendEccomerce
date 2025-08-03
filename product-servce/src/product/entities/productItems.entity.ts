@@ -8,6 +8,7 @@ export interface ProductItemsDocment extends Document {
   color: string;
   count: number;
   price: number;
+  discountPercent: number;
 }
 
 @Schema()
