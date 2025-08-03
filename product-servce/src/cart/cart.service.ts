@@ -39,9 +39,14 @@ export class CartService {
           error: 'محصول مورد نظر یافت نشد',
         };
       }
+      // let product = await this.productModel.findOne({
+      //   items: { $in: item._id },
+      // });
+
       let product = await this.productModel.findOne({
-        items: { $in: item },
+        items: new mongoose.Types.ObjectId(item._id),
       });
+
       console.log('22222', product);
       if (!product) {
         return {
