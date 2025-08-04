@@ -511,7 +511,7 @@ export class WalletService {
       if (!walletInvoice) {
         console.log('wallet invoice not exits');
         page = await this.failedPage(
-          'https://ecommerce.khaneetala.ir/',
+          'https://shop.khanetalaa.ir/account/my-orders',
           'تراکنش نا معتبر',
         );
       } else {
@@ -522,7 +522,7 @@ export class WalletService {
           walletInvoice.status = 'failed';
           await walletInvoice.save();
           page = await this.failedPage(
-            'https://ecommerce.khaneetala.ir/',
+            'https://shop.khanetalaa.ir/account/my-orders',
             'انصراف از درخواست',
           );
           return {
@@ -556,7 +556,7 @@ export class WalletService {
             }
             console.log('response of order updated', orderUpdated);
             await walletInvoice.save();
-            page = await this.successPage('https://ecommerce.khaneetala.ir/');
+            page = await this.successPage('https://shop.khanetalaa.ir/account/my-orders');
             return {
               message: 'page',
               statusCode: 301,
@@ -564,7 +564,7 @@ export class WalletService {
             };
           } else {
             page = await this.failedPage(
-              'https://ecommerce.khaneetala.ir/',
+              'https://shop.khanetalaa.ir/account/my-orders',
               'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.',
             );
             console.log('finallllll');
@@ -580,7 +580,7 @@ export class WalletService {
           walletInvoice.status = 'failed';
           await walletInvoice.save();
           page = await this.failedPage(
-            'https://ecommerce.khaneetala.ir/',
+            'https://shop.khanetalaa.ir/account/my-orders',
             'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.',
           );
           console.log('finallllll');
@@ -595,7 +595,7 @@ export class WalletService {
           walletInvoice.status = 'failed';
           await walletInvoice.save();
           page = await this.failedPage(
-            'https://ecommerce.khaneetala.ir/',
+            'https://shop.khanetalaa.ir/account/my-orders',
             'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.',
           );
           console.log('finallllll');
@@ -608,7 +608,7 @@ export class WalletService {
       }
     } catch (error) {
       console.log('error in redirect to api', error);
-      // let page = await this.failedPage('https://ecommerce.khaneetala.ir/', 'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.')
+      // let page = await this.failedPage('https://shop.khanetalaa.ir/account/my-orders', 'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.')
       return {
         message: 'page',
         statusCode: 301,
@@ -637,7 +637,7 @@ export class WalletService {
       if (!goldBoxInvoice) {
         console.log('goldBoxInvoice was not exists');
         page = await this.failedPage(
-          'https://ecommerce.khaneetala.ir/',
+          'https://shop.khanetalaa.ir/account/my-orders',
           'تراکنش نا معتبر',
         );
       }
@@ -647,7 +647,7 @@ export class WalletService {
         // check for existing wallet invoice
         console.log('wallet invoice not exits');
         page = await this.failedPage(
-          'https://ecommerce.khaneetala.ir/',
+          'https://shop.khanetalaa.ir/account/my-orders',
           'تراکنش نا معتبر',
         );
       } else {
@@ -659,7 +659,7 @@ export class WalletService {
           walletInvoice.status = 'failed'; // make status of the wallet invoice to failed
           await walletInvoice.save();
           page = await this.failedPage(
-            'https://ecommerce.khaneetala.ir/',
+            'https://shop.khanetalaa.ir/account/my-orders',
             'انصراف از درخواست',
           ); // generate the failed page
           return {
@@ -695,7 +695,7 @@ export class WalletService {
             console.log('response of order updated', orderUpdated);
             await walletInvoice.save();
             await goldBoxInvoice.save();
-            page = await this.successPage('https://ecommerce.khaneetala.ir/'); // generate the failed page
+            page = await this.successPage('https://shop.khanetalaa.ir/account/my-orders'); // generate the failed page
             return {
               message: 'page',
               statusCode: 301,
@@ -704,7 +704,7 @@ export class WalletService {
           } else {
             // if the verification of sep transactions was failed
             page = await this.failedPage(
-              'https://ecommerce.khaneetala.ir/',
+              'https://shop.khanetalaa.ir/account/my-orders',
               'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.',
             );
             console.log('finallllll');
@@ -720,7 +720,7 @@ export class WalletService {
           walletInvoice.status = 'failed';
           await walletInvoice.save();
           page = await this.failedPage(
-            'https://ecommerce.khaneetala.ir/',
+            'https://shop.khanetalaa.ir/account/my-orders',
             'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.',
           );
           console.log('finallllll');
@@ -735,7 +735,7 @@ export class WalletService {
           walletInvoice.status = 'failed';
           await walletInvoice.save();
           page = await this.failedPage(
-            'https://ecommerce.khaneetala.ir/',
+            'https://shop.khanetalaa.ir/account/my-orders',
             'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.',
           );
           console.log('finallllll');
@@ -749,7 +749,7 @@ export class WalletService {
     } catch (error) {
       console.log('error in redirect to api', error);
       page = await this.failedPage(
-        'https://ecommerce.khaneetala.ir/',
+        'https://shop.khanetalaa.ir/account/my-orders',
         'تراکنش نا موفق بود در صورت کسر وجه مبلغ تا 24 ساعت آینده به حساب شما واریز می شود.',
       );
       return {

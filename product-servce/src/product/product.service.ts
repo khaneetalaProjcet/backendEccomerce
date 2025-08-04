@@ -90,7 +90,7 @@ export class ProductService {
       // await this.productItemModel.deleteMany({})
       // await this.productModel.deleteMany({})
 
-      await this.cartModel.deleteMany({})
+      // await this.cartModel.deleteMany({})
 
       const limit = Number(query.limit) || 12;
       const page = (!isNaN(Number(query.page)) && Number(query.page)) || 1;
