@@ -40,7 +40,7 @@ export class AppService {
       TerminalId: process.env.SEP_TERMINAL_ID,
       Amount: 10000,
       ResNum: await this.generator(),
-      RedirectUrl: 'https://ecommerce.khaneetala.ir/v1/mainw/wallet/redirect',
+      RedirectUrl: 'https://shop.khanetalaa.ir/v1/mainw/wallet/redirect',
       CellNumber: '09229055682',
     };
 
@@ -111,7 +111,7 @@ export class AppService {
       TerminalId: process.env.SEP_TERMINAL_ID,
       Amount: 10000,
       ResNum: await this.generator(),
-      RedirectUrl: 'https://ecommerce.khaneetala.ir/v1/mainw/wallet/secondPay/redirect',
+      RedirectUrl: 'https://shop.khanetalaa.ir/v1/mainw/wallet/secondPay/redirect',
       CellNumber: '09229055682',
     };
 
