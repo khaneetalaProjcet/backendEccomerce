@@ -217,6 +217,18 @@ export class ProductController {
     return this.productService.getSummary();
   }
 
+  @Get('/searchInProduct')
+  @UseGuards(JwtAdminAuthGuard)
+  @ApiOperation({ summary: 'Get all product with search' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of all product',
+    type: [Product],
+  })
+  search(@Query() query: any) {
+    return this.productService.searchInProduct(query);
+  }
+
   @Delete('/')
   delete() {
     return this.productService.delete();
