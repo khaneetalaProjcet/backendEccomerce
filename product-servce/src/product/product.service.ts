@@ -896,65 +896,157 @@ export class ProductService {
     };
   }
 
-async searchInProduct(query: any) {
-  try {
-    const { search } = query;
-    const hasSearch = search && search !== 'undefined';
 
-    const searchCondition: any = hasSearch
-      ? {
-          $or: [
-            { name: { $regex: new RegExp(search, 'i') } },
-            { description: { $regex: new RegExp(search, 'i') } },
-          ],
+  async topAvailableProducts(query: any) {
+    try {
+      const { search } = query;
+      const hasSearch = search && search !== 'undefined';
+
+      const searchCondition: any = hasSearch
+        ? {
+            $or: [
+              { name: { $regex: new RegExp(search, 'i') } },
+              { description: { $regex: new RegExp(search, 'i') } },
+            ],
+          }
+        : {};
+
+      const goldPrice = await this.goldPriceService.getGoldPrice();
+
+      const products = await this.productModel
+        .find(searchCondition)
+        .populate('items')
+        .populate('firstCategory')
+        .populate('midCategory')
+        .populate('lastCategory');
+
+      const result = products.map((product: any) => {
+
+        const itemsWithPrice = product.items.map((item: any) => {
+          const weight = Number(item.weight || 0);
+
+          const basePrice = weight * goldPrice;
+          const wage = (basePrice * product.wages) / 100;
+          const finalPrice = basePrice + wage;
+
+          return {
+            ...(item.toObject?.() ?? item),
+            price: finalPrice,
+          };
+        });
+
+        const productPrice = itemsWithPrice[0]?.price || 0;
+        const productCount = product.count
+
+        let selectedCategory: { _id: string; name: string } | null = null;
+        if (product.firstCategory) {
+          selectedCategory = {
+            _id: product.firstCategory._id,
+            name: product.firstCategory.name,
+          };
+        } else if (product.midCategory) {
+          selectedCategory = {
+            _id: product.midCategory._id,
+            name: product.midCategory.name,
+          };
+        } else if (product.lastCategory) {
+          selectedCategory = {
+            _id: product.lastCategory._id,
+            name: product.lastCategory.name,
+          };
         }
-      : {};
-
-    const goldPrice = await this.goldPriceService.getGoldPrice();
-
-    const products = await this.productModel
-      .find(searchCondition)
-      .populate('items')
-      .populate('firstCategory')
-      .populate('midCategory')
-      .populate('lastCategory');
-
-    const result = products.map((product: any) => {
-      const itemsWithPrice = product.items.map((item: any) => {
-        const weight = Number(item.weight || 0);
-        const basePrice = weight * goldPrice;
-        const wage = (basePrice * product.wages) / 100;
-        const finalPrice = basePrice + wage;
 
         return {
-          ...item.toObject?.() ?? item,
-          price: finalPrice,
+          _id: product._id,
+          name: product.name,
+          image: product.mainImage,
+          // description: product.description,
+          // price: productPrice,
+          productCount,
+          category: selectedCategory,
+          // items: itemsWithPrice,
         };
       });
 
-      const productPrice = itemsWithPrice[0]?.price || 0;
+      const sorted = result.sort((a, b) => b.productCount - a.productCount);
+
+      const topThree = sorted.slice(0, 3);
 
       return {
-        ...(product.toObject?.() ?? product),
-        items: itemsWithPrice,
-        price: productPrice,
+        message: ' دریافت شد',
+        statusCode: 200,
+        data: topThree,
       };
-    });
-
-    return {
-      message: 'محصولات با موفقیت دریافت شدند',
-      statusCode: 200,
-      data: result,
-    };
-  } catch (error) {
-    console.log('Error in searchInProduct:', error);
-    return {
-      message: 'مشکل داخلی سیستم',
-      statusCode: 500,
-      error: 'مشکل داخلی سیستم',
-    };
+    } catch (error) {
+      console.log('Error ', error);
+      return {
+        message: 'مشکل داخلی سیستم',
+        statusCode: 500,
+        error: 'مشکل داخلی سیستم',
+      };
+    }
   }
-}
+
+
+  async searchInProduct(query: any) {
+    try {
+      const { search } = query;
+      const hasSearch = search && search !== 'undefined';
+
+      const searchCondition: any = hasSearch
+        ? {
+            $or: [
+              { name: { $regex: new RegExp(search, 'i') } },
+              { description: { $regex: new RegExp(search, 'i') } },
+            ],
+          }
+        : {};
+
+      const goldPrice = await this.goldPriceService.getGoldPrice();
+
+      const products = await this.productModel
+        .find(searchCondition)
+        .populate('items')
+        .populate('firstCategory')
+        .populate('midCategory')
+        .populate('lastCategory');
+
+      const result = products.map((product: any) => {
+        const itemsWithPrice = product.items.map((item: any) => {
+          const weight = Number(item.weight || 0);
+          const basePrice = weight * goldPrice;
+          const wage = (basePrice * product.wages) / 100;
+          const finalPrice = basePrice + wage;
+
+          return {
+            ...(item.toObject?.() ?? item),
+            price: finalPrice,
+          };
+        });
+
+        const productPrice = itemsWithPrice[0]?.price || 0;
+
+        return {
+          ...(product.toObject?.() ?? product),
+          items: itemsWithPrice,
+          price: productPrice,
+        };
+      });
+
+      return {
+        message: 'محصولات با موفقیت دریافت شدند',
+        statusCode: 200,
+        data: result,
+      };
+    } catch (error) {
+      console.log('Error in searchInProduct:', error);
+      return {
+        message: 'مشکل داخلی سیستم',
+        statusCode: 500,
+        error: 'مشکل داخلی سیستم',
+      };
+    }
+  }
 
   async delete() {
     try {
