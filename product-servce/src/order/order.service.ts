@@ -12,8 +12,6 @@ import {
 import { Product, ProductDocumnet } from 'src/product/entities/product.entity';
 import { Order, OrderInterface } from './entities/order.entity';
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
-import { orderFilterDto } from './dto/orderFilter.dto';
-import { error } from 'console';
 
 @Injectable()
 export class OrderService {
@@ -89,12 +87,12 @@ export class OrderService {
         cashPay: 0,
       });
 
+
       const enrichedProducts = cart.products.map((p, i) => ({
         ...JSON.parse(JSON.stringify(p)),
         pricing: itemPrices[i],
       }));
 
-      console.log('its finishsed', enrichedProducts);
       return {
         message: '',
         statusCode: 200,
@@ -239,7 +237,6 @@ export class OrderService {
           error: 'سفارش پیدا نشد',
         };
       }
-      console.log('order', order);
 
       return {
         message: '',
@@ -258,7 +255,6 @@ export class OrderService {
 
   async identityOrder(body: any) {
     try {
-      console.log('req.body', body);
       const order = await this.orderModel.findById(body.orderId);
       if (!order) {
         return {
@@ -272,7 +268,6 @@ export class OrderService {
 
       await order.save();
 
-      console.log('order');
 
       return {
         message: '',
@@ -531,7 +526,6 @@ export class OrderService {
 
   async updateAfterPayment(id: string, status: number, body: any) {
     try {
-      console.log('id >>>> ', id, status, body);
 
       let order = await this.orderModel.findById(id);
 
