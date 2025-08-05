@@ -157,14 +157,10 @@ export class AdminService {
   }
 
   async getAdminAccess(adminId: string) {
-    console.log(adminId, '////////adminId');
 
     let admin: any = await this.adminModel
       .findById(adminId)
       .populate('accessPoint');
-    
-    
-    console.log(admin,"admin is here ");
     
     
     if (!admin) {
@@ -176,16 +172,13 @@ export class AdminService {
     }
     let allAccess = await this.pageModel.find();
     let access: any = [];
-    // console.log('hellla;sdlkfjas;ofhinalkfhj', allAccess)
 
     let ids = admin.accessPoint.map((item) => {
       return item._id.toString();
     });
 
-    console.log('list of the ids', ids);
     for (let i of allAccess) {
       let data = JSON.parse(JSON.stringify(i.toObject()));
-      // console.log(admin.accessPoint[0] , data._id)
       if (ids.includes(data._id.toString())) {
         data['access'] = true;
         access.push(data);
@@ -232,14 +225,11 @@ async updateAdminAccess(adminId: string, body: UpdateAdminAccessDto) {
 
     const accessPoints = foundPages.map((p) => p._id);
 
-    console.log(accessPoints,"//////");
-    
 
     const admin = await this.adminModel.findByIdAndUpdate(adminId, {
       accessPoint: accessPoints,
     });
 
-    console.log(admin,"admin is her ");
     
 
     if (!admin) {
@@ -362,6 +352,21 @@ async updateAdminAccess(adminId: string, body: UpdateAdminAccessDto) {
       await lastValueFrom(this.httpService.post(url, createLogDto));
     } catch (error) {
       console.error('Error sending log:', error.message);
+    }
+  }
+
+      async removeAll() {
+    try {
+      const result = await this.adminModel.deleteMany({});
+
+      return {
+        message: 'All admin deleted successfully',
+       data: result.deletedCount,
+        statusCode: 200,
+        
+      };
+    } catch (error) {
+      throw new Error(`Failed to delete all products: ${error.message}`);
     }
   }
 }

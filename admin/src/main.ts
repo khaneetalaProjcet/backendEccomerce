@@ -11,7 +11,7 @@ async function bootstrap() {
 
 
   app.enableCors({
-    origin: '*', // specify the allowed origin
+    origin: '*', // specify the allowed origin  
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // specify the allowed HTTP methods
   })
   process.on('unhandledRejection', (error) => {

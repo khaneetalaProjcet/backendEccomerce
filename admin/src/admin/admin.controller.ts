@@ -226,4 +226,9 @@ export class AdminController {
   remove(@Param('id') id: string) {
     return this.adminService.remove(id);
   }
+
+@Delete('/remove/all')
+    removeAll() {
+    return this.adminService.removeAll();
+  }
 }
