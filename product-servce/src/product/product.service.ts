@@ -39,8 +39,8 @@ export class ProductService {
     try {
       const items = createProductDto.items;
 
-      console.log(createProductDto,"/////create");
-      
+      console.log(createProductDto, '/////create');
+
       const productItems: string[] = [];
       let count = 0;
       for (let index = 0; index < items.length; index++) {
@@ -60,13 +60,28 @@ export class ProductService {
 
       createProductDto.count = count;
 
-      createProductDto.firstCategory = (createProductDto.firstCategory && createProductDto.firstCategory != '' && createProductDto.firstCategory != 'undefined') ?createProductDto.firstCategory : null
-      createProductDto.midCategory = (createProductDto.midCategory && createProductDto.midCategory != '' && createProductDto.midCategory != 'undefined') ?createProductDto.midCategory : null
-      createProductDto.lastCategory = (createProductDto.lastCategory && createProductDto.lastCategory != '' && createProductDto.lastCategory != 'undefined') ?createProductDto.lastCategory : null 
+      createProductDto.firstCategory =
+        createProductDto.firstCategory &&
+        createProductDto.firstCategory != '' &&
+        createProductDto.firstCategory != 'undefined'
+          ? createProductDto.firstCategory
+          : null;
+      createProductDto.midCategory =
+        createProductDto.midCategory &&
+        createProductDto.midCategory != '' &&
+        createProductDto.midCategory != 'undefined'
+          ? createProductDto.midCategory
+          : null;
+      createProductDto.lastCategory =
+        createProductDto.lastCategory &&
+        createProductDto.lastCategory != '' &&
+        createProductDto.lastCategory != 'undefined'
+          ? createProductDto.lastCategory
+          : null;
 
       const product = await this.productModel.create(createProductDto);
 
-      console.log('after craetion product >>>> ' , product)
+      console.log('after craetion product >>>> ', product);
 
       return {
         message: '',
@@ -85,11 +100,10 @@ export class ProductService {
 
   async findAll(query: ProductFilterDto) {
     try {
-
+      console.log(query, 'query is here..... ');
 
       // await this.productItemModel.deleteMany({})
       // await this.productModel.deleteMany({})
-
       // await this.cartModel.deleteMany({})
 
       const limit = Number(query.limit) || 12;
@@ -131,7 +145,6 @@ export class ProductService {
         .populate('firstCategory')
         .populate('midCategory')
         .populate('lastCategory');
-
 
       const filteredProducts = products
         .filter((product: any) => {
@@ -304,11 +317,10 @@ export class ProductService {
       console.log(id, 'id is here');
 
       updateProductDto.items = updateProductDto.items.map((elem: any) => {
-        return elem._id
-      })
+        return elem._id;
+      });
 
-      console.log('after fixing update items in body>>>>' , updateProductDto)
-
+      console.log('after fixing update items in body>>>>', updateProductDto);
 
       const product = await this.productModel.findById(id);
       if (!product) {
@@ -319,9 +331,11 @@ export class ProductService {
         };
       }
 
-      await product.updateOne(updateProductDto)
-      console.log(product, '////// product is here in updateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
-
+      await product.updateOne(updateProductDto);
+      console.log(
+        product,
+        '////// product is here in updateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+      );
 
       let afterUpdated = await this.productModel.findById(id);
 
@@ -413,9 +427,12 @@ export class ProductService {
 
   async updateProductItems(id: string, dto: UpdateProductItemDto) {
     try {
-
-      console.log('body issss>>>' , dto)
-      console.log('body issss222222>>>' , dto.discountPercent , typeof(dto.discountPercent))
+      console.log('body issss>>>', dto);
+      console.log(
+        'body issss222222>>>',
+        dto.discountPercent,
+        typeof dto.discountPercent,
+      );
 
       const prodcutItem = await this.productItemModel.findByIdAndUpdate(id, {
         count: dto.count,
@@ -425,9 +442,9 @@ export class ProductService {
         discountPercent: dto.discountPercent,
       });
 
-      let updated = await this.productItemModel.findById(id)
-      
-      console.log('after updated' , updated);
+      let updated = await this.productItemModel.findById(id);
+
+      console.log('after updated', updated);
 
       if (!prodcutItem) {
         return {
@@ -441,9 +458,8 @@ export class ProductService {
 
       const product = await this.productModel
         .findById(convertedId)
-        .populate('items')
+        .populate('items');
 
-      
       if (!product) {
         return {
           message: 'محصول پیدا نشد',
@@ -886,24 +902,22 @@ export class ProductService {
 
       return {
         message: 'All products deleted successfully',
-       data: result.deletedCount,
+        data: result.deletedCount,
         statusCode: 200,
-        
       };
     } catch (error) {
       throw new Error(`Failed to delete all products: ${error.message}`);
     }
   }
 
-    async deleteItem() {
+  async deleteItem() {
     try {
       const result = await this.productItemModel.deleteMany({});
 
       return {
         message: 'All products deleted successfully',
-       data: result.deletedCount,
+        data: result.deletedCount,
         statusCode: 200,
-        
       };
     } catch (error) {
       throw new Error(`Failed to delete all products: ${error.message}`);
