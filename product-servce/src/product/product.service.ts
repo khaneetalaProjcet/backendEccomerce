@@ -900,6 +900,9 @@ export class ProductService {
 async topAvailableProducts(query: any) {
   try {
     const { search } = query;
+
+    console.log(search,"lololololololololololololololol");
+    
     const hasSearch = search && search !== 'undefined';
 
     const searchCondition: any = hasSearch
