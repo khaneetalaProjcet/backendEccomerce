@@ -218,7 +218,7 @@ export class ProductController {
   }
 
   @Get('/searchInProduct')
-  @UseGuards(JwtAdminAuthGuard)
+  @UseGuards(JwtAdminAuthGuard)  
   @ApiOperation({ summary: 'Get all product with search' })
   @ApiResponse({
     status: 200,
@@ -226,7 +226,7 @@ export class ProductController {
     type: [Product],
   })
   search(@Query() query: any) {
-    return this.productService.searchInProduct(query);
+    return this.productService.topAvailableProducts(query);
   }
 
   @Delete('/')
