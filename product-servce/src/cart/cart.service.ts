@@ -206,7 +206,7 @@ export class CartService {
   }
 
   async getAllCarts(userId: string) {
-    await this.cartModel.deleteMany({});
+    // await this.cartModel.deleteMany({});
 
     let cart = await this.cartModel
       .findOne({ user: userId })
