@@ -19,9 +19,11 @@ import { ProductFilterDto } from './dto/productFilterdto';
 import { goldPriceService } from 'src/goldPrice/goldPrice.service';
 import { Order, OrderInterface } from '../order/entities/order.entity';
 import { InterserviceService } from 'src/interservice/interservice.service';
+import { createMetadataProductDto } from './dto/metaProduct.dto';
 import { isValidObjectId } from 'mongoose';
 import { log } from 'node:console';
 import { Cart, CartInterface } from 'src/cart/entities/cart.entity';
+import { MetadataStorage } from 'class-validator';
 
 @Injectable()
 export class ProductService {
@@ -1042,6 +1044,43 @@ export class ProductService {
       };
     } catch (error) {
       console.log('Error in searchInProduct:', error);
+      return {
+        message: 'مشکل داخلی سیستم',
+        statusCode: 500,
+        error: 'مشکل داخلی سیستم',
+      };
+    }
+  }
+
+  async metaDataProduct(id: string, body: createMetadataProductDto) {
+    try {
+      const thisProduct = await this.productModel.findById(id);
+
+      if (!thisProduct) {
+        return {
+          message: '',
+          statusCode: 400,
+          data: null,
+        };
+      }
+
+      const updatedProduct = await this.productModel.findByIdAndUpdate(
+        thisProduct.id,
+        {
+          metaDescription: body.metaDescription,
+          metaTitle: body.metaTitle,
+        },
+      );
+
+      return {
+        message: 'ok',
+        statusCode: 200,
+        data: updatedProduct,
+        Data:null
+      };
+    } catch (error) {
+      console.log(error, 'error is here ');
+
       return {
         message: 'مشکل داخلی سیستم',
         statusCode: 500,

@@ -21,6 +21,7 @@ import { JwtAdminAuthGuard } from 'src/jwt/admin-jwt-auth.guard';
 import { ProductItems } from './entities/productItems.entity';
 import { CreateProductItemDto } from './dto/create-productItem.dto';
 import { UpdateProductItemDto } from './dto/update-productItem.dto';
+import { createMetadataProductDto } from './dto/metaProduct.dto';
 import { query } from 'winston';
 import { productListQueryDto } from './dto/pagination.dto';
 import { ProductFilterDto } from './dto/productFilterdto';
@@ -226,6 +227,20 @@ export class ProductController {
   })
   search(@Query() query: any) {
     return this.productService.topAvailableProducts(query);
+  }
+
+  @Patch('/meta/data/:id')
+  @ApiOperation({ summary: 'Get all product with search' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of all product',
+    type: [Product],
+  })
+  updateMetaData(
+    @Param('id') id: string,
+    @Body() body: createMetadataProductDto,
+  ) {
+    return this.productService.metaDataProduct(id, body);
   }
 
   @Delete('/')
