@@ -38,7 +38,7 @@ export class AppService {
     const data = {
       action: 'token',
       TerminalId: process.env.SEP_TERMINAL_ID,
-      Amount: order.totalPrice,
+      Amount: order.totalPrice*10,
       ResNum: await this.generator(),
       RedirectUrl: 'https://shop.khanetalaa.ir/v1/mainw/wallet/redirect',
       CellNumber: '',
@@ -109,7 +109,7 @@ export class AppService {
     const data = {
       action: 'token',
       TerminalId: process.env.SEP_TERMINAL_ID,
-      Amount: order.totalPrice,
+      Amount: order.totalPrice*10,
       ResNum: await this.generator(),
       RedirectUrl:
         'https://shop.khanetalaa.ir/v1/mainw/wallet/secondPay/redirect',
