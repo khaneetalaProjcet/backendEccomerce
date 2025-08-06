@@ -60,7 +60,7 @@ export class OrderController {
   }
 
   @Get('waiting')
-  @UseGuards(JwtAdminAuthGuard)
+  // @UseGuards(JwtAdminAuthGuard)
   allWaiting(@Req() req: any, @Res() res: any, @Query() query: string) {
     return this.orderService.allWaiting(query);
   }

@@ -25,7 +25,6 @@ export class CartService {
 
   async addToCart(userid: string, body: CreateCartDto) {
     try {
-    
       let item = await this.productItemsModel.findById(body.item);
       console.log('ffff', item);
       if (!item) {
@@ -207,6 +206,8 @@ export class CartService {
   }
 
   async getAllCarts(userId: string) {
+    await this.cartModel.deleteMany({});
+
     let cart = await this.cartModel
       .findOne({ user: userId })
       .populate('products.product')
@@ -271,6 +272,7 @@ export class CartService {
           : item.product.weight;
 
       const wagePercent = item.mainProduct.wages;
+
       const wageGrams = weight * (wagePercent / 100);
       const totalWeight = weight + wageGrams;
 
@@ -288,15 +290,14 @@ export class CartService {
     });
   }
 
-    async delete() {
+  async delete() {
     try {
       const result = await this.cartModel.deleteMany({});
 
       return {
         message: 'All cart deleted successfully',
-       data: result.deletedCount,
+        data: result.deletedCount,
         statusCode: 200,
-        
       };
     } catch (error) {
       throw new Error(`Failed to delete all products: ${error.message}`);
