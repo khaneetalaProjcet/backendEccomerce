@@ -15,6 +15,8 @@ export interface ProductDocumnet extends Document {
   lastCategory: Types.ObjectId;
   suggestedProducts: any[];
   price: number;
+  metaTitle: string;
+  metaDescription: string;
 }
 
 @Schema({ timestamps: true })
@@ -49,10 +51,10 @@ export class Product {
   @Prop({ type: Types.ObjectId, ref: 'Category', default: null })
   firstCategory: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Category',  default : null})
+  @Prop({ type: Types.ObjectId, ref: 'Category', default: null })
   midCategory: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Category',  default : null})
+  @Prop({ type: Types.ObjectId, ref: 'Category', default: null })
   lastCategory: Types.ObjectId;
 
   @Prop({ type: [Types.ObjectId], ref: 'Product', default: [] })
@@ -60,6 +62,12 @@ export class Product {
 
   @Prop({ type: Number, default: 0 })
   price: number;
+
+  @Prop({ default: '' })
+  metaDescription: string;
+
+  @Prop({ default: '' })
+  metaTitle: string;
 }
 
 // schema.pre('save', function(next) {
