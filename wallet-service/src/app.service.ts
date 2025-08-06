@@ -29,19 +29,19 @@ export class AppService {
   ) {}
 
   async generator() {
-    const randomString = new Date().getTime()
-    return randomString.toString()
+    const randomString = new Date().getTime();
+    return randomString.toString();
   }
-
 
   async requestPayment(order: any) {
+    //its
     const data = {
       action: 'token',
       TerminalId: process.env.SEP_TERMINAL_ID,
-      Amount: 10000,
+      Amount: order.totalPrice,
       ResNum: await this.generator(),
       RedirectUrl: 'https://shop.khanetalaa.ir/v1/mainw/wallet/redirect',
-      CellNumber: '09229055682',
+      CellNumber: '',
     };
 
     try {
@@ -58,26 +58,26 @@ export class AppService {
 
       if (result.status === 1 && result.token) {
         let wallet = await this.walletModel.findOne({
-          owner : order.user
-        })
-        if (!wallet){
+          owner: order.user,
+        });
+        if (!wallet) {
           return {
-            message : 'سند مورد نظر معتبر نمی باشد',
-            statusCode : 400,
-            error : 'سند مورد نظر معتبر نمی باشد'
-          }
+            message: 'سند مورد نظر معتبر نمی باشد',
+            statusCode: 400,
+            error: 'سند مورد نظر معتبر نمی باشد',
+          };
         }
-        console.log('token is' , result)
+        console.log('token is', result);
         let walletInvoice = await this.walletInvoiceModel.create({
           orderId: order._id,
           amount: order.totalPrice,
           status: 'pending',
-          token : result.token,
-          ResNum : data.ResNum,
+          token: result.token,
+          ResNum: data.ResNum,
           state: 1,
           wallet: wallet._id,
-          });
-          console.log('wallet invoice after creations' , walletInvoice )
+        });
+        console.log('wallet invoice after creations', walletInvoice);
         return {
           success: true,
           statusCode: 200,
@@ -104,19 +104,19 @@ export class AppService {
     }
   }
 
-
   async requestPaymentForPayment2(order: any) {
+    //its
     const data = {
       action: 'token',
       TerminalId: process.env.SEP_TERMINAL_ID,
-      Amount: 10000,
+      Amount: order.totalPrice,
       ResNum: await this.generator(),
-      RedirectUrl: 'https://shop.khanetalaa.ir/v1/mainw/wallet/secondPay/redirect',
-      CellNumber: '09229055682',
+      RedirectUrl:
+        'https://shop.khanetalaa.ir/v1/mainw/wallet/secondPay/redirect',
+      CellNumber: '',
     };
 
     try {
-      
       const response = await fetch(
         'https://sep.shaparak.ir/onlinepg/onlinepg',
         {
@@ -125,31 +125,31 @@ export class AppService {
           headers: { 'Content-Type': 'application/json' },
         },
       );
-      
+
       const result = await response.json();
 
       if (result.status === 1 && result.token) {
         let wallet = await this.walletModel.findOne({
-          owner : order.user
-        })
-        if (!wallet){
+          owner: order.user,
+        });
+        if (!wallet) {
           return {
-            message : 'سند مورد نظر معتبر نمی باشد',
-            statusCode : 400,
-            error : 'سند مورد نظر معتبر نمی باشد'
-          }
+            message: 'سند مورد نظر معتبر نمی باشد',
+            statusCode: 400,
+            error: 'سند مورد نظر معتبر نمی باشد',
+          };
         }
-        console.log('token is' , result)
+        console.log('token is', result);
         let walletInvoice = await this.walletInvoiceModel.create({
           orderId: order._id,
           amount: order.totalPrice,
           status: 'pending',
-          token : result.token,
-          ResNum : data.ResNum,
+          token: result.token,
+          ResNum: data.ResNum,
           state: 1,
           wallet: wallet._id,
-          });
-          console.log('wallet invoice after creations' , walletInvoice )
+        });
+        console.log('wallet invoice after creations', walletInvoice);
         return {
           success: true,
           statusCode: 200,
@@ -175,8 +175,6 @@ export class AppService {
       };
     }
   }
-
-
 
   async requestPayment2() {
     const data = {
@@ -185,7 +183,7 @@ export class AppService {
       Amount: 15000,
       ResNum: '@#cc##',
       RedirectUrl: 'https://ecommerce.khaneetala.ir/',
-      CellNumber: "09229055682"
+      CellNumber: '09229055682',
     };
 
     try {
