@@ -70,6 +70,11 @@ export class OrderController {
     return this.orderService.getGoldPrice();
   }
 
+  @Get('price/random')
+  goldP(@Req() req: any, @Res() res: any) {
+    return this.orderService.getGoldP();
+  }
+
   @Get('internal/findone/:id')
   findOne(@Param('id') id: string) {
     return this.orderService.findOneById(id);

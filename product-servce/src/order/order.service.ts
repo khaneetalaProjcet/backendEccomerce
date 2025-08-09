@@ -87,7 +87,6 @@ export class OrderService {
         cashPay: 0,
       });
 
-
       const enrichedProducts = cart.products.map((p, i) => ({
         ...JSON.parse(JSON.stringify(p)),
         pricing: itemPrices[i],
@@ -268,7 +267,6 @@ export class OrderService {
 
       await order.save();
 
-
       return {
         message: '',
         statusCode: 200,
@@ -374,6 +372,24 @@ export class OrderService {
       message: '',
       statusCode: 200,
       data: goldP,
+    };
+  }
+
+  async getGoldP() {
+    function generateRandomNumber() {
+      const min = 7495678;
+      const max = 8999876;
+
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    const sevenDigitNumber = generateRandomNumber();
+    console.log(sevenDigitNumber);
+
+    return {
+      message: '',
+      statusCode: 200,
+      data: sevenDigitNumber,
     };
   }
 
@@ -526,7 +542,6 @@ export class OrderService {
 
   async updateAfterPayment(id: string, status: number, body: any) {
     try {
-
       let order = await this.orderModel.findById(id);
 
       let cart = await this.cartModel
