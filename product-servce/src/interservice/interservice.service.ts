@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { log } from 'node:console';
 
 @Injectable()
 export class InterserviceService {
@@ -52,10 +53,12 @@ export class InterserviceService {
     return data;
   }
 
-    async getUsers() {
+  async getUsers() {
     const url = 'http://localhost:9011/user/admin/users';
 
     const token = await this.getToken();
+
+    console.log(token, '//////tokennnnn');
 
     if (!token) {
       throw new BadRequestException('لطفا دوباره امتحان کنید');
@@ -68,7 +71,11 @@ export class InterserviceService {
       },
     });
 
+    console.log(response, '///// response');
+
     const data = await response.json();
+
+    console.log(data, '///// data is here');
 
     return data;
   }
