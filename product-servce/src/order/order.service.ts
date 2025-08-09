@@ -384,7 +384,6 @@ export class OrderService {
     }
 
     const sevenDigitNumber = generateRandomNumber();
-    console.log(sevenDigitNumber);
 
     return {
       message: '',
